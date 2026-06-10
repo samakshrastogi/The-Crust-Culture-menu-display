@@ -30,7 +30,7 @@ export default function Navbar({ theme, onToggleTheme }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--bg)]/88 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6 lg:px-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-1 px-3 py-3 sm:gap-4 sm:px-6 lg:px-8">
         <BrandLogo />
 
         <div className="hidden items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface)]/70 p-1 md:flex">

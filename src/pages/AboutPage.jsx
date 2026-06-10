@@ -21,16 +21,10 @@ export default function AboutPage() {
     <div ref={scopeRef} className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <section data-reveal className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.24em] text-[var(--gold)]">Our story</p>
           <h1 className="font-display mt-3 text-5xl font-semibold leading-tight text-[var(--text)]">
             Fire, fermentation, and a table built for sharing.
           </h1>
         </div>
-        <p className="text-lg leading-8 text-[var(--muted)]">
-          The Crust Culture began as a small sourdough pizza counter and grew into a modern
-          neighborhood kitchen. Our dough is cold-fermented, our sauces are cooked in small batches,
-          and each table gets quick QR access to the menu so the food remains the focus.
-        </p>
       </section>
 
       <section data-reveal className="grid gap-4 py-10 sm:grid-cols-3">
@@ -74,7 +68,6 @@ export default function AboutPage() {
       <section data-reveal className="mt-10 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5">
         <div className="grid min-h-[280px] place-items-center rounded-[1.5rem] border border-dashed border-[var(--line)] bg-[var(--bg-soft)] text-center">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.24em] text-[var(--gold)]">Map</p>
             <p className="mt-3 text-lg font-bold text-[var(--muted)]">Location map placeholder</p>
           </div>
         </div>

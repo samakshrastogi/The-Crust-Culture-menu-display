@@ -4,7 +4,7 @@ export default function BrandLogo({ compact = false }) {
   return (
     <Link
       to="/menu"
-      className="group flex min-w-0 max-w-[calc(100vw-132px)] items-center gap-2 sm:max-w-none sm:gap-3"
+      className="group flex min-w-0 max-w-[calc(100vw-158px)] items-center gap-2 sm:max-w-none sm:gap-3"
       aria-label="The Crust Culture menu"
     >
       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface-strong)] text-base font-black text-[var(--gold)] shadow-lg sm:h-11 sm:w-11 sm:text-lg">

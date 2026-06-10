@@ -81,16 +81,9 @@ export default function MenuPage() {
       <section className="mb-6 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5 sm:p-8">
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.24em] text-[var(--gold)]">
-              Scan, browse, choose
-            </p>
             <h1 className="font-display mt-3 text-4xl font-semibold leading-tight text-[var(--text)] sm:text-6xl">
               The Crust Culture Menu
             </h1>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--muted)]">
-              Built for table QR access with quick filters, large touch targets, and rich item
-              details.
-            </p>
           </div>
           <button
             type="button"

@@ -5,13 +5,9 @@ export default function ContactPage() {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <section className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.24em] text-[var(--gold)]">Contact</p>
           <h1 className="font-display mt-3 text-5xl font-semibold leading-tight text-[var(--text)]">
-            Need a table, party order, or quick question?
+            Contact The Crust Culture
           </h1>
-          <p className="mt-5 text-lg leading-8 text-[var(--muted)]">
-            Reach the team directly or follow us for specials, limited menus, and weekend launches.
-          </p>
         </div>
 
         <div className="grid gap-4">

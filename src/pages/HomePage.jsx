@@ -29,19 +29,12 @@ export default function HomePage() {
     <div ref={scopeRef}>
       <section className="mx-auto grid max-w-7xl gap-8 px-4 pb-12 pt-8 sm:px-6 lg:grid-cols-[1fr_0.9fr] lg:px-8 lg:py-16">
         <div className="flex flex-col justify-center">
-          <p data-hero-kicker className="mb-4 text-sm font-black uppercase tracking-[0.26em] text-[var(--gold)]">
-            QR table menu
-          </p>
           <h1
             data-hero-title
             className="font-display text-5xl font-semibold leading-[1.03] text-[var(--text)] sm:text-6xl lg:text-7xl"
           >
             Fresh crusts, slow fire, fast table ordering.
           </h1>
-          <p data-hero-copy className="mt-5 max-w-xl text-base leading-7 text-[var(--muted)] sm:text-lg">
-            Browse the complete menu from your phone, save favorites, and choose your next
-            wood-fired plate without waiting for a printed menu.
-          </p>
           <div data-hero-actions className="mt-7 flex flex-col gap-3 sm:flex-row">
             <Link
               to="/menu"
@@ -101,7 +94,6 @@ export default function HomePage() {
       <section data-reveal className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-6 flex items-end justify-between gap-4">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.24em] text-[var(--gold)]">Popular</p>
             <h2 className="font-display mt-2 text-4xl font-semibold text-[var(--text)]">Featured dishes</h2>
           </div>
           <Link to="/menu" className="hidden font-bold text-[var(--gold)] sm:block">
@@ -119,7 +111,6 @@ export default function HomePage() {
               to={`/menu?category=${encodeURIComponent(category)}`}
               className="rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-6 transition hover:border-[var(--gold)]"
             >
-              <span className="text-sm font-black uppercase tracking-[0.2em] text-[var(--orange)]">Category</span>
               <h3 className="mt-3 text-2xl font-black text-[var(--text)]">{category}</h3>
             </Link>
           ))}

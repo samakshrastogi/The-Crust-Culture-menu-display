@@ -30,10 +30,10 @@ function AppShell({ theme, onToggleTheme }) {
 }
 
 export default function App() {
-  const [theme, setTheme] = useLocalStorage('crust-theme', 'dark')
+  const [theme, setTheme] = useLocalStorage('crust-theme', 'light')
 
   useEffect(() => {
-    document.documentElement.classList.toggle('light', theme === 'light')
+    document.documentElement.classList.toggle('dark', theme === 'dark')
   }, [theme])
 
   return (
