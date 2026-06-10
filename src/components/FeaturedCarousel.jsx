@@ -38,15 +38,17 @@ export default function FeaturedCarousel({ items, onSelect }) {
                 Featured
               </span>
             </div>
-            <div className="space-y-3 p-4">
+            <div className="space-y-2 p-3 sm:space-y-3 sm:p-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <VegIndicator veg={item.veg} />
-                  <h3 className="font-bold text-[var(--text)]">{item.name}</h3>
+                  <h3 className="text-sm font-bold text-[var(--text)] sm:text-base">{item.name}</h3>
                 </div>
-                <span className="font-black text-[var(--gold)]">₹{item.price}</span>
+                <span className="text-sm font-black text-[var(--gold)] sm:text-base">₹{item.price}</span>
               </div>
-              <p className="line-clamp-2 text-sm leading-6 text-[var(--muted)]">{item.description}</p>
+              <p className="line-clamp-2 text-xs leading-5 text-[var(--muted)] sm:text-sm sm:leading-6">
+                {item.description}
+              </p>
             </div>
           </button>
         </SwiperSlide>

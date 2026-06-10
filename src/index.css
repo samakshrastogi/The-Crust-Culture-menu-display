@@ -49,6 +49,7 @@ body {
   min-width: 320px;
   min-height: 100svh;
   margin: 0;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at top left, rgba(249, 115, 22, 0.18), transparent 34rem),
     linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
@@ -80,8 +81,8 @@ img {
 }
 
 .touch-target {
-  min-height: 44px;
-  min-width: 44px;
+  min-height: 40px;
+  min-width: 40px;
 }
 
 .card-hover {

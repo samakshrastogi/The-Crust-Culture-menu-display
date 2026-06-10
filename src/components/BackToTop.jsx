@@ -20,7 +20,7 @@ export default function BackToTop() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className="fixed bottom-5 left-4 z-40 grid h-12 w-12 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--text)] shadow-2xl sm:bottom-7 sm:left-7"
+      className="fixed bottom-4 left-3 z-40 grid h-10 w-10 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--text)] shadow-2xl sm:bottom-7 sm:left-7 sm:h-12 sm:w-12"
       aria-label="Back to top"
     >
       <FiArrowUp />

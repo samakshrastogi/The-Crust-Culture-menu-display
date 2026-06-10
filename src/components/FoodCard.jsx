@@ -6,24 +6,28 @@ export default function FoodCard({ item, onSelect, isFavorite, onToggleFavorite 
   return (
     <article
       data-card
-      className="card-hover overflow-hidden rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)]"
+      className="card-hover flex overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] sm:block sm:rounded-[1.5rem]"
     >
-      <button type="button" onClick={() => onSelect(item)} className="block w-full text-left">
-        <div className="relative aspect-[4/3] overflow-hidden">
+      <button
+        type="button"
+        onClick={() => onSelect(item)}
+        className="block w-[116px] shrink-0 text-left sm:w-full"
+      >
+        <div className="relative h-full min-h-[148px] overflow-hidden sm:aspect-[4/3] sm:min-h-0">
           <FoodImage
             src={item.image}
             alt={item.name}
             category={item.category}
             className="h-full w-full transition duration-500 hover:scale-105"
           />
-          <div className="absolute left-3 top-3 flex flex-wrap gap-2">
+          <div className="absolute left-2 top-2 flex flex-wrap gap-1 sm:left-3 sm:top-3 sm:gap-2">
             {item.popular && (
-              <span className="rounded-full bg-[var(--orange)] px-3 py-1 text-xs font-black uppercase tracking-wide text-white">
+              <span className="rounded-full bg-[var(--orange)] px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-white sm:px-3 sm:py-1 sm:text-xs">
                 Popular
               </span>
             )}
             {item.bestSeller && (
-              <span className="rounded-full bg-[var(--gold)] px-3 py-1 text-xs font-black uppercase tracking-wide text-[#21140b]">
+              <span className="rounded-full bg-[var(--gold)] px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-[#21140b] sm:px-3 sm:py-1 sm:text-xs">
                 Best Seller
               </span>
             )}
@@ -31,27 +35,31 @@ export default function FoodCard({ item, onSelect, isFavorite, onToggleFavorite 
         </div>
       </button>
 
-      <div className="space-y-4 p-4">
+      <div className="min-w-0 flex-1 space-y-2 p-3 sm:space-y-4 sm:p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="mb-2 flex items-center gap-2">
+            <div className="mb-1.5 flex items-center gap-1.5 sm:mb-2 sm:gap-2">
               <VegIndicator veg={item.veg} />
-              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--gold)]">
+              <span className="truncate text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--gold)] sm:text-xs sm:tracking-[0.18em]">
                 {item.category}
               </span>
             </div>
-            <h3 className="text-lg font-bold leading-tight text-[var(--text)]">{item.name}</h3>
+            <h3 className="line-clamp-2 text-sm font-bold leading-tight text-[var(--text)] sm:text-lg">
+              {item.name}
+            </h3>
           </div>
-          <p className="shrink-0 text-lg font-black text-[var(--gold)]">₹{item.price}</p>
+          <p className="shrink-0 text-sm font-black text-[var(--gold)] sm:text-lg">₹{item.price}</p>
         </div>
-        <p className="line-clamp-2 text-sm leading-6 text-[var(--muted)]">{item.description}</p>
-        <div className="flex items-center justify-between gap-3">
+        <p className="line-clamp-2 text-xs leading-5 text-[var(--muted)] sm:text-sm sm:leading-6">
+          {item.description}
+        </p>
+        <div className="flex items-center justify-between gap-2 sm:gap-3">
           <button
             type="button"
             onClick={() => onSelect(item)}
-            className="touch-target rounded-full bg-[var(--cream)] px-5 text-sm font-black text-[#24150b] transition hover:bg-[var(--gold)]"
+            className="touch-target rounded-full bg-[var(--cream)] px-3 text-xs font-black text-[#24150b] transition hover:bg-[var(--gold)] sm:px-5 sm:text-sm"
           >
-            View details
+            Details
           </button>
           <button
             type="button"

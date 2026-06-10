@@ -1,9 +1,10 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
-export { gsap, ScrollTrigger }
+export { gsap, ScrollToPlugin, ScrollTrigger }
 
 export function revealHero(scope) {
   return gsap.context(() => {
@@ -48,13 +49,11 @@ export function staggerCards(scope, selector = '[data-card]') {
 }
 
 export function animateFloating(element) {
-  return gsap.to(element, {
-    y: -8,
-    duration: 1.45,
-    ease: 'sine.inOut',
-    repeat: -1,
-    yoyo: true,
-  })
+  return gsap
+    .timeline({ repeat: -1, repeatDelay: 1.4 })
+    .to(element, { y: -7, scale: 1.05, duration: 0.8, ease: 'sine.inOut' })
+    .to(element, { y: 0, scale: 1, duration: 0.8, ease: 'sine.inOut' })
+    .to(element, { boxShadow: '0 0 0 12px rgba(249, 115, 22, 0)', duration: 0.55 }, 0)
 }
 
 export function animatePageIn(element) {
@@ -63,4 +62,36 @@ export function animatePageIn(element) {
     { opacity: 0, y: 18 },
     { opacity: 1, y: 0, duration: 0.48, ease: 'power3.out' },
   )
+}
+
+export function animateFavoritePop(element) {
+  if (!element) {
+    return null
+  }
+
+  return gsap.fromTo(
+    element,
+    { scale: 0.86 },
+    { scale: 1, duration: 0.34, ease: 'elastic.out(1, 0.45)' },
+  )
+}
+
+export function scrollToTop() {
+  return gsap.to(window, {
+    scrollTo: { y: 0 },
+    duration: 0.45,
+    ease: 'power2.out',
+  })
+}
+
+export function scrollToElement(target, offsetY = 148) {
+  if (!target) {
+    return null
+  }
+
+  return gsap.to(window, {
+    scrollTo: { y: target, offsetY },
+    duration: 0.55,
+    ease: 'power2.inOut',
+  })
 }

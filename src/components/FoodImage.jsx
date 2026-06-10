@@ -47,9 +47,11 @@ export default function FoodImage({ src, alt, category = 'Restaurant', className
         <div className="absolute bottom-6 right-6 h-28 w-28 rounded-full border-[18px] border-white/15" />
         <div className="absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/20 shadow-2xl" />
       </div>
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-4 text-white">
-        <p className="text-xs font-black uppercase tracking-[0.22em] text-white/75">{style.accent}</p>
-        <p className="mt-1 max-w-[14rem] text-lg font-black leading-tight">{alt}</p>
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-2 text-white sm:p-4">
+        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/75 sm:text-xs sm:tracking-[0.22em]">
+          {style.accent}
+        </p>
+        <p className="mt-1 hidden max-w-[14rem] text-lg font-black leading-tight sm:block">{alt}</p>
       </div>
       {!failed && (
         <img

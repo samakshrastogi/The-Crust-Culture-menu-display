@@ -14,12 +14,19 @@ export default function ItemModal({ item, onClose }) {
     }
 
     document.body.style.overflow = 'hidden'
-    gsap.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.25 })
-    gsap.fromTo(
-      panelRef.current,
-      { opacity: 0, y: 42, scale: 0.96 },
-      { opacity: 1, y: 0, scale: 1, duration: 0.38, ease: 'power3.out' },
-    )
+    const overlay = overlayRef.current
+    const panel = panelRef.current
+
+    if (overlay && panel) {
+      gsap.killTweensOf([overlay, panel])
+      gsap.set(overlay, { opacity: 1 })
+      gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: 'power2.out' })
+      gsap.fromTo(
+        panel,
+        { y: 28, scale: 0.98 },
+        { y: 0, scale: 1, duration: 0.28, ease: 'power3.out', clearProps: 'transform' },
+      )
+    }
 
     return () => {
       document.body.style.overflow = ''
@@ -31,7 +38,16 @@ export default function ItemModal({ item, onClose }) {
   }
 
   const closeWithAnimation = () => {
-    gsap.to(panelRef.current, {
+    const overlay = overlayRef.current
+    const panel = panelRef.current
+
+    if (!overlay || !panel) {
+      onClose()
+      return
+    }
+
+    gsap.killTweensOf([overlay, panel])
+    gsap.to(panel, {
       opacity: 0,
       y: 30,
       scale: 0.96,
@@ -39,7 +55,7 @@ export default function ItemModal({ item, onClose }) {
       ease: 'power2.in',
       onComplete: onClose,
     })
-    gsap.to(overlayRef.current, { opacity: 0, duration: 0.22 })
+    gsap.to(overlay, { opacity: 0, duration: 0.22 })
   }
 
   return (
@@ -57,9 +73,9 @@ export default function ItemModal({ item, onClose }) {
     >
       <div
         ref={panelRef}
-        className="modal-scroll max-h-[92svh] w-full overflow-y-auto rounded-t-[2rem] border border-[var(--line)] bg-[var(--surface)] shadow-2xl sm:max-w-3xl sm:rounded-[2rem]"
+        className="modal-scroll relative z-[51] max-h-[92svh] w-full overflow-y-auto rounded-t-3xl border border-[var(--line)] bg-[var(--surface)] opacity-100 shadow-2xl sm:max-w-3xl sm:rounded-[2rem]"
       >
-        <div className="relative aspect-[16/11] overflow-hidden sm:aspect-[16/8]">
+        <div className="relative aspect-[16/9] overflow-hidden sm:aspect-[16/8]">
           <FoodImage
             src={item.image}
             alt={item.name}
@@ -89,44 +105,44 @@ export default function ItemModal({ item, onClose }) {
           </div>
         </div>
 
-        <div className="space-y-6 p-5 sm:p-7">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
+        <div className="space-y-4 p-4 sm:space-y-6 sm:p-7">
+          <div className="flex items-start justify-between gap-3 sm:gap-4">
+            <div className="space-y-2 sm:space-y-3">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 <VegIndicator veg={item.veg} />
-                <span className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--gold)]">
+                <span className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--gold)] sm:text-sm sm:tracking-[0.18em]">
                   {item.category}
                 </span>
               </div>
-              <h2 className="font-display text-3xl font-semibold leading-tight text-[var(--text)]">
+              <h2 className="font-display text-2xl font-semibold leading-tight text-[var(--text)] sm:text-3xl">
                 {item.name}
               </h2>
             </div>
-            <p className="rounded-2xl bg-[var(--cream)] px-4 py-2 text-xl font-black text-[#24150b]">
+            <p className="rounded-2xl bg-[var(--cream)] px-3 py-2 text-base font-black text-[#24150b] sm:px-4 sm:text-xl">
               ₹{item.price}
             </p>
           </div>
 
-          <p className="text-base leading-7 text-[var(--muted)]">{item.description}</p>
+          <p className="text-sm leading-6 text-[var(--muted)] sm:text-base sm:leading-7">{item.description}</p>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-3xl border border-[var(--line)] bg-[var(--bg-soft)] p-4">
-              <h3 className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-[var(--gold)]">
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+            <div className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] p-3 sm:rounded-3xl sm:p-4">
+              <h3 className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-[var(--gold)] sm:mb-3 sm:text-sm sm:tracking-[0.18em]">
                 Ingredients
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {item.ingredients.map((ingredient) => (
                   <span
                     key={ingredient}
-                    className="rounded-full border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-sm text-[var(--muted)]"
+                    className="rounded-full border border-[var(--line)] bg-[var(--surface)] px-2.5 py-1.5 text-xs text-[var(--muted)] sm:px-3 sm:py-2 sm:text-sm"
                   >
                     {ingredient}
                   </span>
                 ))}
               </div>
             </div>
-            <div className="rounded-3xl border border-[var(--line)] bg-[var(--bg-soft)] p-4">
-              <h3 className="mb-3 text-sm font-black uppercase tracking-[0.18em] text-[var(--gold)]">
+            <div className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] p-3 sm:rounded-3xl sm:p-4">
+              <h3 className="mb-2 text-xs font-black uppercase tracking-[0.16em] text-[var(--gold)] sm:mb-3 sm:text-sm sm:tracking-[0.18em]">
                 Spice Level
               </h3>
               <div className="flex items-center gap-2">
