@@ -1,0 +1,9 @@
+.swiper-pagination-bullet {
+  background: var(--muted);
+  opacity: 0.45;
+}
+
+.swiper-pagination-bullet-active {
+  background: var(--gold);
+  opacity: 1;
+}
