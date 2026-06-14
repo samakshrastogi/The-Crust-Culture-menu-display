@@ -45,6 +45,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
         return
       }
 
+      const rows = gsap.utils.toArray('[data-menu-row]')
       const chips = gsap.utils.toArray('[data-price-chip]')
 
       gsap.from(sectionElement, {
@@ -54,6 +55,18 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
         scrollTrigger: {
           trigger: sectionElement,
           start: 'top 92%',
+          once: true,
+        },
+      })
+
+      gsap.from(rows, {
+        x: -8,
+        duration: 0.24,
+        stagger: 0.026,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: sectionElement,
+          start: 'top 86%',
           once: true,
         },
       })
@@ -84,10 +97,10 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
       id={section.id}
       className="overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] shadow-sm sm:rounded-[1.5rem]"
     >
-      <div className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--bg-soft)] px-3 py-2.5 sm:px-5 sm:py-4">
+      <div className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--surface-strong)] px-3 py-2 sm:px-4 sm:py-2.5">
         <div className="min-w-0">
-          <h2 className="truncate text-base font-black text-[var(--text)] sm:text-2xl">{section.title}</h2>
-          <p className="mt-0.5 text-[11px] font-semibold text-[var(--muted)] sm:text-sm">
+          <h2 className="truncate text-base font-black text-[var(--text)] sm:text-xl">{section.title}</h2>
+          <p className="text-[10px] font-semibold text-[var(--muted)] sm:text-xs">
             {section.items.length} items
           </p>
         </div>
@@ -107,13 +120,26 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
 
       <div className="divide-y divide-[var(--line)]">
         {section.items.map((item) => (
-          <article key={item.id} className="px-3 py-2.5 sm:px-5 sm:py-3.5">
-            <div className="flex min-w-0 gap-2.5 sm:gap-3">
+          <article
+            key={item.id}
+            data-menu-row
+            className="px-3 py-1 transition-colors active:bg-[var(--bg-soft)] sm:px-4 sm:py-1.5"
+            onPointerDown={(event) => {
+              gsap.to(event.currentTarget, { scale: 0.992, duration: 0.08, ease: 'power2.out' })
+            }}
+            onPointerUp={(event) => {
+              gsap.to(event.currentTarget, { scale: 1, duration: 0.16, ease: 'back.out(2)' })
+            }}
+            onPointerLeave={(event) => {
+              gsap.to(event.currentTarget, { scale: 1, duration: 0.16, ease: 'power2.out' })
+            }}
+          >
+            <div className="flex min-w-0 gap-2">
               <FoodImage
                 src={item.image || section.image}
                 alt={item.name}
                 category={section.title.includes('Pizza') ? 'Pizza' : 'Restaurant'}
-                className="h-14 w-14 shrink-0 rounded-xl border border-[var(--line)] sm:h-16 sm:w-16 sm:rounded-2xl"
+                className="h-11 w-11 shrink-0 rounded-lg border border-[var(--line)] sm:h-12 sm:w-12 sm:rounded-xl"
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
@@ -128,19 +154,19 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                     }
                     className="min-w-0 flex-1 text-left"
                   >
-                    <div className="mb-1 flex items-center gap-1.5">
+                    <div className="flex min-w-0 items-center gap-1.5">
                       <VegIndicator veg={item.veg} />
+                      <h3 className="min-w-0 flex-1 truncate text-[13px] font-black leading-tight text-[var(--text)] sm:text-sm">
+                        <Highlight text={item.name} query={query} />
+                      </h3>
                       {item.tag && (
                         <span className="rounded-full bg-[var(--orange)] px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-white">
                           {item.tag}
                         </span>
                       )}
                     </div>
-                    <h3 className="text-sm font-black leading-snug text-[var(--text)] sm:text-base">
-                      <Highlight text={item.name} query={query} />
-                    </h3>
                     {item.toppings && (
-                      <p className="mt-0.5 line-clamp-2 text-[11px] leading-4 text-[var(--muted)] sm:text-sm sm:leading-5">
+                      <p className="mt-0.5 line-clamp-1 text-[11px] leading-4 text-[var(--muted)] sm:text-xs sm:leading-4">
                         <Highlight text={item.toppings} query={query} />
                       </p>
                     )}
@@ -148,10 +174,10 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                   <button
                     type="button"
                     onClick={(event) => onToggleFavorite(item.id, event.currentTarget)}
-                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border text-xs transition sm:h-8 sm:w-8 ${
+                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border text-xs transition ${
                       favorites.includes(item.id)
                         ? 'border-[var(--orange)] bg-[var(--orange)] text-white'
-                        : 'border-[var(--line)] text-[var(--muted)]'
+                        : 'border-[var(--line)] bg-[var(--surface)] text-[var(--muted)]'
                     }`}
                     aria-label={
                       favorites.includes(item.id)
@@ -163,14 +189,14 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                   </button>
                 </div>
 
-                <div className="mt-1.5 flex max-w-full flex-wrap justify-start gap-1 sm:gap-1.5">
+                <div className="mt-1 flex max-w-full flex-wrap justify-start gap-1">
                   {item.prices.map((price) => (
                     <span
                       key={`${item.id}-${price.label}-${price.value}`}
                       data-price-chip
-                      className="rounded-full border border-[var(--line)] bg-[var(--cream)] px-1.5 py-1 text-[10px] font-black text-[#24150b] sm:px-3 sm:text-sm"
+                      className="rounded-md bg-[var(--surface-strong)] px-1.5 py-0.5 text-[10px] font-black leading-4 text-[#24150b] ring-1 ring-[var(--line)] sm:px-2 sm:text-xs"
                     >
-                      {price.label && <span className="mr-0.5 text-[#8a5a15] sm:mr-1">{price.label}</span>}
+                      {price.label && <span className="mr-0.5 text-[#7a5319] sm:mr-1">{price.label}</span>}
                       {formatPrice(price.value)}
                     </span>
                   ))}

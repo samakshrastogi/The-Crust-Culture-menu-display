@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { FiHeart } from 'react-icons/fi'
 import { animateFavoritePop, gsap, scrollToElement, scrollToTop } from '../animations/gsapAnimations'
-import CategoryTabs from '../components/CategoryTabs'
+import LiveStatusBadge from '../components/LiveStatusBadge'
 import MenuImageStrip from '../components/MenuImageStrip'
 import MenuItemSheet from '../components/MenuItemSheet'
 import MenuSectionCard from '../components/MenuSectionCard'
@@ -11,11 +11,31 @@ import SkeletonLoader from '../components/SkeletonLoader'
 import { allMenuItems, menuCategories, menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
+const isRestrictedTime = () => {
+  const hours = new Date().getHours()
+  return hours >= 23 || hours < 6
+}
+
+const initialSections = isRestrictedTime()
+  ? menuSections.filter((s) => s.title !== 'Everyday Classics' && s.title !== 'Classic Veg Combos')
+  : menuSections
+
+const initialCategories = initialSections.map((s) => s.title)
+
+const initialAllMenuItems = initialSections.flatMap((section) =>
+  section.items.map((item) => ({
+    ...item,
+    sectionId: section.id,
+    sectionTitle: section.title,
+    sectionImage: section.image,
+  })),
+)
+
 export default function MenuPage() {
   const [searchParams] = useSearchParams()
   const requestedCategory = searchParams.get('category')
   const [activeCategory, setActiveCategory] = useState(
-    menuCategories.includes(requestedCategory) ? requestedCategory : 'All',
+    initialCategories.includes(requestedCategory) ? requestedCategory : 'All',
   )
   const [query, setQuery] = useState('')
   const [selectedItem, setSelectedItem] = useState(null)
@@ -31,7 +51,7 @@ export default function MenuPage() {
   const filteredSections = useMemo(() => {
     const search = query.toLowerCase().trim()
 
-    return menuSections
+    return initialSections
       .map((section) => {
         const items = section.items.filter((item) => {
           if (!search) {
@@ -48,7 +68,7 @@ export default function MenuPage() {
 
   const visibleItemCount = filteredSections.reduce((total, section) => total + section.items.length, 0)
 
-  const favoriteCount = favorites.filter((id) => allMenuItems.some((item) => item.id === id)).length
+  const favoriteCount = favorites.filter((id) => initialAllMenuItems.some((item) => item.id === id)).length
 
   const searchSuggestions = useMemo(() => {
     const search = query.toLowerCase().trim()
@@ -56,7 +76,7 @@ export default function MenuPage() {
       return []
     }
 
-    return allMenuItems
+    return initialAllMenuItems
       .filter((item) => `${item.sectionTitle} ${item.name} ${item.toppings || ''}`.toLowerCase().includes(search))
       .slice(0, 6)
   }, [query])
@@ -99,23 +119,19 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-3 pb-12 pt-3 sm:px-6 sm:pb-16 sm:pt-6 lg:px-8">
-      <section className="mb-3 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 sm:mb-6 sm:rounded-[2rem] sm:p-8">
-        <h1 className="font-display max-w-full text-2xl font-semibold leading-tight text-[var(--text)] sm:mt-3 sm:text-6xl">
+    <div className="mx-auto max-w-7xl px-3 pb-20 pt-3 sm:px-6 sm:pb-20 sm:pt-5 lg:px-8">
+      <section className="mb-2 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3 shadow-sm sm:mb-4 sm:rounded-[1.5rem] sm:p-6">
+        <h1 className="font-display max-w-full text-xl font-semibold leading-tight text-[var(--text)] sm:text-5xl">
           The Crust Culture Menu
         </h1>
+        <LiveStatusBadge />
       </section>
 
-      <div className="mb-3 grid gap-2 sm:mb-4 sm:gap-3 lg:grid-cols-[1fr_320px]">
-        <CategoryTabs
-          categories={menuCategories}
-          activeCategory={activeCategory}
-          onChange={handleCategoryChange}
-        />
+      <div className="mb-3 sm:mb-4">
         <SearchBar value={query} onChange={setQuery} />
       </div>
 
-      <MenuImageStrip sections={menuSections} activeCategory={activeCategory} onSelect={handleCategoryChange} />
+      <MenuImageStrip sections={initialSections} activeCategory={activeCategory} onSelect={handleCategoryChange} />
 
       {searchSuggestions.length > 0 && (
         <section className="mb-3 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:mb-5">
@@ -134,7 +150,7 @@ export default function MenuPage() {
         </section>
       )}
 
-      <div className="mb-3 flex items-center justify-between gap-4 text-xs text-[var(--muted)] sm:mb-5 sm:text-sm">
+      <div className="mb-3 flex items-center justify-between gap-4 text-xs text-[var(--muted)] sm:mb-4 sm:text-sm">
         <p>
           Showing <span className="font-black text-[var(--gold)]">{visibleItemCount}</span> priced items
         </p>
@@ -147,17 +163,48 @@ export default function MenuPage() {
       {loading ? (
         <SkeletonLoader count={9} />
       ) : (
-        <div ref={sectionsRef} className="grid gap-3 lg:grid-cols-2 lg:gap-4">
-          {filteredSections.map((section) => (
-            <MenuSectionCard
-              key={section.id}
-              section={section}
-              favorites={favorites}
-              onToggleFavorite={toggleFavorite}
-              onSelectItem={setSelectedItem}
-              query={query}
-            />
-          ))}
+        <div ref={sectionsRef}>
+          {/* Mobile view (single column) */}
+          <div className="flex flex-col gap-3 lg:hidden">
+            {filteredSections.map((section) => (
+              <MenuSectionCard
+                key={section.id}
+                section={section}
+                favorites={favorites}
+                onToggleFavorite={toggleFavorite}
+                onSelectItem={setSelectedItem}
+                query={query}
+              />
+            ))}
+          </div>
+
+          {/* Desktop view (two columns, distributed) */}
+          <div className="hidden lg:grid lg:grid-cols-2 lg:gap-4 items-start">
+            <div className="flex flex-col gap-4">
+              {filteredSections.filter((_, idx) => idx % 2 === 0).map((section) => (
+                <MenuSectionCard
+                  key={section.id}
+                  section={section}
+                  favorites={favorites}
+                  onToggleFavorite={toggleFavorite}
+                  onSelectItem={setSelectedItem}
+                  query={query}
+                />
+              ))}
+            </div>
+            <div className="flex flex-col gap-4">
+              {filteredSections.filter((_, idx) => idx % 2 !== 0).map((section) => (
+                <MenuSectionCard
+                  key={section.id}
+                  section={section}
+                  favorites={favorites}
+                  onToggleFavorite={toggleFavorite}
+                  onSelectItem={setSelectedItem}
+                  query={query}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       )}
 

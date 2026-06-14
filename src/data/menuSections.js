@@ -20,9 +20,9 @@ const rawMenuSections = [
       { name: 'Tomato', prices: ['89', '179', '269'] },
       { name: 'Capsicum', prices: ['89', '179', '269'] },
       { name: 'Golden Corn', prices: ['99', '189', '299'] },
-      { name: 'Margherita', prices: ['99', '219', '299'] },
-      { name: 'Golden Corn & Cheese', prices: ['129', '219', '329'] },
-      { name: 'Double Cheese Margherita', prices: ['129', '219', '329'] },
+      { name: 'Margherita', prices: ['119', '249', '329'] },
+      { name: 'Golden Corn & Cheese', prices: ['129', '249', '329'] },
+      { name: 'Double Cheese Margherita', prices: ['149', '269', '349'] },
     ],
   },
   {
@@ -223,10 +223,10 @@ const rawMenuSections = [
     title: 'Wraps',
     labels: [''],
     items: [
-      { name: 'Veg', prices: ['99'] },
+      { name: 'Veg', prices: ['89'] },
       { name: 'Aloo Tikki', prices: ['109'] },
-      { name: 'Cheese & Corn', prices: ['119'] },
-      { name: 'Paneer Tikka', prices: ['129'] },
+      { name: 'Cheese & Corn', prices: ['149'] },
+      { name: 'Paneer Tikka', prices: ['149'] },
     ],
   },
   {
@@ -243,6 +243,24 @@ const rawMenuSections = [
       { name: 'Lemon Soda', prices: ['69'] },
       { name: 'Cold Coffee', prices: ['59', '79'] },
       { name: 'Cold Coffee with Ice Cream', prices: ['119'] },
+    ],
+  },
+  {
+    title: 'Poha Corner',
+    labels: ['', ''],
+    items: [{ name: 'Classic Veg Poha', prices: ['79', '119'] }],
+  },
+  {
+    title: 'Egg Specials',
+    labels: [''],
+    items: [
+      { name: 'Veg Omelette', prices: ['79'] },
+      { name: 'Bread Omelette', prices: ['99'] },
+      { name: 'Egg Burger', prices: ['99'] },
+      { name: 'Half Fry with Bread', prices: ['99'] },
+      { name: 'Egg Bhurji Pav', prices: ['129'] },
+      { name: 'Egg Sandwich', prices: ['129'] },
+      { name: 'Egg Fried Rice', prices: ['149'] },
     ],
   },
 ]
@@ -263,10 +281,188 @@ const sectionImages = {
   'fry-fiesta': 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75',
   wraps: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=75',
   'drinks-corner': 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=75',
+  'poha-corner': 'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=75',
+  'egg-specials': 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=75',
   'crispy-starters': 'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=75',
   'indo-chinese-specials': 'https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=600&q=75',
   'south-indian-specials': 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=600&q=75',
   'protein-shakes-salads': 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=75',
+}
+
+const imageCollections = {
+  toppings: [
+    'https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1511689660979-10d2b1aada49?auto=format&fit=crop&w=600&q=75',
+  ],
+  pizza: [
+    'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1601924582970-9238bcb495d9?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1601924582971-c86e7b34eec4?auto=format&fit=crop&w=600&q=75',
+  ],
+  paneerPizza: [
+    'https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1601924582970-9238bcb495d9?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1620374645498-af6bd681a946?auto=format&fit=crop&w=600&q=75',
+  ],
+  sides: [
+    'https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1573140401552-3fab0b24306f?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=600&q=75',
+  ],
+  sandwiches: [
+    'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1481070555726-e2fe8357725c?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1567234669003-dce7a7a88821?auto=format&fit=crop&w=600&q=75',
+  ],
+  burgers: [
+    'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1550317138-10000687a72b?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=600&q=75',
+  ],
+  street: [
+    'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=600&q=75',
+  ],
+  corn: [
+    'https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1571680322279-a226e6a4cc2a?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1615485500704-8e990f9900f7?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1598514983318-2f64f8f4796c?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1506808547685-e2ba962ded60?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1511689660979-10d2b1aada49?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=600&q=75',
+  ],
+  maggi: [
+    'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1637024698421-533d83c7b883?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1618841557871-b4664fbf0cb3?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=75',
+  ],
+  momo: [
+    'https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1496116218417-1a781b1c416c?auto=format&fit=crop&w=600&q=75',
+  ],
+  fries: [
+    'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1576107232684-1279f390859f?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1623238912680-26fc5ffb57e0?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=600&q=75',
+  ],
+  wraps: [
+    'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=75',
+  ],
+  drinks: [
+    'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1563379926898-05f4575a45d8?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=75',
+  ],
+  poha: [
+    'https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?auto=format&fit=crop&w=600&q=75',
+  ],
+  eggs: [
+    'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1481070555726-e2fe8357725c?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=75',
+  ],
+  crispy: [
+    'https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=600&q=75',
+  ],
+  chinese: [
+    'https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=75',
+  ],
+  southIndian: [
+    'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1610192244261-3f33de3f72e1?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1630383249896-424e482df921?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1617692855027-33b14f061079?auto=format&fit=crop&w=600&q=75',
+  ],
+  protein: [
+    'https://images.unsplash.com/photo-1622484211148-a645df14f0ed?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1577805947697-89e18249d767?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=75',
+    'https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=600&q=75',
+  ],
+}
+
+const sectionImageCollections = {
+  'extra-toppings': imageCollections.toppings,
+  'everyday-classics': imageCollections.pizza,
+  'classic-veg-combos': imageCollections.pizza,
+  'signature-veg-pizzas': imageCollections.pizza,
+  'royal-paneer-collection': imageCollections.paneerPizza,
+  'garlic-breads-sides': imageCollections.sides,
+  'grilled-sandwiches': imageCollections.sandwiches,
+  'burgers-street-bites': imageCollections.burgers,
+  'mumbai-street-special': imageCollections.street,
+  'sweet-corn-specials': imageCollections.corn,
+  'maggi-mania': imageCollections.maggi,
+  'momo-specials': imageCollections.momo,
+  'fry-fiesta': imageCollections.fries,
+  wraps: imageCollections.wraps,
+  'drinks-corner': imageCollections.drinks,
+  'poha-corner': imageCollections.poha,
+  'egg-specials': imageCollections.eggs,
+  'crispy-starters': imageCollections.crispy,
+  'indo-chinese-specials': imageCollections.chinese,
+  'south-indian-specials': imageCollections.southIndian,
+  'protein-shakes-salads': imageCollections.protein,
 }
 
 const itemMetadata = {
@@ -337,7 +533,8 @@ const itemMetadata = {
 }
 
 function hasValidPrice(price) {
-  return Boolean(String(price || '').trim()) && String(price).trim() !== '__'
+  const normalizedPrice = String(price || '').trim()
+  return Boolean(normalizedPrice) && !/^[-_\u2013\u2014]+$/.test(normalizedPrice)
 }
 
 function slugify(value) {
@@ -347,10 +544,15 @@ function slugify(value) {
     .replace(/(^-|-$)/g, '')
 }
 
+function getItemImage(sectionId, index) {
+  const images = sectionImageCollections[sectionId] || [sectionImages[sectionId]].filter(Boolean)
+  return images[index % images.length] || ''
+}
+
 function cleanSection(section) {
   const sectionId = slugify(section.title)
   const items = section.items
-    .map((item) => {
+    .map((item, index) => {
       const itemId = `${sectionId}-${slugify(item.name)}`
       const metadata = itemMetadata[slugify(item.name)] || {}
       const prices = item.prices
@@ -363,7 +565,7 @@ function cleanSection(section) {
       return {
         ...item,
         id: itemId,
-        image: metadata.image,
+        image: metadata.image || getItemImage(sectionId, index),
         tag: metadata.tag,
         veg: true,
         prices,

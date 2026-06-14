@@ -51,15 +51,16 @@ export default function AboutPage() {
           <FiPhone className="mb-4 text-3xl text-[var(--orange)]" />
           <h2 className="text-2xl font-black text-[var(--text)]">Contact</h2>
           <div className="mt-4 space-y-2 text-sm text-[var(--muted)]">
-            <p>+91 98765 43210</p>
-            <p>hello@thecrustculture.com</p>
+            <p>
+              <a href="tel:+918368151650" className="hover:text-[var(--orange)] transition">+91 83681 51650</a>
+            </p>
           </div>
         </div>
         <div className="rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-6">
           <FiMapPin className="mb-4 text-3xl text-[var(--orange)]" />
           <h2 className="text-2xl font-black text-[var(--text)]">Location</h2>
           <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
-            18 Artisan Lane, Jubilee Hills, Hyderabad
+            The Crust Culture infront of royal pg and sheetal pg and adjacent of panchayat cafe gali no. 6 noble enclave palam vihar extension gurgaon haryana pincode 122015
           </p>
         </div>
       </section>

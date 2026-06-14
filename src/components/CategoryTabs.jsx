@@ -26,7 +26,7 @@ export default function CategoryTabs({ categories, activeCategory, onChange }) {
   }, [activeCategory])
 
   return (
-    <div className="sticky top-[57px] z-30 -mx-3 overflow-hidden border-y border-[var(--line)] bg-[var(--bg)]/92 px-3 py-2 backdrop-blur-xl sm:top-[69px] sm:mx-0 sm:rounded-3xl sm:border sm:px-4 sm:py-3">
+    <div className="sticky top-[57px] z-30 -mx-3 overflow-hidden border-y border-[var(--line)] bg-[var(--bg)]/94 px-3 py-2 shadow-sm backdrop-blur-xl sm:top-[69px] sm:mx-0 sm:rounded-2xl sm:border sm:px-3">
       <div className="no-scrollbar flex max-w-full gap-1.5 overflow-x-auto sm:gap-2">
         {allCategories.map((category) => (
           <button
@@ -46,6 +46,7 @@ export default function CategoryTabs({ categories, activeCategory, onChange }) {
           </button>
         ))}
       </div>
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[var(--bg)] to-transparent sm:hidden" />
     </div>
   )
 }

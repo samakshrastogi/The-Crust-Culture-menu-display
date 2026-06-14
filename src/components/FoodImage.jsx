@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { gsap } from '../animations/gsapAnimations'
 
 const categoryStyles = {
   Pizza: {
@@ -36,6 +37,7 @@ const categoryStyles = {
 }
 
 export default function FoodImage({ src, alt, category = 'Restaurant', className = '', loading = 'lazy' }) {
+  const imageRef = useRef(null)
   const [loaded, setLoaded] = useState(false)
   const [failed, setFailed] = useState(false)
   const style = categoryStyles[category] || categoryStyles.Restaurant
@@ -58,8 +60,16 @@ export default function FoodImage({ src, alt, category = 'Restaurant', className
           src={src}
           alt={alt}
           loading={loading}
-          onLoad={() => setLoaded(true)}
+          onLoad={() => {
+            setLoaded(true)
+            gsap.fromTo(
+              imageRef.current,
+              { scale: 1.06 },
+              { scale: 1, duration: 0.65, ease: 'power2.out', clearProps: 'transform' },
+            )
+          }}
           onError={() => setFailed(true)}
+          ref={imageRef}
           className={`absolute inset-0 h-full w-full object-cover transition duration-500 ${
             loaded ? 'opacity-100' : 'opacity-0'
           }`}

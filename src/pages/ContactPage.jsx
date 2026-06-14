@@ -1,4 +1,4 @@
-import { FiFacebook, FiInstagram, FiMail, FiMapPin, FiPhone } from 'react-icons/fi'
+import { FiMapPin, FiPhone } from 'react-icons/fi'
 
 export default function ContactPage() {
   return (
@@ -12,42 +12,27 @@ export default function ContactPage() {
 
         <div className="grid gap-4">
           {[
-            { icon: FiPhone, label: 'Phone', value: '+91 98765 43210', href: 'tel:+919876543210' },
-            {
-              icon: FiMail,
-              label: 'Email',
-              value: 'hello@thecrustculture.com',
-              href: 'mailto:hello@thecrustculture.com',
-            },
-            { icon: FiMapPin, label: 'Address', value: '18 Artisan Lane, Jubilee Hills, Hyderabad' },
-          ].map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className="rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-5 transition hover:border-[var(--gold)]"
-            >
-              <item.icon className="mb-4 text-3xl text-[var(--orange)]" />
-              <p className="text-sm font-black uppercase tracking-[0.2em] text-[var(--gold)]">
-                {item.label}
-              </p>
-              <p className="mt-2 text-lg font-bold text-[var(--text)]">{item.value}</p>
-            </a>
-          ))}
+            { icon: FiPhone, label: 'Phone', value: '+91 83681 51650', href: 'tel:+918368151650' },
+            { icon: FiMapPin, label: 'Address', value: 'The Crust Culture infront of royal pg and sheetal pg and adjacent of panchayat cafe gali no. 6 noble enclave palam vihar extension gurgaon haryana pincode 122015' },
+          ].map((item) => {
+            const Tag = item.href ? 'a' : 'div'
+            return (
+              <Tag
+                key={item.label}
+                href={item.href}
+                className={`rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-5 transition ${
+                  item.href ? 'hover:border-[var(--gold)] cursor-pointer' : ''
+                }`}
+              >
+                <item.icon className="mb-4 text-3xl text-[var(--orange)]" />
+                <p className="text-sm font-black uppercase tracking-[0.2em] text-[var(--gold)]">
+                  {item.label}
+                </p>
+                <p className="mt-2 text-lg font-bold text-[var(--text)] leading-relaxed">{item.value}</p>
+              </Tag>
+            )
+          })}
         </div>
-      </section>
-
-      <section className="mt-10 grid gap-4 sm:grid-cols-3">
-        {[
-          { icon: FiInstagram, label: 'Instagram', value: '@thecrustculture' },
-          { icon: FiFacebook, label: 'Facebook', value: 'The Crust Culture' },
-          { icon: FiMail, label: 'Newsletter', value: 'Weekly chef specials' },
-        ].map((item) => (
-          <div key={item.label} className="rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-6">
-            <item.icon className="mb-4 text-3xl text-[var(--orange)]" />
-            <p className="text-sm font-black uppercase tracking-[0.2em] text-[var(--gold)]">{item.label}</p>
-            <p className="mt-2 text-lg font-bold text-[var(--text)]">{item.value}</p>
-          </div>
-        ))}
       </section>
     </div>
   )

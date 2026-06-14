@@ -12,6 +12,7 @@ function getLowestPrice(section) {
 }
 
 export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
+  const stripRef = useRef(null)
   const tileRefs = useRef({})
 
   useEffect(() => {
@@ -34,12 +35,26 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
         ease: 'power2.out',
         overwrite: 'auto',
       })
+      
+      const container = activeTile.parentElement
+      if (container) {
+        const containerWidth = container.clientWidth
+        const tileLeft = activeTile.offsetLeft
+        const tileWidth = activeTile.clientWidth
+        container.scrollTo({
+          left: tileLeft - (containerWidth / 2) + (tileWidth / 2),
+          behavior: 'smooth',
+        })
+      }
     }
   }, [activeCategory])
 
   return (
-    <section className="mb-3 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:mb-5 sm:p-3">
-      <div className="no-scrollbar flex gap-2 overflow-x-auto">
+    <section
+      ref={stripRef}
+      className="mb-3 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:mb-4 sm:p-3"
+    >
+      <div className="no-scrollbar relative flex gap-2 overflow-x-auto">
         {sections.map((section) => {
           const lowestPrice = getLowestPrice(section)
           const isActive = activeCategory === section.title
@@ -50,6 +65,7 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
               ref={(element) => {
                 tileRefs.current[section.title] = element
               }}
+              data-menu-tile
               type="button"
               onClick={() => onSelect(section.title)}
               className={`relative h-24 w-36 shrink-0 overflow-hidden rounded-2xl border text-left transition sm:h-32 sm:w-48 ${

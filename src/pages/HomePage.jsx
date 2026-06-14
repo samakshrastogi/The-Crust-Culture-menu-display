@@ -5,12 +5,32 @@ import { revealHero, revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
 import { allMenuItems, menuCategories, menuSections } from '../data/menuSections'
 
+const isRestrictedTime = () => {
+  const hours = new Date().getHours()
+  return hours >= 23 || hours < 6
+}
+
+const initialSections = isRestrictedTime()
+  ? menuSections.filter((s) => s.title !== 'Everyday Classics' && s.title !== 'Classic Veg Combos')
+  : menuSections
+
+const initialCategories = initialSections.map((s) => s.title)
+
+const initialAllMenuItems = initialSections.flatMap((section) =>
+  section.items.map((item) => ({
+    ...item,
+    sectionId: section.id,
+    sectionTitle: section.title,
+    sectionImage: section.image,
+  })),
+)
+
 const heroImage =
   'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1400&q=85'
 
 export default function HomePage() {
   const scopeRef = useRef(null)
-  const featuredSections = menuSections.slice(1, 7)
+  const featuredSections = initialSections.slice(1, 7)
 
   useEffect(() => {
     const heroContext = revealHero(scopeRef)
@@ -75,7 +95,7 @@ export default function HomePage() {
       <section data-reveal className="mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-10 lg:px-8">
         <div className="grid gap-2.5 sm:grid-cols-3 sm:gap-4">
           {[
-            { icon: FiStar, label: 'Menu', value: `${allMenuItems.length} priced items` },
+            { icon: FiStar, label: 'Menu', value: `${initialAllMenuItems.length} priced items` },
             { icon: FiClock, label: 'Open daily', value: '2:00 PM - 11:00 PM' },
             { icon: FiArrowRight, label: 'QR ready', value: 'Land directly on menu' },
           ].map((item) => (
@@ -113,7 +133,7 @@ export default function HomePage() {
 
       <section data-reveal className="mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-10 lg:px-8">
         <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
-          {menuCategories.slice(0, 4).map((category) => (
+          {initialCategories.slice(0, 4).map((category) => (
             <Link
               key={category}
               to={`/menu?category=${encodeURIComponent(category)}`}
