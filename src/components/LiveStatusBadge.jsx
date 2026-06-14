@@ -34,7 +34,7 @@ export default function LiveStatusBadge() {
         <span ref={dotRef} className="absolute h-2.5 w-2.5 rounded-full bg-[var(--green)]" />
         <span className="relative h-2 w-2 rounded-full bg-[var(--green)]" />
       </span>
-      Open daily 2:00 PM - 11:00 PM
+      Open daily 2:00 PM - 1:00 AM
     </div>
   )
 }

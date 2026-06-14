@@ -23,20 +23,31 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
     }
 
     document.body.style.overflow = 'hidden'
-    gsap.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: 'power2.out' })
+    gsap.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.22, ease: 'power2.out' })
     gsap.fromTo(
       sheetRef.current,
-      { y: 44, scale: 0.98 },
-      { y: 0, scale: 1, duration: 0.3, ease: 'power3.out', clearProps: 'transform' },
+      { y: 80, scale: 0.95, opacity: 0 },
+      { y: 0, scale: 1, opacity: 1, duration: 0.45, ease: 'back.out(1.3)', clearProps: 'transform,opacity' },
     )
-    gsap.from('[data-sheet-item]', {
-      y: 10,
-      opacity: 0,
-      duration: 0.28,
-      stagger: 0.045,
-      ease: 'power2.out',
-      delay: 0.08,
-    })
+    gsap.fromTo(
+      '[data-sheet-img] img',
+      { scale: 1.28 },
+      { scale: 1, duration: 0.85, ease: 'power2.out', clearProps: 'transform' }
+    )
+    gsap.fromTo(
+      '[data-sheet-item]',
+      { y: 12, opacity: 0, scale: 0.98 },
+      {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 0.35,
+        stagger: 0.04,
+        ease: 'back.out(1.2)',
+        delay: 0.1,
+        clearProps: 'opacity,transform',
+      },
+    )
 
     return () => {
       document.body.style.overflow = ''
@@ -63,7 +74,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
   return (
     <div
       ref={overlayRef}
-      className="fixed inset-0 z-50 grid place-items-end bg-black/55 p-0 backdrop-blur-sm sm:place-items-center sm:p-4"
+      className="fixed inset-0 z-[60] grid place-items-end bg-black/55 p-0 backdrop-blur-sm sm:place-items-center sm:p-4"
       role="dialog"
       aria-modal="true"
       aria-label={`${item.name} details`}
@@ -84,6 +95,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             category={item.sectionTitle?.includes('Pizza') ? 'Pizza' : 'Restaurant'}
             className="h-full w-full"
             loading="eager"
+            data-sheet-img
           />
           <button
             type="button"
@@ -124,6 +136,12 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
               <FiHeart className={isFavorite ? 'fill-current' : ''} />
             </button>
           </div>
+
+          {item.description && (
+            <p data-sheet-item className="text-sm leading-6 text-[var(--muted)]">
+              {item.description}
+            </p>
+          )}
 
           {item.toppings && (
             <p data-sheet-item className="text-sm leading-6 text-[var(--muted)]">

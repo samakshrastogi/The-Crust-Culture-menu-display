@@ -1,18 +1,14 @@
-import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { FiMenu, FiMoon, FiSun, FiX } from 'react-icons/fi'
+import { FiMoon, FiSun } from 'react-icons/fi'
 import BrandLogo from './BrandLogo'
 
 const navItems = [
   { label: 'Home', path: '/home' },
   { label: 'Menu', path: '/menu' },
-  { label: 'About', path: '/about' },
-  { label: 'Contact', path: '/contact' },
+  { label: 'Favorites', path: '/favorites' },
 ]
 
 export default function Navbar({ theme, onToggleTheme }) {
-  const [open, setOpen] = useState(false)
-
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--bg)]/88 backdrop-blur-xl">
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-1 px-3 py-2 sm:gap-4 sm:px-6 sm:py-3 lg:px-8">
@@ -45,40 +41,8 @@ export default function Navbar({ theme, onToggleTheme }) {
           >
             {theme === 'dark' ? <FiSun /> : <FiMoon />}
           </button>
-          <button
-            type="button"
-            onClick={() => setOpen((current) => !current)}
-            className="touch-target grid place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--text)] md:hidden"
-            aria-label="Open navigation"
-            aria-expanded={open}
-          >
-            {open ? <FiX /> : <FiMenu />}
-          </button>
         </div>
       </nav>
-
-      {open && (
-        <div className="border-t border-[var(--line)] bg-[var(--bg)] px-4 py-3 md:hidden">
-          <div className="grid gap-2">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={() => setOpen(false)}
-                className={({ isActive }) =>
-                  `rounded-2xl px-4 py-3 text-base font-semibold ${
-                    isActive
-                      ? 'bg-[var(--cream)] text-[#23140c]'
-                      : 'bg-[var(--surface)] text-[var(--muted)]'
-                  }`
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </div>
-        </div>
-      )}
     </header>
   )
 }

@@ -8,7 +8,9 @@ const rawMenuSections = [
       { name: 'Paneer', prices: ['30', '50', '80'] },
       { name: 'Cheese Burst', prices: ['60', '90', '120'] },
       { name: 'Extra Dip', prices: ['25', '40'] },
-      { name: 'Oregano, Chilli Flakes, Ketchup', prices: ['2 Rs'] },
+      { name: 'Oregano', prices: ['2 Rs'] },
+      { name: 'Chilli Flakes', prices: ['2 Rs'] },
+      { name: 'Ketchup', prices: ['2 Rs'] },
     ],
   },
   {
@@ -581,7 +583,18 @@ function cleanSection(section) {
   }
 }
 
-export const menuSections = rawMenuSections.map(cleanSection).filter((section) => section.items.length > 0)
+const baseProcessedSections = rawMenuSections.map(cleanSection).filter((section) => section.items.length > 0)
+
+export const menuSections = (() => {
+  const eggSpecials = baseProcessedSections.find(s => s.title === 'Egg Specials')
+  const drinksCorner = baseProcessedSections.find(s => s.title === 'Drinks Corner')
+  const rest = baseProcessedSections.filter(s => s.title !== 'Egg Specials' && s.title !== 'Drinks Corner')
+  
+  const result = [...rest]
+  if (eggSpecials) result.push(eggSpecials)
+  if (drinksCorner) result.push(drinksCorner)
+  return result
+})()
 
 export const menuCategories = menuSections.map((section) => section.title)
 

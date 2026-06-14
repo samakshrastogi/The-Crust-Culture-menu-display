@@ -1,12 +1,50 @@
+import { useEffect, useRef } from 'react'
 import { FiHeart } from 'react-icons/fi'
+import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
 import VegIndicator from './VegIndicator'
 
 export default function FoodCard({ item, onSelect, isFavorite, onToggleFavorite }) {
+  const cardRef = useRef(null)
+
+  useEffect(() => {
+    const el = cardRef.current
+    if (!el) return
+
+    const onEnter = () => {
+      gsap.to(el, {
+        y: -6,
+        boxShadow: '0 20px 35px rgba(246, 196, 83, 0.16)',
+        borderColor: 'rgba(246, 196, 83, 0.4)',
+        duration: 0.25,
+        ease: 'power2.out',
+      })
+    }
+
+    const onLeave = () => {
+      gsap.to(el, {
+        y: 0,
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)',
+        borderColor: 'var(--line)',
+        duration: 0.25,
+        ease: 'power2.out',
+      })
+    }
+
+    el.addEventListener('mouseenter', onEnter)
+    el.addEventListener('mouseleave', onLeave)
+
+    return () => {
+      el.removeEventListener('mouseenter', onEnter)
+      el.removeEventListener('mouseleave', onLeave)
+    }
+  }, [])
+
   return (
     <article
+      ref={cardRef}
       data-card
-      className="card-hover flex overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] sm:block sm:rounded-[1.5rem]"
+      className="flex overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] sm:block sm:rounded-[1.5rem] shadow-sm transition-[border-color,box-shadow] duration-200"
     >
       <button
         type="button"

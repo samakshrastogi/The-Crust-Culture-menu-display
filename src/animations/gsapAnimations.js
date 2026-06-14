@@ -11,40 +11,48 @@ export function revealHero(scope) {
     const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
 
     timeline
-      .from('[data-hero-kicker]', { opacity: 0, y: 18, duration: 0.55 })
-      .from('[data-hero-title]', { opacity: 0, y: 34, duration: 0.75 }, '-=0.25')
-      .from('[data-hero-copy]', { opacity: 0, y: 24, duration: 0.65 }, '-=0.35')
-      .from('[data-hero-actions]', { opacity: 0, y: 18, duration: 0.55 }, '-=0.3')
-      .from('[data-hero-media]', { opacity: 0, scale: 0.94, duration: 0.9 }, '-=0.55')
+      .fromTo('[data-hero-kicker]', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55, clearProps: 'opacity,transform' })
+      .fromTo('[data-hero-title]', { opacity: 0, y: 34 }, { opacity: 1, y: 0, duration: 0.75, clearProps: 'opacity,transform' }, '-=0.25')
+      .fromTo('[data-hero-copy]', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.65, clearProps: 'opacity,transform' }, '-=0.35')
+      .fromTo('[data-hero-actions]', { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.55, clearProps: 'opacity,transform' }, '-=0.3')
+      .fromTo('[data-hero-media]', { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.9, clearProps: 'opacity,transform' }, '-=0.55')
   }, scope)
 }
 
 export function revealOnScroll(scope, selector = '[data-reveal]') {
   return gsap.context(() => {
     gsap.utils.toArray(selector).forEach((element) => {
-      gsap.from(element, {
-        opacity: 0,
-        y: 28,
-        duration: 0.75,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: element,
-          start: 'top 88%',
-        },
-      })
+      gsap.fromTo(element, 
+        { opacity: 0, y: 28 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          ease: 'power3.out',
+          clearProps: 'opacity,transform',
+          scrollTrigger: {
+            trigger: element,
+            start: 'top 88%',
+          },
+        }
+      )
     })
   }, scope)
 }
 
 export function staggerCards(scope, selector = '[data-card]') {
   return gsap.context(() => {
-    gsap.from(selector, {
-      opacity: 0,
-      y: 26,
-      duration: 0.58,
-      stagger: 0.055,
-      ease: 'power3.out',
-    })
+    gsap.fromTo(selector,
+      { opacity: 0, y: 26 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.58,
+        stagger: 0.055,
+        ease: 'power3.out',
+        clearProps: 'opacity,transform',
+      }
+    )
   }, scope)
 }
 
@@ -59,8 +67,8 @@ export function animateFloating(element) {
 export function animatePageIn(element) {
   return gsap.fromTo(
     element,
-    { opacity: 0, y: 18 },
-    { opacity: 1, y: 0, duration: 0.48, ease: 'power3.out' },
+    { opacity: 0, y: 12, scale: 0.985 },
+    { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: 'power2.out', clearProps: 'transform,opacity' },
   )
 }
 

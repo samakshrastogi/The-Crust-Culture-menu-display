@@ -36,14 +36,14 @@ const categoryStyles = {
   },
 }
 
-export default function FoodImage({ src, alt, category = 'Restaurant', className = '', loading = 'lazy' }) {
+export default function FoodImage({ src, alt, category = 'Restaurant', className = '', loading = 'lazy', ...props }) {
   const imageRef = useRef(null)
   const [loaded, setLoaded] = useState(false)
   const [failed, setFailed] = useState(false)
   const style = categoryStyles[category] || categoryStyles.Restaurant
 
   return (
-    <div className={`relative overflow-hidden bg-gradient-to-br ${style.gradient} ${className}`}>
+    <div className={`relative overflow-hidden bg-gradient-to-br ${style.gradient} ${className}`} {...props}>
       <div className="absolute inset-0 opacity-40">
         <div className="absolute -left-10 -top-12 h-40 w-40 rounded-full border border-white/30" />
         <div className="absolute bottom-6 right-6 h-28 w-28 rounded-full border-[18px] border-white/15" />

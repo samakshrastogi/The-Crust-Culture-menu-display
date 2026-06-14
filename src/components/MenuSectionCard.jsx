@@ -48,10 +48,15 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
       const rows = gsap.utils.toArray('[data-menu-row]')
       const chips = gsap.utils.toArray('[data-price-chip]')
 
-      gsap.from(sectionElement, {
+      gsap.fromTo(sectionElement, {
         y: 18,
+        opacity: 0,
+      }, {
+        y: 0,
+        opacity: 1,
         duration: 0.34,
         ease: 'power2.out',
+        clearProps: 'transform,opacity',
         scrollTrigger: {
           trigger: sectionElement,
           start: 'top 92%',
@@ -59,11 +64,16 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
         },
       })
 
-      gsap.from(rows, {
+      gsap.fromTo(rows, {
         x: -8,
+        opacity: 0,
+      }, {
+        x: 0,
+        opacity: 1,
         duration: 0.24,
         stagger: 0.026,
         ease: 'power2.out',
+        clearProps: 'transform,opacity',
         scrollTrigger: {
           trigger: sectionElement,
           start: 'top 86%',
@@ -71,12 +81,18 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
         },
       })
 
-      gsap.from(chips, {
+      gsap.fromTo(chips, {
         y: 5,
         scale: 0.96,
+        opacity: 0,
+      }, {
+        y: 0,
+        scale: 1,
+        opacity: 1,
         duration: 0.18,
         stagger: 0.018,
         ease: 'power2.out',
+        clearProps: 'transform,opacity',
         scrollTrigger: {
           trigger: sectionElement,
           start: 'top 88%',
@@ -95,7 +111,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
       ref={sectionRef}
       data-card
       id={section.id}
-      className="overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] shadow-sm sm:rounded-[1.5rem]"
+      className="overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] shadow-sm sm:rounded-[1.5rem] transition-[border-color,box-shadow] duration-300 hover:border-[rgba(246,196,83,0.35)] hover:shadow-md"
     >
       <div className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--surface-strong)] px-3 py-2 sm:px-4 sm:py-2.5">
         <div className="min-w-0">
@@ -123,9 +139,20 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
           <article
             key={item.id}
             data-menu-row
-            className="px-3 py-1 transition-colors active:bg-[var(--bg-soft)] sm:px-4 sm:py-1.5"
+            className="px-3 py-1 cursor-pointer transition-colors hover:bg-[var(--bg-soft)] active:bg-[var(--bg-soft)] sm:px-4 sm:py-1.5"
+            onClick={(event) => {
+              if (!event.target.closest('[data-fav-btn]')) {
+                onSelectItem({
+                  ...item,
+                  sectionTitle: section.title,
+                  sectionImage: section.image,
+                })
+              }
+            }}
             onPointerDown={(event) => {
-              gsap.to(event.currentTarget, { scale: 0.992, duration: 0.08, ease: 'power2.out' })
+              if (!event.target.closest('[data-fav-btn]')) {
+                gsap.to(event.currentTarget, { scale: 0.992, duration: 0.08, ease: 'power2.out' })
+              }
             }}
             onPointerUp={(event) => {
               gsap.to(event.currentTarget, { scale: 1, duration: 0.16, ease: 'back.out(2)' })
@@ -143,17 +170,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-start justify-between gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onSelectItem({
-                        ...item,
-                        sectionTitle: section.title,
-                        sectionImage: section.image,
-                      })
-                    }
-                    className="min-w-0 flex-1 text-left"
-                  >
+                  <div className="min-w-0 flex-1 text-left">
                     <div className="flex min-w-0 items-center gap-1.5">
                       <VegIndicator veg={item.veg} />
                       <h3 className="min-w-0 flex-1 truncate text-[13px] font-black leading-tight text-[var(--text)] sm:text-sm">
@@ -170,10 +187,14 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                         <Highlight text={item.toppings} query={query} />
                       </p>
                     )}
-                  </button>
+                  </div>
                   <button
                     type="button"
-                    onClick={(event) => onToggleFavorite(item.id, event.currentTarget)}
+                    data-fav-btn
+                    onClick={(event) => {
+                      event.stopPropagation()
+                      onToggleFavorite(item.id, event.currentTarget)
+                    }}
                     className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border text-xs transition ${
                       favorites.includes(item.id)
                         ? 'border-[var(--orange)] bg-[var(--orange)] text-white'
@@ -194,9 +215,9 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                     <span
                       key={`${item.id}-${price.label}-${price.value}`}
                       data-price-chip
-                      className="rounded-md bg-[var(--surface-strong)] px-1.5 py-0.5 text-[10px] font-black leading-4 text-[#24150b] ring-1 ring-[var(--line)] sm:px-2 sm:text-xs"
+                      className="rounded-md bg-[var(--surface-strong)] px-1.5 py-0.5 text-[10px] font-black leading-4 text-[var(--text)] ring-1 ring-[var(--line)] sm:px-2 sm:text-xs"
                     >
-                      {price.label && <span className="mr-0.5 text-[#7a5319] sm:mr-1">{price.label}</span>}
+                      {price.label && <span className="mr-0.5 text-[var(--muted)] sm:mr-1">{price.label}</span>}
                       {formatPrice(price.value)}
                     </span>
                   ))}
