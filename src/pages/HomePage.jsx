@@ -120,9 +120,6 @@ export default function HomePage() {
     )
   }
 
-  const minPrice = specialItem ? getMinPrice(specialItem) : 0
-  const priceDisplay = minPrice ? `₹${minPrice}+` : ''
-
   const handlePrevSpecial = (e) => {
     e.stopPropagation()
     setSpecialIndex((prev) => (prev - 1 + premiumSpecialItems.length) % premiumSpecialItems.length)
@@ -279,10 +276,9 @@ export default function HomePage() {
                     )}
                   </div>
                   <div className="shrink-0 text-right">
-                    <p className="text-[9px] font-bold uppercase tracking-wider text-amber-200/80">Starts at</p>
-                    <p className="mt-0.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-2.5 py-0.5 text-xs font-black text-[#1c120c] sm:text-sm shadow">
-                      {priceDisplay}
-                    </p>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-[#1c120c] shadow sm:text-[11px]">
+                      Chef Special
+                    </span>
                   </div>
                 </div>
 
@@ -370,7 +366,6 @@ export default function HomePage() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
           {signatureDishes.map((item) => {
-            const itemMinPrice = getMinPrice(item)
             const isFav = favorites.includes(item.id)
 
             return (
@@ -418,11 +413,11 @@ export default function HomePage() {
                 </div>
 
                 <div className="mt-2.5 flex items-center justify-between border-t border-[var(--line)]/60 pt-1.5 text-xs">
-                  <span className="font-black text-[var(--text)] text-xs sm:text-sm">
-                    ₹{itemMinPrice}+
+                  <span className="text-[10px] sm:text-[11px] font-bold text-amber-600 dark:text-amber-400">
+                    ★ Chef Choice
                   </span>
                   <span className="font-bold text-[var(--orange)] text-[10px] sm:text-[11px] group-hover:underline">
-                    Customize &rarr;
+                    View Details &rarr;
                   </span>
                 </div>
               </div>
