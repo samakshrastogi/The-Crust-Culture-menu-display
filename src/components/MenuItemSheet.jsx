@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { FiExternalLink, FiHeart, FiPhone, FiX } from 'react-icons/fi'
+import { FiExternalLink, FiHeart, FiMaximize2, FiPhone, FiX } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import { SiZomato } from 'react-icons/si'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
+import ImageLightbox from './ImageLightbox'
 import { getFlavorBadge } from '../utils/flavorBadge'
 import VegIndicator from './VegIndicator'
 
@@ -29,11 +30,13 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
   const overlayRef = useRef(null)
   const sheetRef = useRef(null)
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0)
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [prevItemId, setPrevItemId] = useState(item?.id)
 
   if (item?.id !== prevItemId) {
     setPrevItemId(item?.id)
     setSelectedSizeIndex(0)
+    setIsLightboxOpen(false)
   }
 
   useEffect(() => {
@@ -122,13 +125,17 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
         {/* Mobile drag handle */}
         <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1 rounded-full bg-white/40 z-20 pointer-events-none sm:hidden" />
 
-        {/* Hero Food Media */}
-        <div className="relative aspect-[16/10] overflow-hidden bg-black/10">
+        {/* Hero Food Media with Tap-to-Zoom Lightbox Trigger */}
+        <div
+          className="group/hero relative aspect-[16/10] overflow-hidden bg-black/10 cursor-zoom-in"
+          onClick={() => setIsLightboxOpen(true)}
+          title="Click to view full photo & zoom"
+        >
           <FoodImage
             src={item.image || item.sectionImage}
             alt={item.name}
             category={isPizza ? 'Pizza' : 'Restaurant'}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover/hero:scale-104"
             loading="eager"
             data-sheet-img
           />
@@ -138,15 +145,32 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
           {/* Close button */}
           <button
             type="button"
-            onClick={closeWithAnimation}
+            onClick={(e) => {
+              e.stopPropagation()
+              closeWithAnimation()
+            }}
             className="touch-target absolute right-3.5 top-3.5 z-20 grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20 transition-all hover:bg-black/80 hover:scale-105 active:scale-95"
             aria-label="Close details"
           >
             <FiX className="text-base" />
           </button>
 
+          {/* Floating Tap to Zoom Cue Pill */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              setIsLightboxOpen(true)
+            }}
+            className="touch-target absolute right-3 bottom-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-[10px] sm:text-[11px] font-bold text-white backdrop-blur-md border border-white/20 shadow-md transition-all hover:bg-black/80 hover:scale-105 active:scale-95"
+            aria-label="Zoom photo"
+          >
+            <FiMaximize2 className="text-xs text-amber-300" />
+            <span>Tap to Zoom</span>
+          </button>
+
           {/* Tag & Flavor Badges */}
-          <div className="absolute left-3.5 top-3.5 z-20 flex flex-wrap items-center gap-1.5">
+          <div className="absolute left-3.5 top-3.5 z-20 flex flex-wrap items-center gap-1.5 pointer-events-none">
             {item.tag && (
               <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-amber-500 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-white shadow-md border border-white/25">
                 <span>★</span>
@@ -349,6 +373,17 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
           </div>
         </div>
       </div>
+
+      {/* Tap-to-Zoom Full-Screen Lightbox */}
+      {isLightboxOpen && (
+        <ImageLightbox
+          src={item.image || item.sectionImage}
+          alt={item.name}
+          title={item.name}
+          category={item.sectionTitle}
+          onClose={() => setIsLightboxOpen(false)}
+        />
+      )}
     </div>
   )
 }
