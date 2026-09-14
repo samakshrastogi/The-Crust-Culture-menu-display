@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { FiHeart, FiHome, FiMenu, FiMoon, FiPhone, FiSun } from 'react-icons/fi'
+import { FiHeart, FiHome, FiMenu, FiMoon, FiSun } from 'react-icons/fi'
 import BrandLogo from './BrandLogo'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
@@ -62,32 +62,13 @@ export default function Navbar({ theme, onToggleTheme }) {
         {/* Right Actions */}
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {/* Live Cafe Status */}
-          <div className="hidden xl:inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+          <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
             <span>Open 7 Days • Till 1:30 AM</span>
           </div>
-
-          {/* Quick Call Button (Desktop) */}
-          <a
-            href="tel:+919625261591"
-            className="hidden sm:inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3.5 py-1.5 text-xs font-bold text-[var(--text)] transition hover:border-[var(--orange)] hover:text-[var(--orange)] hover:shadow-sm active:scale-95"
-            aria-label="Call restaurant"
-          >
-            <FiPhone className="text-[var(--orange)] text-sm" />
-            <span className="font-semibold">+91 96252 61591</span>
-          </a>
-
-          {/* Quick Call Button (Mobile) */}
-          <a
-            href="tel:+919625261591"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--orange)] shadow-sm transition hover:border-[var(--orange)] active:scale-90 sm:hidden"
-            aria-label="Call restaurant"
-          >
-            <FiPhone className="text-sm" />
-          </a>
 
           {/* Theme Toggle Button */}
           <button

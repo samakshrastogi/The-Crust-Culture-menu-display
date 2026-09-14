@@ -6,7 +6,6 @@ import {
   FiChevronLeft,
   FiChevronRight,
   FiClock,
-  FiExternalLink,
   FiHeart,
   FiLayers,
   FiMaximize2,
@@ -227,25 +226,21 @@ export default function HomePage() {
             baked fresh to order in Palam Vihar, Gurgaon.
           </p>
 
-          {/* Hero Actions (Primary Menu + Zomato Delivery) */}
+          {/* Hero Actions (Primary Menu CTA & Heritage Link) */}
           <div data-hero-actions className="mt-4 flex flex-wrap items-center gap-2.5 sm:mt-5">
             <Link
               to="/menu"
-              className="touch-target group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-5 py-2.5 text-xs font-black text-white shadow-md shadow-orange-500/20 transition-all duration-200 hover:shadow-orange-500/35 hover:-translate-y-0.5 active:translate-y-0 sm:text-sm"
+              className="touch-target group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-6 py-2.5 text-xs font-black text-white shadow-md shadow-orange-500/20 transition-all duration-200 hover:shadow-orange-500/35 hover:-translate-y-0.5 active:translate-y-0 sm:text-sm"
             >
               <span>Explore Menu</span>
               <FiArrowRight className="text-sm transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
 
             <a
-              href={ZOMATO_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="touch-target group inline-flex items-center justify-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 hover:bg-[#E23744] px-4 py-2.5 text-xs font-bold text-[#E23744] hover:text-white transition-all duration-200 shadow-sm active:translate-y-0 sm:text-sm"
+              href="#our-story"
+              className="touch-target inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-2.5 text-xs font-bold text-[var(--text)] transition hover:border-[var(--gold)] hover:bg-[var(--surface-strong)] active:translate-y-0 sm:text-sm"
             >
-              <SiZomato className="text-base transition-transform duration-200 group-hover:scale-110" />
-              <span>Order on Zomato</span>
-              <FiExternalLink className="text-[11px] opacity-70 group-hover:opacity-100" />
+              <span>Our Story & Craft</span>
             </a>
           </div>
 

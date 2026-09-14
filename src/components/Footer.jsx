@@ -106,33 +106,50 @@ export default function Footer() {
               </p>
             </div>
 
-            <div className="space-y-2 pt-1">
-              <a
-                href="https://www.zomato.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 rounded-xl border border-red-500/30 bg-red-500/10 px-3.5 py-2 text-xs font-bold text-[#E23744] transition hover:bg-[#E23744] hover:text-white sm:text-sm group"
-              >
-                <SiZomato className="text-base text-[#E23744] group-hover:text-white transition" />
-                <span>Order on Zomato</span>
-                <FiExternalLink className="ml-auto text-xs opacity-70 group-hover:opacity-100" />
-              </a>
-              <a
-                href="tel:+919625261591"
-                className="flex items-center gap-2.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3.5 py-2 text-xs font-bold text-[var(--text)] transition hover:border-[var(--orange)] hover:text-[var(--orange)] sm:text-sm"
-              >
-                <FiPhone className="text-[var(--orange)]" />
-                <span>+91 96252 61591</span>
-              </a>
-              <a
-                href="https://wa.me/919625261591?text=Hello%20The%20Crust%20Culture,%20I%20would%20like%20to%20place%20an%20order"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-2 text-xs font-bold text-emerald-700 dark:text-emerald-400 transition hover:bg-emerald-500/20 sm:text-sm"
-              >
-                <FaWhatsapp className="text-emerald-500 text-sm" />
-                <span>Order via WhatsApp</span>
-              </a>
+            {/* Direct Contact Directory */}
+            <div className="space-y-2.5 pt-1 text-xs sm:text-sm text-[var(--muted)]">
+              <div className="flex items-center gap-2.5">
+                <FiPhone className="text-[var(--orange)] text-sm shrink-0" />
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-[var(--gold)] block">Direct Hotline</span>
+                  <a
+                    href="tel:+919625261591"
+                    className="font-bold text-[var(--text)] hover:text-[var(--orange)] transition"
+                  >
+                    +91 96252 61591
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                <FaWhatsapp className="text-emerald-500 text-sm shrink-0" />
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-[var(--gold)] block">WhatsApp Desk</span>
+                  <a
+                    href="https://wa.me/919625261591?text=Hello%20The%20Crust%20Culture,%20I%20would%20like%20to%20place%20an%20order"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-[var(--text)] hover:text-emerald-500 transition"
+                  >
+                    Direct Table & Parcel Booking
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5">
+                <SiZomato className="text-[#E23744] text-base shrink-0" />
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-[var(--gold)] block">Online Partner</span>
+                  <a
+                    href="https://www.zomato.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-[var(--text)] hover:text-[#E23744] transition"
+                  >
+                    Delivery on Zomato
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
 
