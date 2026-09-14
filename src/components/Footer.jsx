@@ -18,24 +18,6 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-[var(--line)] bg-[var(--surface)] text-[var(--text)] transition-colors">
-      {/* Top Highlights Banner */}
-      <div className="border-b border-[var(--line)]/60 bg-[var(--bg-soft)]/50 px-4 py-4 sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 text-xs font-semibold sm:text-sm">
-          <div className="flex items-center gap-2 text-[var(--orange)]">
-            <span className="h-2 w-2 rounded-full bg-[var(--orange)] animate-pulse" />
-            <span>Artisan Sourdough & Wood-Fired Cafe</span>
-          </div>
-          <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
-            <span>100% Pure Vegetarian</span>
-          </div>
-          <div className="flex items-center gap-2 text-[var(--gold)]">
-            <FiClock className="text-base" />
-            <span>Open 7 Days: 1:30 PM – 1:30 AM</span>
-          </div>
-        </div>
-      </div>
-
       {/* Main Multi-Column Grid */}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-14">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
@@ -198,8 +180,8 @@ export default function Footer() {
         {/* Bottom Sub-Footer Bar */}
         <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-[var(--line)]/60 pt-6 text-xs text-[var(--muted)] sm:flex-row sm:mt-12">
           <p>© {new Date().getFullYear()} The Crust Culture. All rights reserved.</p>
-          <p className="text-center font-medium">
-            Handcrafted with passion • Wood-Fired & 100% Pure Veg
+          <p className="text-center font-medium text-[var(--muted)]">
+            Handcrafted with passion in Noble Enclave, Gurgaon
           </p>
           <button
             type="button"

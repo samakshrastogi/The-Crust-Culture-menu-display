@@ -9,9 +9,7 @@ import {
   FiExternalLink,
   FiHeart,
   FiLayers,
-  FiMapPin,
   FiMaximize2,
-  FiPhone,
   FiSmartphone,
   FiStar,
   FiZap,
@@ -121,19 +119,6 @@ export default function HomePage() {
     return initialSections.filter((s) => selectedIds.includes(s.id))
   }, [])
 
-  // Curated chef signature recommendations across different categories
-  const signatureDishes = useMemo(() => {
-    const targetNames = [
-      'Farmhouse Pizza',
-      'Loaded Indi Tandoori',
-      'Paneer Tikka Stuffed',
-      'Crispy Veg Burger',
-    ]
-    const found = initialAllMenuItems.filter((item) => targetNames.includes(item.name))
-    // Fallback if any specific item name isn't matched
-    return found.length >= 4 ? found.slice(0, 4) : premiumSpecialItems.slice(0, 4)
-  }, [premiumSpecialItems])
-
   const [specialIndex, setSpecialIndex] = useState(0)
 
   // Auto-cycle through specials every 6 seconds
@@ -147,6 +132,32 @@ export default function HomePage() {
 
   const specialItem = premiumSpecialItems[specialIndex] || premiumSpecialItems[0]
   const specialFlavorBadge = specialItem ? getFlavorBadge(specialItem, specialItem.sectionTitle) : null
+
+  // Curated 4 distinct signature recommendations across 4 distinct categories (strictly excluding Today's Special)
+  const signatureDishes = useMemo(() => {
+    // 1. Gourmet Pizza (Royal Paneer Pizza)
+    const pizza =
+      initialAllMenuItems.find((i) => i.name === 'Loaded Indi Tandoori' && i.id !== specialItem?.id) ||
+      initialAllMenuItems.find((i) => i.name === 'Paneer Makhani' && i.id !== specialItem?.id) ||
+      initialAllMenuItems.find((i) => i.sectionId === 'royal-paneer-pizza' && i.id !== specialItem?.id)
+
+    // 2. Gourmet Stuffed Bread (Garlic Breads & Sides)
+    const bread =
+      initialAllMenuItems.find((i) => i.name === 'Paneer Tikka Stuffed' && i.id !== specialItem?.id) ||
+      initialAllMenuItems.find((i) => i.name === 'Garlic Bread Stuffed' && i.id !== specialItem?.id)
+
+    // 3. Crispy Street Bite (French Fries / Burgers)
+    const bite =
+      initialAllMenuItems.find((i) => i.name === 'Cheese Loaded Fries' && i.id !== specialItem?.id) ||
+      initialAllMenuItems.find((i) => i.name === 'Veg Burger' && i.id !== specialItem?.id)
+
+    // 4. Chilled Artisan Beverage (Drinks Corner)
+    const drink =
+      initialAllMenuItems.find((i) => i.name === 'Cold Coffee with Ice Cream' && i.id !== specialItem?.id) ||
+      initialAllMenuItems.find((i) => i.name === 'Cold Coffee' && i.id !== specialItem?.id)
+
+    return [pizza, bread, bite, drink].filter(Boolean)
+  }, [specialItem?.id])
 
   useEffect(() => {
     const heroContext = revealHero(scopeRef)
@@ -216,7 +227,7 @@ export default function HomePage() {
             baked fresh to order in Palam Vihar, Gurgaon.
           </p>
 
-          {/* Hero Actions (Primary Menu + Zomato + Quick Call) */}
+          {/* Hero Actions (Primary Menu + Zomato Delivery) */}
           <div data-hero-actions className="mt-4 flex flex-wrap items-center gap-2.5 sm:mt-5">
             <Link
               to="/menu"
@@ -236,21 +247,13 @@ export default function HomePage() {
               <span>Order on Zomato</span>
               <FiExternalLink className="text-[11px] opacity-70 group-hover:opacity-100" />
             </a>
-
-            <a
-              href="tel:+919625261591"
-              className="touch-target inline-flex items-center justify-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-2.5 text-xs font-bold text-[var(--text)] transition hover:border-[var(--gold)] hover:bg-[var(--surface)]/80 sm:text-sm"
-            >
-              <FiPhone className="text-xs text-[var(--orange)]" />
-              <span>Call Us</span>
-            </a>
           </div>
 
-          {/* Key Info Strip (Hours, Rating, Services - Stated ONCE) */}
+          {/* Key Info Strip (Freshness, Rating, Dining Services - Stated ONCE) */}
           <div className="mt-4 flex flex-wrap items-center gap-3 sm:gap-5 border-t border-[var(--line)]/60 pt-3 text-xs font-semibold text-[var(--muted)]">
             <div className="flex items-center gap-1.5 text-[var(--text)]">
               <FiClock className="h-3.5 w-3.5 text-[var(--orange)]" />
-              <span className="font-bold">Open 7 Days: 1:30 PM – 1:30 AM</span>
+              <span className="font-bold">Baked Fresh in 15 Mins</span>
             </div>
             <div className="flex items-center gap-1.5">
               <FiStar className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
@@ -698,78 +701,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. Visit Our Cafe / Storefront Banner (Noble Enclave, Palam Vihar) */}
-      <section data-reveal className="mx-auto px-3 sm:px-6 lg:px-8 border-t border-[var(--line)] pt-6 sm:pt-8 pb-2">
-        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)] bg-gradient-to-br from-[var(--surface-strong)]/90 via-[var(--surface)] to-[var(--surface-strong)]/60 p-5 sm:p-7 shadow-lg">
-          {/* Subtle background art glow */}
-          <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-amber-500/10 blur-3xl" />
-          <div className="pointer-events-none absolute -left-16 -bottom-16 h-64 w-64 rounded-full bg-orange-500/10 blur-3xl" />
-
-          <div className="relative z-10 grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/15 border border-amber-500/30 px-3 py-1 text-[11px] font-black text-amber-600 dark:text-amber-300">
-                <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
-                <span>Visit Our Palam Vihar Hearth</span>
-              </div>
-
-              <h2 className="font-display text-xl sm:text-3xl font-black text-[var(--text)] tracking-tight">
-                Warm tables, wood aromas, and midnight sourdough slices.
-              </h2>
-
-              <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed max-w-xl">
-                Located in Noble Enclave, Palam Vihar Extension. Stop by for cozy dine-in seating, fresh parcel pickups, or quick curbside takeaways.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 text-xs font-bold text-[var(--text)] pt-1">
-                <div className="flex items-center gap-1.5 rounded-lg bg-[var(--surface)] border border-[var(--line)] px-2.5 py-1.5">
-                  <FiClock className="text-[var(--orange)] shrink-0" />
-                  <span>1:30 PM – 1:30 AM (Daily)</span>
-                </div>
-                <div className="flex items-center gap-1.5 rounded-lg bg-[var(--surface)] border border-[var(--line)] px-2.5 py-1.5">
-                  <FiMapPin className="text-[var(--orange)] shrink-0" />
-                  <span>Noble Enclave, Palam Vihar Ext.</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Direct Action Hub */}
-            <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 sm:gap-3 shrink-0">
-              <a
-                href="https://maps.app.goo.gl/ernTdfzkPqRhYynR6"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="touch-target group flex items-center justify-between rounded-xl sm:rounded-2xl bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-4 py-3 text-xs sm:text-sm font-black text-white shadow-md shadow-orange-500/25 transition-all hover:shadow-lg hover:shadow-orange-500/40 hover:scale-[1.01] active:scale-[0.99]"
-              >
-                <div className="flex items-center gap-2.5">
-                  <FiMapPin className="text-lg" />
-                  <span>Get Directions on Google Maps</span>
-                </div>
-                <FiExternalLink className="text-sm opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </a>
-
-              <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
-                <a
-                  href="tel:+919625261591"
-                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2.5 text-xs font-bold text-[var(--text)] transition hover:border-[var(--gold)] active:scale-95"
-                >
-                  <FiPhone className="text-[var(--orange)] text-sm shrink-0" />
-                  <span>Call Cafe</span>
-                </a>
-
-                <a
-                  href={ZOMATO_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-xs font-bold text-[#E23744] hover:bg-[#E23744] hover:text-white transition-all active:scale-95"
-                >
-                  <SiZomato className="text-base shrink-0" />
-                  <span>Zomato</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Item Customization Sheet */}
       {selectedItem && (
