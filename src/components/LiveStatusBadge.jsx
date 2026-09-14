@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from '../animations/gsapAnimations'
 
-export default function LiveStatusBadge() {
+export default function LiveStatusBadge({ className = '' }) {
   const badgeRef = useRef(null)
   const dotRef = useRef(null)
 
@@ -28,13 +28,13 @@ export default function LiveStatusBadge() {
   return (
     <div
       ref={badgeRef}
-      className="mt-2 inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--bg-soft)] px-2.5 py-1 text-[11px] font-black text-[var(--text)] sm:mt-3 sm:px-3 sm:py-1.5 sm:text-sm"
+      className={`inline-flex items-center gap-2 rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-xs font-bold text-[var(--text)] shadow-sm sm:h-12 sm:px-4 sm:text-sm ${className}`}
     >
       <span className="relative flex h-2.5 w-2.5 items-center justify-center">
         <span ref={dotRef} className="absolute h-2.5 w-2.5 rounded-full bg-[var(--green)]" />
         <span className="relative h-2 w-2 rounded-full bg-[var(--green)]" />
       </span>
-      Open daily 2:00 PM - 1:00 AM
+      <span>Open daily 2:00 PM - 1:00 AM</span>
     </div>
   )
 }

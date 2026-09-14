@@ -2,7 +2,7 @@ import { FiSearch, FiX } from 'react-icons/fi'
 
 export default function SearchBar({ value, onChange }) {
   return (
-    <label className="flex min-h-12 w-full min-w-0 items-center gap-2 rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-3 text-[var(--muted)] shadow-lg sm:min-h-14 sm:gap-3 sm:rounded-3xl sm:px-4">
+    <label className="flex min-h-11 w-full min-w-0 items-center gap-2 rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-3 text-[var(--muted)] shadow-sm sm:h-12 sm:min-h-12 sm:gap-3 sm:px-4">
       <FiSearch className="shrink-0 text-[var(--gold)]" />
       <input
         value={value}
