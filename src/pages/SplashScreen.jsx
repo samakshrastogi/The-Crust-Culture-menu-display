@@ -1,63 +1,203 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FiArrowRight } from 'react-icons/fi'
 import { gsap } from '../animations/gsapAnimations'
+
+const LOADING_STAGES = [
+  { text: 'Firing up the stone oven...', progress: '25%' },
+  { text: 'Kneading artisan sourdough...', progress: '65%' },
+  { text: 'Your table menu is ready!', progress: '100%' },
+]
 
 export default function SplashScreen() {
   const splashRef = useRef(null)
+  const progressFillRef = useRef(null)
+  const hasExitedRef = useRef(false)
   const navigate = useNavigate()
+  const [stageIndex, setStageIndex] = useState(0)
+
+  const handleEnter = useCallback(() => {
+    if (hasExitedRef.current) return
+    hasExitedRef.current = true
+
+    if (splashRef.current) {
+      gsap.to(splashRef.current, {
+        opacity: 0,
+        scale: 1.02,
+        duration: 0.35,
+        ease: 'power2.inOut',
+        onComplete: () => navigate('/menu', { replace: true }),
+      })
+    } else {
+      navigate('/menu', { replace: true })
+    }
+  }, [navigate])
 
   useEffect(() => {
-    const context = gsap.context(() => {
-      gsap
-        .timeline({ defaults: { ease: 'power3.out' } })
-        .from('[data-logo-mark]', { opacity: 0, scale: 0.65, rotate: -8, duration: 0.7 })
-        .from('[data-splash-title]', { opacity: 0, y: 24, duration: 0.55 }, '-=0.25')
-        .from('[data-splash-copy]', { opacity: 0, y: 16, duration: 0.45 }, '-=0.2')
-        .to('[data-logo-mark]', {
-          scale: 1.05,
-          repeat: 1,
-          yoyo: true,
-          duration: 0.5,
-          ease: 'sine.inOut',
-        })
-    }, splashRef)
+    // Stage transition timers
+    const stageTimer1 = window.setTimeout(() => setStageIndex(1), 750)
+    const stageTimer2 = window.setTimeout(() => setStageIndex(2), 1550)
+    const autoExitTimer = window.setTimeout(() => handleEnter(), 2400)
 
-    const timer = window.setTimeout(() => navigate('/menu', { replace: true }), 2000)
+    const context = gsap.context(() => {
+      // Entrance timeline
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+
+      tl.from('[data-hearth-glow]', {
+        opacity: 0,
+        scale: 0.5,
+        duration: 1,
+      })
+        .from(
+          '[data-logo-mark]',
+          {
+            opacity: 0,
+            scale: 0.6,
+            rotate: -6,
+            duration: 0.75,
+            ease: 'back.out(1.6)',
+          },
+          '-=0.7',
+        )
+        .from('[data-splash-header]', { opacity: 0, y: -12, duration: 0.4 }, '-=0.4')
+        .from('[data-splash-title]', { opacity: 0, y: 20, duration: 0.5 }, '-=0.3')
+        .from('[data-splash-badges]', { opacity: 0, y: 12, duration: 0.4 }, '-=0.25')
+        .from('[data-splash-loader]', { opacity: 0, y: 16, duration: 0.4 }, '-=0.2')
+        .from('[data-skip-btn]', { opacity: 0, y: 12, duration: 0.4 }, '-=0.15')
+
+      // Continuous subtle breathing on logo aura
+      gsap.to('[data-hearth-ring]', {
+        scale: 1.12,
+        opacity: 0.7,
+        repeat: -1,
+        yoyo: true,
+        duration: 1.4,
+        ease: 'sine.inOut',
+      })
+
+      // Animate progress bar fill smoothly
+      if (progressFillRef.current) {
+        gsap.to(progressFillRef.current, {
+          width: '100%',
+          duration: 2.3,
+          ease: 'power1.inOut',
+        })
+      }
+    }, splashRef)
 
     return () => {
       context.revert()
-      window.clearTimeout(timer)
+      window.clearTimeout(stageTimer1)
+      window.clearTimeout(stageTimer2)
+      window.clearTimeout(autoExitTimer)
     }
-  }, [navigate])
+  }, [handleEnter])
 
   return (
     <main
       ref={splashRef}
-      className="grid min-h-svh place-items-center overflow-hidden bg-[var(--bg)] px-5 text-center"
+      onClick={handleEnter}
+      className="relative flex min-h-svh flex-col items-center justify-between overflow-hidden bg-[var(--bg)] px-5 py-8 text-center select-none cursor-pointer transition-colors"
+      aria-label="Welcome screen - tap anywhere to enter menu"
     >
-      <div className="space-y-7">
-        <div
-          data-logo-mark
-          className="mx-auto flex h-36 w-36 sm:h-44 sm:w-44 items-center justify-center rounded-full border-2 border-amber-500/40 bg-[#1a0c06] p-1 shadow-2xl shadow-orange-500/30 ring-4 ring-orange-500/15 overflow-hidden"
-        >
-          <img
-            src="/logo.png"
-            alt="The Crust Culture Logo"
-            className="h-full w-full object-cover rounded-full"
+      {/* Ambient Wood-Fired Hearth Radial Glows */}
+      <div
+        data-hearth-glow
+        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-80 w-80 sm:h-96 sm:w-96 rounded-full bg-gradient-to-tr from-amber-500/25 via-orange-500/20 to-amber-600/15 blur-3xl"
+      />
+
+      {/* Top Bar: Table QR Context */}
+      <header data-splash-header className="relative z-10 space-y-1">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-strong)]/80 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--gold)] shadow-xs backdrop-blur-md">
+          <span className="h-1.5 w-1.5 rounded-full bg-[var(--orange)] animate-ping" />
+          Table Digital Menu
+        </span>
+        <p className="text-[11px] font-medium text-[var(--muted)]">Noble Enclave, Gurgaon</p>
+      </header>
+
+      {/* Center Stage: Logo, Title & Hearth Badges */}
+      <div className="relative z-10 my-auto flex flex-col items-center space-y-6">
+        {/* Glowing Logo Container */}
+        <div className="relative">
+          {/* Animated Hearth Pulse Ring */}
+          <div
+            data-hearth-ring
+            className="pointer-events-none absolute -inset-3 rounded-full bg-gradient-to-tr from-amber-500/30 via-orange-500/25 to-transparent blur-md"
           />
+
+          <div
+            data-logo-mark
+            className="relative flex h-36 w-36 sm:h-44 sm:w-44 items-center justify-center rounded-full border-2 border-amber-500/50 bg-[#1a0c06] p-1.5 shadow-2xl shadow-orange-500/35 ring-4 ring-orange-500/20 overflow-hidden"
+          >
+            <img
+              src="/logo.png"
+              alt="The Crust Culture Logo"
+              className="h-full w-full object-cover rounded-full"
+            />
+          </div>
         </div>
-        <div className="space-y-3">
-          <p data-splash-copy className="text-sm font-bold uppercase tracking-[0.26em] text-[var(--orange)]">
-            Welcome to
+
+        {/* Headlines */}
+        <div className="space-y-2">
+          <p className="text-xs sm:text-sm font-black uppercase tracking-[0.28em] text-[var(--orange)]">
+            Welcome To
           </p>
-          <h1 data-splash-title className="font-display text-5xl font-semibold leading-tight text-[var(--text)]">
+          <h1
+            data-splash-title
+            className="font-display text-4xl sm:text-5xl font-extrabold tracking-tight text-[var(--text)]"
+          >
             The Crust Culture
           </h1>
-          <p data-splash-copy className="mx-auto max-w-xs text-sm leading-6 text-[var(--muted)]">
-            Your table menu is warming up.
+          <p className="text-xs sm:text-sm font-semibold text-[var(--gold)] tracking-wide">
+            Wood Fired Cafe & Artisan Pizzeria
+          </p>
+        </div>
+
+        {/* Dietary & Craft Badges */}
+        <div data-splash-badges className="flex flex-wrap items-center justify-center gap-2 pt-1">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 backdrop-blur-xs">
+            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            100% Pure Veg
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/25 bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300 backdrop-blur-xs">
+            🪵 Stone-Oven Baked
+          </span>
+        </div>
+
+        {/* Hearth Progress Bar & Appetizing Micro-Copy */}
+        <div data-splash-loader className="w-64 sm:w-72 space-y-2.5 pt-2">
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--surface-strong)] border border-[var(--line)] shadow-inner">
+            <div
+              ref={progressFillRef}
+              className="h-full w-0 rounded-full bg-gradient-to-r from-amber-500 via-[var(--orange)] to-[#ea580c] shadow-[0_0_12px_rgba(249,115,22,0.8)]"
+            />
+          </div>
+
+          <p className="text-xs font-medium text-[var(--muted)] animate-fade-in transition-all duration-300">
+            {LOADING_STAGES[stageIndex].text}
           </p>
         </div>
       </div>
+
+      {/* Bottom Action: Instant Skip Button */}
+      <footer data-skip-btn className="relative z-10 flex flex-col items-center gap-2">
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            handleEnter()
+          }}
+          className="touch-target group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-6 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider text-white shadow-lg shadow-orange-500/30 transition-all duration-200 hover:scale-105 active:scale-95 border border-white/30 cursor-pointer"
+        >
+          <span>Enter Digital Menu</span>
+          <FiArrowRight className="text-sm transition-transform duration-200 group-hover:translate-x-1" />
+        </button>
+
+        <p className="text-[11px] font-medium text-[var(--muted)]">
+          Tap anywhere to enter immediately
+        </p>
+      </footer>
     </main>
   )
 }
+
