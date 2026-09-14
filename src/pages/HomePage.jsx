@@ -533,15 +533,48 @@ export default function HomePage() {
               crafted paneer to gourmet toppings, we bring artisan culinary passion straight to your table.
             </p>
 
-            <div className="relative overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] shadow-sm max-w-sm">
+            {/* Real Cafe Showcase */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() =>
+                setLightboxItem({
+                  image: '/images/cafe-storefront.jpg',
+                  name: 'The Crust Culture Cafe',
+                  sectionTitle: 'Noble Enclave, Palam Vihar Extension, Gurgaon',
+                })
+              }
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  setLightboxItem({
+                    image: '/images/cafe-storefront.jpg',
+                    name: 'The Crust Culture Cafe',
+                    sectionTitle: 'Noble Enclave, Palam Vihar Extension, Gurgaon',
+                  })
+                }
+              }}
+              className="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] shadow-sm cursor-zoom-in transition-all duration-300 hover:border-[var(--gold)]/60 hover:shadow-md"
+              title="Click to view full photo of our cafe"
+            >
               <FoodImage
-                src="/images/pizza-margherita.jpg"
-                alt="The Crust Culture cafe"
+                src="/images/cafe-storefront.jpg"
+                alt="The Crust Culture Cafe storefront and dine-in interior"
                 category="Restaurant"
-                className="aspect-[16/9] w-full object-cover transition duration-500 hover:scale-105"
+                className="h-56 sm:h-64 w-full object-cover object-top transition duration-700 group-hover:scale-105"
+                loading="lazy"
               />
-              <div className="absolute bottom-2 left-2 rounded-lg bg-black/65 px-2.5 py-1 text-[10px] font-bold text-amber-300 backdrop-blur-md border border-white/15">
-                Handcrafted Daily in Gurgaon
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20 pointer-events-none" />
+
+              <div className="absolute top-2.5 left-2.5 rounded-md bg-black/60 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-amber-300 backdrop-blur-md border border-white/15">
+                🏡 Dine-In & Takeaway Cafe
+              </div>
+
+              <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-[10px] font-bold text-white">
+                <span className="truncate drop-shadow-xs">📍 Noble Enclave, Palam Vihar Ext.</span>
+                <span className="shrink-0 inline-flex items-center gap-1 rounded-md bg-black/60 px-2 py-0.5 text-[9px] font-bold text-amber-300 backdrop-blur-md border border-white/15">
+                  <FiMaximize2 className="text-[9px]" />
+                  <span>Tap to Zoom</span>
+                </span>
               </div>
             </div>
           </div>
