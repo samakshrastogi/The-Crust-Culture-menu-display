@@ -144,7 +144,7 @@ export default function HomePage() {
         <div className="grid gap-2.5 sm:grid-cols-3 sm:gap-4">
           {[
             { icon: FiStar, label: 'Menu', value: `${initialAllMenuItems.length} priced items` },
-            { icon: FiClock, label: 'Open daily', value: '2:00 PM - 1:00 AM' },
+            { icon: FiClock, label: 'Open daily', value: '1:30 PM - 1:30 AM' },
             { icon: FiArrowRight, label: 'QR ready', value: 'Land directly on menu' },
           ].map((item) => (
             <div key={item.label} className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3 sm:rounded-[1.25rem] sm:p-4">
