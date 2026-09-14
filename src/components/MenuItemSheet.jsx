@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { FiExternalLink, FiHeart, FiMaximize2, FiPhone, FiX } from 'react-icons/fi'
+import { FiHeart, FiMaximize2, FiPhone, FiX } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
-import { SiZomato } from 'react-icons/si'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
 import ImageLightbox from './ImageLightbox'
 import { getFlavorBadge } from '../utils/flavorBadge'
 import VegIndicator from './VegIndicator'
-
-const ZOMATO_URL = 'https://www.zomato.com'
 
 function formatPrice(value) {
   if (/rs/i.test(value)) {
@@ -122,14 +119,14 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
     >
       <div
         ref={sheetRef}
-        className="modal-scroll relative max-h-[92svh] w-full overflow-y-auto rounded-t-3xl border border-[var(--line)] bg-[var(--surface)] shadow-2xl sm:max-w-lg sm:rounded-[2rem]"
+        className="modal-scroll relative max-h-[92svh] w-full overflow-y-auto rounded-t-3xl border border-[var(--line)] bg-[var(--surface)] shadow-2xl sm:max-w-md sm:rounded-3xl"
       >
         {/* Mobile drag handle */}
-        <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-12 h-1 rounded-full bg-white/40 z-20 pointer-events-none sm:hidden" />
+        <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 rounded-full bg-white/40 z-20 pointer-events-none sm:hidden" />
 
         {/* Hero Food Media with Tap-to-Zoom Lightbox Trigger */}
         <div
-          className="group/hero relative aspect-[16/10] overflow-hidden bg-stone-900 cursor-zoom-in"
+          className="group/hero relative h-36 sm:h-44 w-full overflow-hidden bg-stone-900 cursor-zoom-in"
           onClick={() => setIsLightboxOpen(true)}
           title="Click to view full photo & zoom"
         >
@@ -141,9 +138,9 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             loading="eager"
             data-sheet-img
           />
-          {/* Subtle top and bottom dark gradient vignettes for maximum contrast and zero milky wash-out */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 to-transparent" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent" />
+          {/* Subtle top and bottom dark gradient vignettes for maximum contrast */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-black/60 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/60 to-transparent" />
 
           {/* Close button */}
           <button
@@ -152,10 +149,10 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
               e.stopPropagation()
               closeWithAnimation()
             }}
-            className="touch-target absolute right-3 top-3 z-20 grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full bg-black/50 text-white backdrop-blur-md border border-white/25 transition-all hover:bg-black/80 hover:scale-105 active:scale-95 shadow-md"
+            className="touch-target absolute right-2.5 top-2.5 z-20 grid h-7 w-7 sm:h-8 sm:w-8 place-items-center rounded-full bg-black/55 text-white backdrop-blur-md border border-white/25 transition-all hover:bg-black/80 hover:scale-105 active:scale-95 shadow-md"
             aria-label="Close details"
           >
-            <FiX className="text-base" />
+            <FiX className="text-sm" />
           </button>
 
           {/* Floating Tap to Zoom Cue Pill */}
@@ -165,22 +162,22 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
               e.stopPropagation()
               setIsLightboxOpen(true)
             }}
-            className="touch-target absolute right-3 bottom-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-black/65 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-md border border-white/25 shadow-lg transition-all hover:bg-amber-500 hover:text-black hover:scale-105 active:scale-95"
+            className="touch-target absolute right-2.5 bottom-2.5 z-20 inline-flex items-center gap-1 rounded-full bg-black/65 px-2.5 py-0.5 text-[10px] font-bold text-white backdrop-blur-md border border-white/25 shadow-md transition-all hover:bg-amber-500 hover:text-black active:scale-95"
             aria-label="Zoom photo"
           >
-            <FiMaximize2 className="text-xs text-amber-300" />
+            <FiMaximize2 className="text-[10px] text-amber-300" />
             <span>Tap to Zoom</span>
           </button>
 
           {/* Tag Pill (Top Left - Exactly One Badge) */}
-          <div className="absolute left-3 top-3 z-20 flex items-center gap-1.5 pointer-events-none">
+          <div className="absolute left-2.5 top-2.5 z-20 flex items-center gap-1.5 pointer-events-none">
             {item.tag ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-amber-500 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-white shadow-md border border-white/25">
+              <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-amber-500 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shadow-md border border-white/25">
                 <span>★</span>
                 <span>{item.tag}</span>
               </span>
             ) : showFlavorBadgeOnImage ? (
-              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-black uppercase tracking-wider backdrop-blur-md border ${flavorBadge.badgeClass}`}>
+              <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wider backdrop-blur-md border ${flavorBadge.badgeClass}`}>
                 <span>{flavorBadge.emoji}</span>
                 <span>{flavorBadge.label}</span>
               </span>
@@ -188,18 +185,18 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
           </div>
         </div>
 
-        {/* Card Content Body */}
-        <div className="space-y-4 p-4.5 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:p-5.5">
+        {/* Card Content Body - Highly Compact Layout */}
+        <div className="space-y-2.5 p-3.5 pb-[max(1rem,env(safe-area-inset-bottom))] sm:p-4">
           {/* Header Row: Category + Dietary + Title + Favorite */}
-          <div data-sheet-item className="space-y-2">
-            <div className="flex items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-2">
+          <div data-sheet-item className="space-y-1">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <VegIndicator veg={item.veg} />
-                <span className="inline-flex items-center rounded-full bg-[var(--gold)]/10 border border-[var(--gold)]/30 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
+                <span className="inline-flex items-center rounded-full bg-[var(--gold)]/10 border border-[var(--gold)]/30 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-[var(--gold)]">
                   {item.sectionTitle}
                 </span>
                 {showFlavorBadgeInBody && (
-                  <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${flavorBadge.badgeClass}`}>
+                  <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-wider ${flavorBadge.badgeClass}`}>
                     <span>{flavorBadge.emoji}</span>
                     <span>{flavorBadge.label}</span>
                   </span>
@@ -210,58 +207,56 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
               <button
                 type="button"
                 onClick={(event) => onToggleFavorite(item.id, event.currentTarget)}
-                className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-200 active:scale-90 ${
+                className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border transition-all duration-200 active:scale-90 ${
                   isFavorite
-                    ? 'border-orange-500 bg-gradient-to-tr from-[var(--orange)] to-amber-500 text-white shadow-md shadow-orange-500/25 ring-2 ring-orange-400/20'
+                    ? 'border-orange-500 bg-gradient-to-tr from-[var(--orange)] to-amber-500 text-white shadow-xs shadow-orange-500/25 ring-2 ring-orange-400/20'
                     : 'border-[var(--line)] bg-[var(--surface-strong)]/60 text-[var(--muted)] hover:border-red-400 hover:text-red-500 hover:bg-[var(--surface)]'
                 }`}
                 aria-label={isFavorite ? `Remove ${item.name} from favorites` : `Add ${item.name} to favorites`}
               >
-                <FiHeart className={`text-sm ${isFavorite ? 'fill-current' : ''}`} />
+                <FiHeart className={`text-xs ${isFavorite ? 'fill-current' : ''}`} />
               </button>
             </div>
 
-            <h2 className="font-display text-2xl sm:text-3xl font-black leading-tight tracking-tight text-[var(--text)]">
+            <h2 className="font-display text-lg sm:text-xl font-black leading-tight tracking-tight text-[var(--text)]">
               {item.name}
             </h2>
           </div>
 
-          {/* Description */}
+          {/* Description (if any) */}
           {item.description && (
-            <p data-sheet-item className="text-xs sm:text-sm leading-relaxed text-[var(--muted)] font-medium">
+            <p data-sheet-item className="text-xs leading-relaxed text-[var(--muted)] font-medium">
               {item.description}
             </p>
           )}
 
-          {/* Toppings / Ingredients */}
+          {/* Toppings / Ingredients - Compact Card */}
           {cleanToppings && (
-            <div data-sheet-item className="rounded-2xl border border-[var(--line)] bg-gradient-to-br from-[var(--surface-strong)]/60 to-[var(--surface-strong)]/20 p-3.5 sm:p-4 shadow-xs">
-              <div className="flex items-center gap-2 mb-1.5 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[var(--gold)]">
-                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-amber-500/15 text-amber-500">
-                  🌿
-                </span>
+            <div data-sheet-item className="rounded-xl border border-[var(--line)] bg-[var(--surface-strong)]/30 px-3 py-2 shadow-xs">
+              <div className="flex items-center gap-1.5 mb-0.5 text-[9px] font-black uppercase tracking-wider text-[var(--gold)]">
+                <span className="text-xs">🌿</span>
                 <span>Fresh Ingredients & Toppings</span>
               </div>
-              <p className="text-xs sm:text-sm font-semibold leading-relaxed text-[var(--text)]">
+              <p className="text-xs font-semibold leading-snug text-[var(--text)]">
                 {cleanToppings}
               </p>
             </div>
           )}
 
-          {/* Pricing & Size Selection */}
+          {/* Pricing & Size Selection - Compact */}
           {item.prices && item.prices.length > 1 ? (
-            <div data-sheet-item className="space-y-2.5 rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)]/25 p-3.5 sm:p-4">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
+            <div data-sheet-item className="space-y-1.5 rounded-xl border border-[var(--line)] bg-[var(--surface-strong)]/25 p-2.5 sm:p-3">
+              <div className="flex items-center justify-between px-0.5">
+                <span className="text-[9px] font-black uppercase tracking-wider text-[var(--gold)]">
                   Select Size & Portion
                 </span>
                 {selectedPriceObj && (
-                  <span className="text-xs font-black text-[var(--orange)]">
+                  <span className="text-[11px] font-black text-[var(--orange)]">
                     {selectedPriceObj.label ? `${selectedPriceObj.label} • ` : ''}{formatPrice(selectedPriceObj.value)}
                   </span>
                 )}
               </div>
-              <div className={`grid gap-2 ${item.prices.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+              <div className={`grid gap-1.5 ${item.prices.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
                 {item.prices.map((price, idx) => {
                   const isSelected = selectedSizeIndex === idx
                   const label = price.label || (idx === 0 ? 'S' : idx === 1 ? 'M' : 'L')
@@ -271,15 +266,15 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                       key={`${price.label}-${price.value}-${idx}`}
                       type="button"
                       onClick={() => setSelectedSizeIndex(idx)}
-                      className={`flex flex-col items-center justify-center rounded-xl p-2.5 sm:p-3 border text-center transition-all duration-200 active:scale-95 cursor-pointer ${
+                      className={`flex flex-col items-center justify-center rounded-lg py-1.5 px-1 border text-center transition-all duration-200 active:scale-95 cursor-pointer ${
                         isSelected
-                          ? 'border-[var(--orange)] bg-gradient-to-b from-orange-500/15 via-[var(--surface)] to-orange-500/5 ring-2 ring-[var(--orange)]/40 shadow-xs'
+                          ? 'border-[var(--orange)] bg-gradient-to-b from-orange-500/15 via-[var(--surface)] to-orange-500/5 ring-1.5 ring-[var(--orange)]/50 shadow-xs'
                           : 'border-[var(--line)] bg-[var(--surface)] hover:border-amber-500/35'
                       }`}
                     >
                       <div className="flex items-center gap-1 mb-0.5">
                         <span
-                          className={`grid h-4.5 w-4.5 place-items-center rounded-full text-[9px] font-black ${
+                          className={`grid h-4 w-4 place-items-center rounded-full text-[8px] font-black ${
                             isSelected
                               ? 'bg-[var(--orange)] text-white'
                               : 'bg-[var(--line)] text-[var(--muted)]'
@@ -288,12 +283,12 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                           {label}
                         </span>
                         {subLabel && (
-                          <span className="text-[10px] font-bold text-[var(--muted)] truncate max-w-[65px]">
+                          <span className="text-[9px] font-bold text-[var(--muted)] truncate max-w-[65px]">
                             {subLabel}
                           </span>
                         )}
                       </div>
-                      <span className="text-sm sm:text-base font-black text-[var(--text)]">
+                      <span className="text-xs sm:text-sm font-black text-[var(--text)]">
                         {formatPrice(price.value)}
                       </span>
                     </button>
@@ -305,95 +300,57 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             item.prices && item.prices.length === 1 && (
               <div
                 data-sheet-item
-                className="relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-[var(--surface)] to-orange-500/10 p-3.5 sm:p-4 shadow-xs flex items-center justify-between"
+                className="relative overflow-hidden rounded-xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-[var(--surface)] to-orange-500/10 px-3 py-2 shadow-xs flex items-center justify-between"
               >
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <span className="text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    <span className="text-[9px] font-black uppercase tracking-wider text-[var(--gold)]">
                       Fresh Portion
                     </span>
                   </div>
-                  <p className="text-xs font-bold text-[var(--muted)]">
+                  <p className="text-[11px] font-bold text-[var(--muted)]">
                     {item.prices[0].label || 'Standard Fresh Portion'}
                   </p>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-2xl sm:text-3xl font-black tracking-tight text-[var(--orange)] drop-shadow-xs">
+                  <span className="text-xl sm:text-2xl font-black tracking-tight text-[var(--orange)]">
                     {formatPrice(item.prices[0].value)}
                   </span>
-                  <span className="block text-[9px] font-bold text-[var(--muted)]">Taxes Included</span>
+                  <span className="block text-[8px] font-bold text-[var(--muted)]">Taxes Included</span>
                 </div>
               </div>
             )
           )}
 
-          {/* Action Dock: Zomato Delivery + Direct Contact */}
-          <div data-sheet-item className="space-y-2.5 pt-1">
-            {/* Primary Action: Order on Zomato */}
+          {/* Direct Orders: Call & WhatsApp (Zomato removed as requested) */}
+          <div data-sheet-item className="grid grid-cols-2 gap-2 pt-0.5">
             <a
-              href={ZOMATO_URL}
+              href="tel:+919625261591"
+              className="touch-target inline-flex items-center justify-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--surface-strong)]/60 py-2.5 px-3 text-xs font-bold text-[var(--text)] transition-all duration-200 hover:border-[var(--orange)] hover:text-[var(--orange)] hover:bg-[var(--surface)] active:scale-95 shadow-xs"
+            >
+              <FiPhone className="text-xs text-[var(--orange)] shrink-0" />
+              <span className="truncate">Call Cafe</span>
+            </a>
+            <a
+              href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="touch-target group relative flex w-full items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-[#cb202d] via-[#E23744] to-[#f04856] px-4 py-3 sm:py-3.5 text-white shadow-md shadow-red-500/25 transition-all duration-200 hover:shadow-lg hover:shadow-red-500/40 hover:scale-[1.01] active:scale-[0.99] border border-white/20"
+              className="touch-target inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#075E54] to-[#25D366] py-2.5 px-3 text-xs font-black text-white shadow-xs shadow-emerald-600/20 transition-all duration-200 hover:brightness-105 active:scale-95"
             >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/20 backdrop-blur-xs text-2xl shadow-xs">
-                  <SiZomato />
-                </div>
-                <div className="min-w-0 text-left">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm sm:text-base font-black tracking-wide">
-                      Order on Zomato
-                    </span>
-                    <span className="rounded-full bg-white/25 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider">
-                      Delivery
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-red-100 font-medium truncate">
-                    Fast doorstep delivery • Live tracking
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-1.5 font-bold text-xs bg-black/20 hover:bg-black/30 px-3 py-1.5 rounded-xl transition">
-                <span>Order</span>
-                <FiExternalLink className="text-xs transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </div>
+              <FaWhatsapp className="text-sm shrink-0" />
+              <span className="truncate">WhatsApp Order</span>
             </a>
-
-            {/* Direct Orders: Call & WhatsApp */}
-            <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
-              <a
-                href="tel:+919625261591"
-                className="touch-target inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[var(--line)] bg-[var(--surface-strong)]/60 px-3 py-3 text-xs sm:text-sm font-bold text-[var(--text)] transition-all duration-200 hover:border-[var(--orange)] hover:text-[var(--orange)] hover:bg-[var(--surface)] active:scale-95 shadow-xs"
-              >
-                <FiPhone className="text-sm sm:text-base text-[var(--orange)] shrink-0" />
-                <span className="truncate">Call Cafe</span>
-              </a>
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="touch-target inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#075E54] to-[#25D366] px-3 py-3 text-xs sm:text-sm font-black text-white shadow-md shadow-emerald-600/20 transition-all duration-200 hover:brightness-105 active:scale-95"
-              >
-                <FaWhatsapp className="text-base shrink-0" />
-                <span className="truncate">WhatsApp Order</span>
-              </a>
-            </div>
           </div>
 
-          {/* Cafe Quality Footer Accents */}
-          <div data-sheet-item className="grid grid-cols-3 gap-1.5 pt-2 border-t border-[var(--line)]/50 text-[10px] sm:text-[11px] font-bold text-[var(--muted)] text-center">
-            <div className="rounded-lg bg-[var(--surface-strong)]/40 py-1.5 px-1 truncate">
-              🌱 100% Pure Veg
-            </div>
-            <div className="rounded-lg bg-[var(--surface-strong)]/40 py-1.5 px-1 truncate">
-              🪵 Wood-Fired
-            </div>
-            <div className="rounded-lg bg-[var(--surface-strong)]/40 py-1.5 px-1 truncate">
-              ⏱️ Baked Fresh
-            </div>
+          {/* Cafe Quality Footer Accents - Compact Single Line */}
+          <div data-sheet-item className="flex items-center justify-center gap-2 pt-1 border-t border-[var(--line)]/40 text-[9px] font-bold text-[var(--muted)] text-center">
+            <span>🌱 100% Pure Veg</span>
+            <span className="text-[var(--line)]">•</span>
+            <span>🪵 Wood-Fired</span>
+            <span className="text-[var(--line)]">•</span>
+            <span>⏱️ Baked Fresh</span>
           </div>
         </div>
       </div>
