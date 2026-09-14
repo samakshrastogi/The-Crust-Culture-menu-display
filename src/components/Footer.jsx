@@ -4,7 +4,7 @@ import BrandLogo from './BrandLogo'
 export default function Footer() {
   return (
     <footer className="border-t border-[var(--line)] bg-[var(--bg-soft)] px-3 py-6 sm:px-6 sm:py-10 lg:px-8">
-      <div className="mx-auto grid  gap-5 sm:gap-8 md:grid-cols-[1.5fr_1.2fr]">
+      <div className="mx-auto grid max-w-7xl gap-5 sm:gap-8 md:grid-cols-[1.5fr_1.2fr]">
         <div className="space-y-4">
           <BrandLogo />
           <p className="max-w-sm text-xs leading-5 text-[var(--muted)] sm:text-sm sm:leading-6">
@@ -19,7 +19,14 @@ export default function Footer() {
           <div className="space-y-2 text-xs text-[var(--muted)] sm:space-y-3 sm:text-sm">
             <p className="flex gap-3">
               <FiMapPin className="mt-1 shrink-0 text-[var(--orange)]" />
-              The Crust Culture infront of royal pg and sheetal pg and adjacent of panchayat cafe gali no. 6 noble enclave palam vihar extension gurgaon haryana pincode 122015
+              <a
+                href="https://maps.app.goo.gl/1DKJ87ZCokYP1QbR8"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition hover:text-[var(--orange)] hover:underline"
+              >
+                The Crust Culture infront of royal pg and sheetal pg and adjacent of panchayat cafe gali no. 6 noble enclave palam vihar extension gurgaon haryana pincode 122015
+              </a>
             </p>
             <p className="flex gap-3">
               <FiPhone className="mt-1 shrink-0 text-[var(--orange)]" />

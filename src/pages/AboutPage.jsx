@@ -18,7 +18,7 @@ export default function AboutPage() {
   }, [])
 
   return (
-    <div ref={scopeRef} className="mx-auto  px-4 py-10 sm:px-6 lg:px-8">
+    <div ref={scopeRef} className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <section data-reveal className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <h1 className="font-display mt-3 text-5xl font-semibold leading-tight text-[var(--text)]">
@@ -56,21 +56,41 @@ export default function AboutPage() {
             </p>
           </div>
         </div>
-        <div className="rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-6">
+        <a
+          href="https://maps.app.goo.gl/1DKJ87ZCokYP1QbR8"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-6 transition hover:border-[var(--gold)] block"
+        >
           <FiMapPin className="mb-4 text-3xl text-[var(--orange)]" />
-          <h2 className="text-2xl font-black text-[var(--text)]">Location</h2>
+          <h2 className="text-2xl font-black text-[var(--text)] group-hover:text-[var(--gold)] transition">Location</h2>
           <p className="mt-4 text-sm leading-6 text-[var(--muted)]">
             The Crust Culture infront of royal pg and sheetal pg and adjacent of panchayat cafe gali no. 6 noble enclave palam vihar extension gurgaon haryana pincode 122015
           </p>
-        </div>
+          <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[var(--gold)]">
+            Open in Google Maps &rarr;
+          </span>
+        </a>
       </section>
 
       <section data-reveal className="mt-10 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5">
-        <div className="grid min-h-[280px] place-items-center rounded-[1.5rem] border border-dashed border-[var(--line)] bg-[var(--bg-soft)] text-center">
-          <div>
-            <p className="mt-3 text-lg font-bold text-[var(--muted)]">Location map placeholder</p>
+        <a
+          href="https://maps.app.goo.gl/1DKJ87ZCokYP1QbR8"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group grid min-h-[220px] place-items-center rounded-[1.5rem] border border-dashed border-[var(--line)] bg-[var(--bg-soft)] p-6 text-center transition hover:border-[var(--gold)]"
+        >
+          <div className="flex flex-col items-center">
+            <FiMapPin className="text-4xl text-[var(--orange)] transition group-hover:scale-110" />
+            <p className="mt-3 text-lg font-bold text-[var(--text)]">The Crust Culture on Google Maps</p>
+            <p className="mt-1 max-w-md text-sm text-[var(--muted)]">
+              Gali no. 6, Noble Enclave, Palam Vihar Extension, Gurgaon, Haryana 122015
+            </p>
+            <span className="mt-4 inline-flex items-center rounded-full bg-[var(--gold)] px-5 py-2 text-xs font-black text-[#24150b] shadow-sm transition hover:brightness-105">
+              Get Directions &rarr;
+            </span>
           </div>
-        </div>
+        </a>
       </section>
     </div>
   )
