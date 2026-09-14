@@ -1,6 +1,13 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FiArrowRight, FiClock, FiStar } from 'react-icons/fi'
+import {
+  FiArrowRight,
+  FiCheckCircle,
+  FiChevronLeft,
+  FiChevronRight,
+  FiClock,
+  FiStar,
+} from 'react-icons/fi'
 import { revealHero, revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
 import { menuSections } from '../data/menuSections'
@@ -33,8 +40,8 @@ const getMinPrice = (item) => {
   if (!item || !item.prices || item.prices.length === 0) return 0
   const parsedPrices = item.prices
     .map((p) => {
-      const digits = p.value.replace(/[^0-9]/g, '')
-      return digits ? parseInt(digits, 10) : 0
+      const match = String(p.value || '').match(/(\d+)/)
+      return match ? parseInt(match[1], 10) : 0
     })
     .filter((v) => v > 0)
   return parsedPrices.length ? Math.min(...parsedPrices) : 0
@@ -47,18 +54,23 @@ export default function HomePage() {
   const [selectedItem, setSelectedItem] = useState(null)
   const [favorites, setFavorites] = useLocalStorage('crust-favorites', [])
 
-  const [specialItem] = useState(() => {
-    const itemsAbove200 = initialAllMenuItems.filter((item) => {
-      return item.prices.some((p) => {
-        const digits = p.value.replace(/[^0-9]/g, '')
-        const val = digits ? parseInt(digits, 10) : 0
-        return val >= 200
-      })
-    })
-    if (itemsAbove200.length === 0) return null
-    const randomIndex = Math.floor(Math.random() * itemsAbove200.length)
-    return itemsAbove200[randomIndex]
-  })
+  // Only items strictly priced > 149
+  const premiumSpecialItems = useMemo(() => {
+    return initialAllMenuItems.filter((item) => getMinPrice(item) > 149)
+  }, [])
+
+  const [specialIndex, setSpecialIndex] = useState(0)
+
+  // Auto-cycle through specials every 6 seconds
+  useEffect(() => {
+    if (premiumSpecialItems.length <= 1) return
+    const interval = setInterval(() => {
+      setSpecialIndex((prev) => (prev + 1) % premiumSpecialItems.length)
+    }, 6000)
+    return () => clearInterval(interval)
+  }, [premiumSpecialItems.length])
+
+  const specialItem = premiumSpecialItems[specialIndex] || premiumSpecialItems[0]
 
   useEffect(() => {
     const heroContext = revealHero(scopeRef)
@@ -76,66 +88,177 @@ export default function HomePage() {
     )
   }
 
-  const minPrice = getMinPrice(specialItem)
+  const minPrice = specialItem ? getMinPrice(specialItem) : 0
   const priceDisplay = minPrice ? `₹${minPrice}+` : ''
 
+  const handlePrevSpecial = (e) => {
+    e.stopPropagation()
+    setSpecialIndex((prev) => (prev - 1 + premiumSpecialItems.length) % premiumSpecialItems.length)
+  }
+
+  const handleNextSpecial = (e) => {
+    e.stopPropagation()
+    setSpecialIndex((prev) => (prev + 1) % premiumSpecialItems.length)
+  }
+
   return (
-    <div ref={scopeRef} className="space-y-4">
+    <div ref={scopeRef} className="space-y-6">
       {/* Hero Section */}
-      <section className="mx-auto grid  gap-3 px-3 pb-4 pt-2 sm:gap-6 sm:px-6 sm:pb-6 sm:pt-4 lg:grid-cols-[1fr_0.9fr] lg:px-8 lg:py-8">
+      <section className="mx-auto grid gap-6 px-3 pb-4 pt-2 sm:gap-8 sm:px-6 sm:pb-6 sm:pt-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-8 lg:py-6">
         <div className="flex flex-col justify-center">
+          {/* Tag / Kicker */}
+          <div
+            data-hero-kicker
+            className="mb-3 inline-flex items-center gap-2 rounded-full border border-amber-500/25 bg-amber-500/10 px-3.5 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 w-fit"
+          >
+            <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+            Wood-Fired Kitchen • 100% Pure Veg
+          </div>
+
+          {/* Title */}
           <h1
             data-hero-title
-            className="font-display text-3xl font-semibold leading-[1.05] text-[var(--text)] sm:text-5xl lg:text-6xl"
+            className="font-display text-3xl font-extrabold leading-[1.08] text-[var(--text)] sm:text-5xl lg:text-6xl tracking-tight"
           >
-            Fresh crusts, slow fire, fast table ordering.
+            Fresh crusts,{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--orange)] to-amber-500">
+              slow fire
+            </span>
+            , fast table ordering.
           </h1>
-          <div data-hero-actions className="mt-4 flex flex-col gap-2 sm:mt-6 sm:gap-3 sm:flex-row">
+
+          {/* Subtitle / Copy */}
+          <p
+            data-hero-copy
+            className="mt-3 text-sm leading-relaxed text-[var(--muted)] sm:mt-4 sm:text-base max-w-xl"
+          >
+            Slow-fermented artisan crusts, 100% pure vegetarian gourmet recipes, and sizzling sides
+            baked fresh to order in Palam Vihar, Gurgaon.
+          </p>
+
+          {/* Hero Actions */}
+          <div data-hero-actions className="mt-5 flex flex-wrap items-center gap-3 sm:mt-7">
             <Link
               to="/menu"
-              className="touch-target inline-flex items-center justify-center gap-2 rounded-full bg-[var(--orange)] px-6 font-black text-white shadow-xl transition hover:bg-[#ea580c]"
+              className="touch-target group inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-7 py-3.5 text-sm font-black text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 sm:text-base"
             >
-              Open menu <FiArrowRight />
+              Explore Menu{' '}
+              <FiArrowRight className="text-lg transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
             <button
               type="button"
               onClick={() => document.getElementById('our-story')?.scrollIntoView({ behavior: 'smooth' })}
-              className="touch-target inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-[var(--surface)] px-6 font-bold text-[var(--text)] transition hover:border-[var(--gold)]"
+              className="touch-target inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-[var(--surface)] px-6 py-3.5 text-sm font-bold text-[var(--text)] transition hover:border-[var(--gold)] hover:bg-[var(--surface)]/80 sm:text-base"
             >
-              Our story
+              Our Story
             </button>
           </div>
-        </div>
-        
-        {specialItem && (
-          <button
-            type="button"
-            onClick={() => setSelectedItem(specialItem)}
-            data-hero-media
-            className="relative min-h-[280px] w-full overflow-hidden rounded-3xl border border-[var(--line)] sm:min-h-[360px] sm:rounded-[2rem] text-left block transition-[border-color] duration-200 hover:border-[var(--gold)] cursor-pointer"
-          >
-            <FoodImage
-              src={specialItem.image || specialItem.sectionImage || heroImage}
-              alt={specialItem.name}
-              category={specialItem.sectionTitle?.includes('Pizza') ? 'Pizza' : 'Restaurant'}
-              className="h-full min-h-[280px] w-full sm:min-h-[360px] transition duration-500 hover:scale-102"
-              loading="eager"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/72 via-black/20 to-transparent" />
-            <div className="absolute bottom-3 left-3 right-3 rounded-2xl border border-white/15 bg-black/45 p-3 backdrop-blur-md sm:bottom-5 sm:left-5 sm:right-5 sm:rounded-3xl sm:p-5">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--gold)] sm:text-xs">
-                    Today's Special
-                  </p>
-                  <h2 className="mt-0.5 text-base font-black text-white sm:mt-1.5 sm:text-xl">{specialItem.name}</h2>
-                </div>
-                <p className="rounded-full bg-[var(--gold)] px-3 py-1.5 text-sm font-black text-[#21140b] sm:px-4 sm:text-base">
-                  {priceDisplay}
-                </p>
-              </div>
+
+          {/* Trust Highlights */}
+          <div className="mt-6 flex flex-wrap items-center gap-4 sm:gap-6 border-t border-[var(--line)]/60 pt-4 text-xs font-semibold text-[var(--muted)]">
+            <div className="flex items-center gap-1.5">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                <FiStar className="h-3 w-3 fill-current" />
+              </span>
+              <span>4.8 Rating</span>
             </div>
-          </button>
+            <div className="flex items-center gap-1.5">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400">
+                <FiCheckCircle className="h-3 w-3" />
+              </span>
+              <span>100% Pure Veg</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400">
+                <FiClock className="h-3 w-3" />
+              </span>
+              <span>Open till 1:30 AM</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Hero Media Card: Strictly items > 149 */}
+        {specialItem && (
+          <div data-hero-media className="relative group">
+            <button
+              type="button"
+              onClick={() => setSelectedItem(specialItem)}
+              className="relative block h-[320px] sm:h-[400px] lg:h-[440px] w-full overflow-hidden rounded-3xl border border-[var(--line)]/80 sm:rounded-[2.25rem] text-left cursor-pointer shadow-xl transition-all duration-300 hover:shadow-2xl hover:border-amber-500/40"
+            >
+              <FoodImage
+                src={specialItem.image || specialItem.sectionImage || heroImage}
+                alt={specialItem.name}
+                category={specialItem.sectionTitle?.includes('Pizza') ? 'Pizza' : 'Restaurant'}
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                loading="eager"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
+
+              {/* Top Bar on Image */}
+              <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 sm:top-4 sm:left-4 sm:right-4">
+                <span className="inline-flex items-center gap-2 rounded-full bg-black/65 px-3 py-1.5 text-[11px] font-black uppercase tracking-wider text-amber-300 backdrop-blur-md border border-white/15">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                  </span>
+                  Today's Special
+                </span>
+
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={handlePrevSpecial}
+                    aria-label="Previous special item"
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/15 transition hover:bg-amber-500 hover:text-black hover:border-amber-400 active:scale-95"
+                  >
+                    <FiChevronLeft className="text-base" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNextSpecial}
+                    aria-label="Next special item"
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/15 transition hover:bg-amber-500 hover:text-black hover:border-amber-400 active:scale-95"
+                  >
+                    <FiChevronRight className="text-base" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Bottom Glass Card Overlay */}
+              <div className="absolute bottom-3 left-3 right-3 rounded-2xl border border-white/20 bg-black/65 p-4 backdrop-blur-xl sm:bottom-4 sm:left-4 sm:right-4 sm:rounded-3xl sm:p-5 shadow-2xl">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-amber-300/90">
+                      {specialItem.sectionTitle || 'Chef Selection'}
+                    </p>
+                    <h2 className="mt-0.5 truncate text-lg font-black text-white sm:mt-1 sm:text-2xl drop-shadow-sm">
+                      {specialItem.name}
+                    </h2>
+                    {specialItem.toppings && (
+                      <p className="mt-1 line-clamp-1 text-xs text-stone-300 font-medium sm:text-sm">
+                        {specialItem.toppings}
+                      </p>
+                    )}
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-amber-200/80">Starts at</p>
+                    <p className="mt-0.5 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-3.5 py-1 text-sm font-black text-[#1c120c] sm:text-base shadow">
+                      {priceDisplay}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between border-t border-white/10 pt-2.5 text-[11px] sm:text-xs">
+                  <span className="text-amber-300/90 font-semibold">
+                    Special {specialIndex + 1} of {premiumSpecialItems.length}
+                  </span>
+                  <span className="inline-flex items-center gap-1 font-bold text-white group-hover:text-amber-300 transition-colors">
+                    Tap to view & customize <FiArrowRight className="text-xs transition-transform group-hover:translate-x-0.5" />
+                  </span>
+                </div>
+              </div>
+            </button>
+          </div>
         )}
       </section>
 
