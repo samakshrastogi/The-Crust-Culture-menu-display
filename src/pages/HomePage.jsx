@@ -2,11 +2,15 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FiArrowRight,
+  FiAward,
   FiCheckCircle,
   FiChevronLeft,
   FiChevronRight,
-  FiClock,
+  FiHeart,
+  FiLayers,
+  FiSmartphone,
   FiStar,
+  FiZap,
 } from 'react-icons/fi'
 import { revealHero, revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
@@ -22,8 +26,6 @@ const isRestrictedTime = () => {
 const initialSections = isRestrictedTime()
   ? menuSections.filter((s) => s.title !== 'Everyday Classics' && s.title !== 'Classic Veg Combos')
   : menuSections
-
-const initialCategories = initialSections.map((s) => s.title)
 
 const initialAllMenuItems = initialSections.flatMap((section) =>
   section.items.map((item) => ({
@@ -49,7 +51,6 @@ const getMinPrice = (item) => {
 
 export default function HomePage() {
   const scopeRef = useRef(null)
-  const featuredSections = initialSections.slice(1, 5) // Compact: show 4 sections instead of 6
 
   const [selectedItem, setSelectedItem] = useState(null)
   const [favorites, setFavorites] = useLocalStorage('crust-favorites', [])
@@ -58,6 +59,32 @@ export default function HomePage() {
   const premiumSpecialItems = useMemo(() => {
     return initialAllMenuItems.filter((item) => getMinPrice(item) > 149)
   }, [])
+
+  // Curated 6 primary categories with cover photos (no duplication)
+  const featuredCategories = useMemo(() => {
+    const selectedIds = [
+      'veggie-cheese-loaded-pizzas',
+      'royal-paneer-pizza',
+      'garlic-breads-sides',
+      'burgers-street-bites',
+      'grilled-sandwiches',
+      'drinks-corner',
+    ]
+    return initialSections.filter((s) => selectedIds.includes(s.id))
+  }, [])
+
+  // Curated chef signature recommendations across different categories
+  const signatureDishes = useMemo(() => {
+    const targetNames = [
+      'Farmhouse Pizza',
+      'Loaded Indi Tandoori',
+      'Paneer Tikka Stuffed',
+      'Crispy Veg Burger',
+    ]
+    const found = initialAllMenuItems.filter((item) => targetNames.includes(item.name))
+    // Fallback if any specific item name isn't matched
+    return found.length >= 4 ? found.slice(0, 4) : premiumSpecialItems.slice(0, 4)
+  }, [premiumSpecialItems])
 
   const [specialIndex, setSpecialIndex] = useState(0)
 
@@ -102,8 +129,8 @@ export default function HomePage() {
   }
 
   return (
-    <div ref={scopeRef} className="space-y-6">
-      {/* Hero Section */}
+    <div ref={scopeRef} className="space-y-10 sm:space-y-14">
+      {/* 1. Hero Section */}
       <section className="mx-auto grid gap-6 px-3 pb-4 pt-2 sm:gap-8 sm:px-6 sm:pb-6 sm:pt-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-8 lg:py-6">
         <div className="flex flex-col justify-center">
           {/* Tag / Kicker */}
@@ -132,8 +159,8 @@ export default function HomePage() {
             data-hero-copy
             className="mt-3 text-sm leading-relaxed text-[var(--muted)] sm:mt-4 sm:text-base max-w-xl"
           >
-            Slow-fermented artisan crusts, 100% pure vegetarian gourmet recipes, and sizzling sides
-            baked fresh to order in Palam Vihar, Gurgaon.
+            48-hour slow-fermented artisan sourdough, 100% pure vegetarian gourmet recipes, and
+            sizzling sides baked fresh to order in Palam Vihar, Gurgaon.
           </p>
 
           {/* Hero Actions */}
@@ -169,10 +196,10 @@ export default function HomePage() {
               <span>100% Pure Veg</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400">
-                <FiClock className="h-3 w-3" />
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/15 text-[var(--orange)]">
+                <FiZap className="h-3 w-3" />
               </span>
-              <span>Open till 1:30 AM</span>
+              <span>Fast Dine-In & Takeaway</span>
             </div>
           </div>
         </div>
@@ -262,90 +289,247 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Badges Section */}
-      <section data-reveal className="mx-auto  px-3 py-2 sm:px-6 sm:py-4 lg:px-8">
-        <div className="grid gap-2.5 sm:grid-cols-3 sm:gap-4">
+      {/* 2. Culinary Craft Pillars (Distinct, non-repetitive craftsmanship highlights) */}
+      <section data-reveal className="mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:gap-4">
           {[
-            { icon: FiStar, label: 'Menu', value: `${initialAllMenuItems.length} priced items` },
-            { icon: FiClock, label: 'Open daily', value: '1:30 PM - 1:30 AM' },
-            { icon: FiArrowRight, label: 'QR ready', value: 'Land directly on menu' },
-          ].map((item) => (
-            <div key={item.label} className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3 sm:rounded-[1.25rem] sm:p-4">
-              <item.icon className="mb-1.5 text-lg text-[var(--orange)] sm:mb-3 sm:text-xl" />
-              <p className="text-[9px] font-bold uppercase tracking-[0.18em] text-[var(--gold)] sm:text-xs sm:tracking-[0.2em]">{item.label}</p>
-              <p className="mt-0.5 text-sm font-black text-[var(--text)] sm:mt-1 sm:text-lg">{item.value}</p>
-            </div>
-          ))}
+            {
+              icon: FiLayers,
+              title: '48-Hour Fermentation',
+              desc: 'Slow cold-proofed sourdough for an exceptionally light, airy, and easily digestible crust.',
+              accent: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+            },
+            {
+              icon: FiZap,
+              title: '450°C Stone Oven',
+              desc: 'High stone-deck heat produces authentic leopard crust blisters and crisp base.',
+              accent: 'text-[var(--orange)] bg-orange-500/10 border-orange-500/20',
+            },
+            {
+              icon: FiAward,
+              title: '100% Pure Vegetarian',
+              desc: 'Fresh artisan malai paneer, real dairy mozzarella, and farm-fresh vegetable toppings.',
+              accent: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20',
+            },
+            {
+              icon: FiSmartphone,
+              title: 'Smart Table Ordering',
+              desc: 'Scan your table QR code, browse photo-rich menus, and order directly to our kitchen.',
+              accent: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+            },
+          ].map((card) => {
+            const Icon = card.icon
+            return (
+              <div
+                key={card.title}
+                className="group rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 transition-all duration-300 hover:border-[var(--gold)] hover:shadow-md sm:rounded-3xl sm:p-5"
+              >
+                <div
+                  className={`flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-2xl border ${card.accent} shadow-sm transition-transform duration-300 group-hover:scale-110`}
+                >
+                  <Icon className="text-lg sm:text-xl" />
+                </div>
+                <h3 className="mt-3.5 text-sm font-extrabold text-[var(--text)] sm:text-base">
+                  {card.title}
+                </h3>
+                <p className="mt-1.5 text-xs leading-relaxed text-[var(--muted)]">
+                  {card.desc}
+                </p>
+              </div>
+            )
+          })}
         </div>
       </section>
 
-      {/* Menu Sections Grid */}
-      <section data-reveal className="mx-auto  px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
-        <div className="mb-4 flex items-end justify-between gap-4">
+      {/* 3. Explore by Category (Single, unified photo gallery - NO DUPLICATION) */}
+      <section data-reveal className="mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="font-display mt-1 text-2xl font-semibold text-[var(--text)] sm:text-3xl">Menu sections</h2>
+            <span className="text-xs font-black uppercase tracking-[0.2em] text-[var(--gold)]">
+              Our Menu
+            </span>
+            <h2 className="font-display text-2xl font-extrabold text-[var(--text)] sm:text-3xl">
+              Explore by Category
+            </h2>
           </div>
-          <Link to="/menu" className="hidden font-bold text-[var(--gold)] sm:block">
-            See all
+          <Link
+            to="/menu"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--orange)] hover:underline sm:text-sm"
+          >
+            <span>View All 16 Categories</span>
+            <FiArrowRight className="text-xs" />
           </Link>
         </div>
-        <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
-          {featuredSections.map((section) => (
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
+          {featuredCategories.map((section) => (
             <Link
               key={section.id}
               to={`/menu?category=${encodeURIComponent(section.title)}`}
-              className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3 transition hover:border-[var(--gold)] sm:rounded-[1.25rem] sm:p-4"
+              className="group relative h-48 sm:h-52 w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)] transition-all duration-300 hover:border-[var(--gold)] hover:shadow-lg"
             >
-              <h3 className="text-sm font-black text-[var(--text)] sm:text-base">{section.title}</h3>
-              <p className="mt-1 text-xs font-semibold text-[var(--muted)]">{section.items.length} priced items</p>
+              <FoodImage
+                src={section.image}
+                alt={section.title}
+                category="Pizza"
+                className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/10" />
+
+              <div className="absolute bottom-3.5 left-3.5 right-3.5 flex items-end justify-between gap-2">
+                <div>
+                  <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold text-white backdrop-blur-md">
+                    {section.items.length} items
+                  </span>
+                  <h3 className="mt-1.5 text-base sm:text-lg font-black text-white group-hover:text-amber-300 transition-colors">
+                    {section.title}
+                  </h3>
+                </div>
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md transition group-hover:bg-[var(--orange)] group-hover:scale-105">
+                  <FiArrowRight className="text-sm" />
+                </span>
+              </div>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* Categories Horizontal / Grid */}
-      <section data-reveal className="mx-auto  px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
-        <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
-          {initialCategories.slice(0, 4).map((category) => (
-            <Link
-              key={category}
-              to={`/menu?category=${encodeURIComponent(category)}`}
-              className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3 transition hover:border-[var(--gold)] sm:rounded-[1.25rem] sm:p-4"
-            >
-              <h3 className="text-sm font-black text-[var(--text)] sm:text-lg">{category}</h3>
-            </Link>
-          ))}
+      {/* 4. Chef's Signature Recommendations */}
+      <section data-reveal className="mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <span className="text-xs font-black uppercase tracking-[0.2em] text-[var(--gold)]">
+              Kitchen Highlights
+            </span>
+            <h2 className="font-display text-2xl font-extrabold text-[var(--text)] sm:text-3xl">
+              Signature Chef Picks
+            </h2>
+          </div>
+          <Link
+            to="/menu"
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[var(--orange)] hover:underline sm:text-sm"
+          >
+            <span>Full digital menu</span>
+            <FiArrowRight className="text-xs" />
+          </Link>
+        </div>
+
+        <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+          {signatureDishes.map((item) => {
+            const itemMinPrice = getMinPrice(item)
+            const isFav = favorites.includes(item.id)
+
+            return (
+              <div
+                key={item.id}
+                onClick={() => setSelectedItem(item)}
+                className="group relative flex flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-3 transition-all duration-300 hover:border-[var(--gold)] hover:shadow-md cursor-pointer"
+              >
+                <div>
+                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl sm:rounded-2xl">
+                    <FoodImage
+                      src={item.image || item.sectionImage}
+                      alt={item.name}
+                      category="Pizza"
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleFavorite(item.id)
+                      }}
+                      className={`absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full backdrop-blur-md transition ${
+                        isFav
+                          ? 'bg-[var(--orange)] text-white'
+                          : 'bg-black/50 text-white hover:bg-black/70'
+                      }`}
+                      aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+                    >
+                      <FiHeart className={`text-sm ${isFav ? 'fill-current' : ''}`} />
+                    </button>
+                  </div>
+
+                  <p className="mt-2.5 text-[10px] font-bold uppercase tracking-wider text-[var(--gold)]">
+                    {item.sectionTitle}
+                  </p>
+                  <h3 className="mt-0.5 text-sm font-extrabold text-[var(--text)] line-clamp-1 group-hover:text-[var(--orange)] transition-colors sm:text-base">
+                    {item.name}
+                  </h3>
+                  {item.toppings && (
+                    <p className="mt-1 line-clamp-1 text-xs text-[var(--muted)]">
+                      {item.toppings}
+                    </p>
+                  )}
+                </div>
+
+                <div className="mt-3 flex items-center justify-between border-t border-[var(--line)]/60 pt-2 text-xs">
+                  <span className="font-black text-[var(--text)] sm:text-sm">
+                    ₹{itemMinPrice}+
+                  </span>
+                  <span className="font-bold text-[var(--orange)] text-[11px] group-hover:underline">
+                    Customize &rarr;
+                  </span>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </section>
 
-      {/* Our Story Section */}
+      {/* 5. Our Story Section */}
       <section
         id="our-story"
         data-reveal
-        className="mx-auto  px-3 py-6 sm:px-6 sm:py-8 lg:px-8 border-t border-[var(--line)]"
+        className="mx-auto px-3 sm:px-6 lg:px-8 border-t border-[var(--line)] pt-8 sm:pt-12"
       >
         <div className="grid gap-6 md:grid-cols-2 md:items-center">
-          <div className="space-y-3">
+          <div className="space-y-4">
             <span className="text-xs font-black uppercase tracking-[0.2em] text-[var(--gold)]">
-              Our Story
+              Our Story & Heritage
             </span>
-            <h2 className="font-display text-2xl font-semibold leading-tight text-[var(--text)] sm:text-3xl">
+            <h2 className="font-display text-2xl font-extrabold leading-tight text-[var(--text)] sm:text-3xl">
               Fire, fermentation, and a table built for sharing.
             </h2>
             <p className="text-xs leading-relaxed text-[var(--muted)] sm:text-sm">
-              At The Crust Culture, we believe great pizza starts with patience. Our signature sourdough crusts undergo a slow fermentation process before meeting the high heat of our ovens. Paired with fresh toppings, premium cheese, and a passion for culinary excellence, we bring you an unforgettable dining experience.
+              At The Crust Culture, great pizza starts with patience. Our sourdough undergo a slow
+              48-hour cold fermentation before meeting the scorching 450°C stone oven. Paired with
+              artisanal paneer recipes and farm-fresh toppings, every bite is crafted to perfection.
             </p>
-            <p className="text-xs leading-relaxed text-[var(--muted)] sm:text-sm">
-              Whether you are here for our signature classics, gourmet paneer collection, or delightful desserts, every item is crafted to perfection and served fresh to your table.
-            </p>
+
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-3 py-1 text-xs font-bold text-[var(--text)]">
+                🌾 48h Cold Fermented
+              </span>
+              <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-3 py-1 text-xs font-bold text-[var(--text)]">
+                🔥 450°C Stone Deck
+              </span>
+              <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-3 py-1 text-xs font-bold text-[var(--text)]">
+                🌱 100% Pure Vegetarian
+              </span>
+            </div>
+
+            <div className="pt-2">
+              <Link
+                to="/menu"
+                className="touch-target inline-flex items-center gap-2 rounded-full bg-[var(--orange)] px-6 py-2.5 text-xs font-black text-white shadow-md transition hover:bg-[#ea580c] sm:text-sm"
+              >
+                <span>Browse Full Menu</span>
+                <FiArrowRight className="text-sm" />
+              </Link>
+            </div>
           </div>
-          <div className="relative overflow-hidden rounded-[1.25rem] border border-[var(--line)] max-w-md mx-auto w-full">
+
+          <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)] max-w-md mx-auto w-full shadow-lg">
             <FoodImage
               src="/images/pizza-margherita.jpg"
-              alt="The Crust Culture restaurant kitchen"
+              alt="The Crust Culture kitchen"
               category="Restaurant"
-              className="aspect-[4/3] w-full object-cover transition duration-500 hover:scale-102"
+              className="aspect-[4/3] w-full object-cover transition duration-700 hover:scale-105"
             />
+            <div className="absolute bottom-3 left-3 rounded-xl bg-black/65 px-3 py-1.5 text-xs font-bold text-amber-300 backdrop-blur-md border border-white/15">
+              Handcrafted Daily in Gurgaon
+            </div>
           </div>
         </div>
       </section>
