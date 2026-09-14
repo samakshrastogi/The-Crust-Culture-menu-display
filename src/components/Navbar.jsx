@@ -61,7 +61,7 @@ export default function Navbar({ theme, onToggleTheme }) {
 
         {/* Right Actions */}
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-          {/* Live Kitchen Status */}
+          {/* Live Cafe Status */}
           <div className="hidden xl:inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />

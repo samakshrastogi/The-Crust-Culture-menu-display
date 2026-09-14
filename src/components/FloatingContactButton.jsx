@@ -15,7 +15,7 @@ const floatingActions = [
   },
   {
     id: 'phone',
-    label: 'Call Kitchen',
+    label: 'Call Cafe',
     href: 'tel:+919625261591',
     icon: FiPhone,
     iconSize: 'text-lg sm:text-xl',

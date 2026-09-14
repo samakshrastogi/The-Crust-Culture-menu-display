@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 text-xs font-semibold sm:text-sm">
           <div className="flex items-center gap-2 text-[var(--orange)]">
             <span className="h-2 w-2 rounded-full bg-[var(--orange)] animate-pulse" />
-            <span>Artisan Sourdough & Wood-Fired Kitchen</span>
+            <span>Artisan Sourdough & Wood-Fired Cafe</span>
           </div>
           <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
             <span className="h-2 w-2 rounded-full bg-emerald-500" />
@@ -44,11 +44,11 @@ export default function Footer() {
             <BrandLogo />
             <p className="text-xs leading-relaxed text-[var(--muted)] sm:text-sm">
               Artisan sourdough pizzas baked at 450°C, slow-fermented dough, gourmet stuffed garlic
-              breads, crispy burgers, and craft beverages served fresh from our open kitchen.
+              breads, crispy burgers, and craft beverages served fresh from our artisan cafe.
             </p>
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              100% Pure Veg Kitchen
+              100% Pure Veg Cafe
             </div>
           </div>
 
@@ -109,7 +109,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Kitchen Timings & Direct Contact */}
+          {/* Column 3: Cafe Timings & Direct Contact */}
           <div className="space-y-3">
             <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[var(--gold)] sm:text-sm sm:tracking-[0.22em]">
               Hours & Orders
@@ -161,7 +161,7 @@ export default function Footer() {
           {/* Column 4: Location & Directions */}
           <div className="space-y-3">
             <h3 className="text-xs font-black uppercase tracking-[0.2em] text-[var(--gold)] sm:text-sm sm:tracking-[0.22em]">
-              Visit Our Kitchen
+              Visit Our Cafe
             </h3>
 
             <div className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] p-3.5 sm:p-4 space-y-2.5">

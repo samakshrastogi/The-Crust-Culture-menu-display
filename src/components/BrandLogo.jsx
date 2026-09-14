@@ -20,7 +20,7 @@ export default function BrandLogo({ compact = false }) {
             The Crust Culture
           </span>
           <span className="block truncate text-[9px] font-black uppercase tracking-[0.22em] text-amber-600 dark:text-amber-400 max-[390px]:hidden sm:text-[10px]">
-            Wood Fired Kitchen
+            Wood Fired Cafe
           </span>
         </span>
       )}

@@ -32,7 +32,7 @@ const categoryStyles = {
   },
   Restaurant: {
     gradient: 'from-[#2f1d12] via-[#8a3d18] to-[#f6c453]',
-    accent: 'Open Kitchen',
+    accent: 'Artisan Cafe',
   },
 }
 

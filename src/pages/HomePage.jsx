@@ -144,7 +144,7 @@ export default function HomePage() {
             className="mb-2.5 inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 w-fit"
           >
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>100% Pure Vegetarian Kitchen</span>
+            <span>100% Pure Vegetarian Cafe</span>
           </div>
 
           {/* Title */}
@@ -353,7 +353,7 @@ export default function HomePage() {
         <div className="mb-3.5 flex items-center justify-between gap-2">
           <div>
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--gold)]">
-              Kitchen Highlights
+              Cafe Highlights
             </span>
             <h2 className="font-display text-lg sm:text-2xl font-extrabold text-[var(--text)]">
               Signature Chef Picks
@@ -455,7 +455,7 @@ export default function HomePage() {
             <div className="relative overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] shadow-sm max-w-sm">
               <FoodImage
                 src="/images/pizza-margherita.jpg"
-                alt="The Crust Culture kitchen"
+                alt="The Crust Culture cafe"
                 category="Restaurant"
                 className="aspect-[16/9] w-full object-cover transition duration-500 hover:scale-105"
               />
@@ -489,7 +489,7 @@ export default function HomePage() {
               {
                 icon: FiSmartphone,
                 title: 'Smart Table Ordering',
-                desc: 'Scan your table QR code to browse photos and send orders straight to our kitchen.',
+                desc: 'Scan your table QR code to browse photos and send orders straight to our cafe.',
                 accent: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
               },
             ].map((card) => {

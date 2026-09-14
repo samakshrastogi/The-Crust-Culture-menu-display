@@ -94,11 +94,11 @@
     </textPath>
   </text>
 
-  <!-- Text Bottom Arc: "WOOD FIRED KITCHEN" -->
+  <!-- Text Bottom Arc: "WOOD FIRED CAFE" -->
   <path id="bottomTextArc" d="M 202 126 A 82 82 0 0 1 38 126" fill="none" />
-  <text font-family="'Inter', 'Montserrat', sans-serif" font-size="10" font-weight="800" fill="#f59e0b" letter-spacing="2.8">
+  <text font-family="'Inter', 'Montserrat', sans-serif" font-size="10.5" font-weight="800" fill="#f59e0b" letter-spacing="3.2">
     <textPath href="#bottomTextArc" startOffset="50%" text-anchor="middle">
-      ★ WOOD FIRED KITCHEN ★
+      ★ WOOD FIRED CAFE ★
     </textPath>
   </text>
 
