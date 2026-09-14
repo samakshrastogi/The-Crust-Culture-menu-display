@@ -57,33 +57,33 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
       ref={sectionRef}
       data-card
       id={section.id}
-      className="overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--surface)] shadow-2xs sm:rounded-2xl transition-[border-color,box-shadow] duration-300 hover:border-[rgba(246,196,83,0.35)] hover:shadow-xs"
+      className="overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] shadow-xs transition-[border-color,box-shadow] duration-300 hover:border-amber-500/30 hover:shadow-md"
     >
-      <div className="flex items-center justify-between gap-2.5 border-b border-[var(--line)] bg-[var(--surface-strong)] px-3 py-1.5 sm:px-3.5 sm:py-2">
+      <div className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-gradient-to-r from-[var(--surface-strong)] via-[var(--surface)] to-[var(--surface-strong)] px-3.5 py-2.5 sm:px-4 sm:py-3">
         <div className="flex items-center gap-2.5 min-w-0">
           {section.image && (
             <img
               src={section.image}
               alt=""
-              className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg object-cover border border-[var(--line)] shadow-2xs"
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl object-cover border border-amber-500/25 shadow-xs"
             />
           )}
           <div className="min-w-0">
-            <h2 className="truncate text-sm font-extrabold text-[var(--text)] sm:text-base">
+            <h2 className="truncate text-sm sm:text-base font-extrabold text-[var(--text)]">
               <Highlight text={section.title} query={query} />
             </h2>
-            <p className="text-[10px] font-semibold text-[var(--muted)] sm:text-[11px]">
+            <p className="text-[10px] sm:text-[11px] font-semibold text-[var(--muted)]">
               {section.items.length} items
             </p>
           </div>
         </div>
         {section.labels?.some(Boolean) && (
-          <div className="hidden shrink-0 items-center gap-1 sm:flex">
-            <span className="text-[10px] font-semibold text-[var(--muted)]">Sizes:</span>
+          <div className="hidden shrink-0 items-center gap-1.5 sm:flex">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">Sizes:</span>
             {section.labels.filter(Boolean).map((label) => (
               <span
                 key={label}
-                className="grid h-5 min-w-5 place-items-center rounded bg-[var(--cream)] px-1 text-[10px] font-black text-[#24150b] border border-[var(--line)]"
+                className="grid h-5.5 min-w-5.5 place-items-center rounded-md bg-[var(--cream)] px-1.5 text-[10px] font-black text-[#24150b] border border-[var(--line)] shadow-2xs"
               >
                 {label}
               </span>
@@ -97,7 +97,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
           <article
             key={item.id}
             data-menu-row
-            className="group px-2.5 py-2 cursor-pointer transition-colors hover:bg-[var(--bg-soft)]/70 active:bg-[var(--bg-soft)] sm:px-3.5 sm:py-2.5"
+            className="group px-3 py-3 sm:px-4 sm:py-3.5 cursor-pointer transition-colors hover:bg-[var(--bg-soft)]/70 active:bg-[var(--bg-soft)]"
             onClick={(event) => {
               if (!event.target.closest('[data-fav-btn]')) {
                 onSelectItem({
@@ -109,7 +109,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
             }}
             onPointerDown={(event) => {
               if (!event.target.closest('[data-fav-btn]')) {
-                gsap.to(event.currentTarget, { scale: 0.994, duration: 0.08, ease: 'power2.out' })
+                gsap.to(event.currentTarget, { scale: 0.996, duration: 0.08, ease: 'power2.out' })
               }
             }}
             onPointerUp={(event) => {
@@ -119,37 +119,64 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
               gsap.to(event.currentTarget, { scale: 1, duration: 0.16, ease: 'power2.out' })
             }}
           >
-            <div className="flex min-w-0 gap-2.5 sm:gap-3 items-center">
-              <div className="relative h-11 w-11 min-[360px]:h-12 min-[360px]:w-12 sm:h-14 sm:w-14 shrink-0 overflow-hidden rounded-lg sm:rounded-xl border border-[var(--line)]">
-                <FoodImage
-                  src={item.image || section.image}
-                  alt={item.name}
-                  category={section.title.includes('Pizza') ? 'Pizza' : 'Restaurant'}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                />
+            <div className="flex items-center justify-between gap-3 sm:gap-4">
+              {/* Left: Dish Details & Pricing */}
+              <div className="min-w-0 flex-1 space-y-1.5">
+                {/* Name & Badges */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <VegIndicator veg={item.veg} />
+                  <h3 className="text-sm sm:text-base font-extrabold leading-snug text-[var(--text)] group-hover:text-[var(--orange)] transition-colors">
+                    <Highlight text={item.name} query={query} />
+                  </h3>
+                  {item.tag && (
+                    <span className="shrink-0 rounded-full bg-gradient-to-r from-[var(--orange)] to-amber-500 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-white shadow-2xs">
+                      {item.tag}
+                    </span>
+                  )}
+                </div>
+
+                {/* Pricing */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                  {item.prices.length === 1 ? (
+                    <span className="text-sm sm:text-base font-black text-[var(--orange)] tracking-tight">
+                      {formatPrice(item.prices[0].value)}
+                    </span>
+                  ) : (
+                    item.prices.map((price) => (
+                      <span
+                        key={`${item.id}-${price.label}-${price.value}`}
+                        data-price-chip
+                        className="inline-flex items-center gap-1 rounded-lg bg-[var(--surface-strong)] px-2 py-0.5 text-[11px] font-black text-[var(--text)] border border-[var(--line)] shadow-2xs group-hover:border-[var(--gold)]/40 transition-colors"
+                      >
+                        {price.label && (
+                          <span className="text-[10px] font-bold text-[var(--muted)] uppercase">
+                            {price.label}:
+                          </span>
+                        )}
+                        <span className="text-[var(--orange)] font-black">{formatPrice(price.value)}</span>
+                      </span>
+                    ))
+                  )}
+                </div>
+
+                {/* Toppings / Description */}
+                {item.toppings && (
+                  <p className="line-clamp-2 text-xs leading-relaxed text-[var(--muted)]">
+                    <Highlight text={item.toppings} query={query} />
+                  </p>
+                )}
               </div>
 
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-1.5">
-                  <div className="min-w-0 flex-1 text-left">
-                    <div className="flex min-w-0 items-center gap-1.5">
-                      <VegIndicator veg={item.veg} />
-                      <h3 className="min-w-0 flex-1 truncate text-xs font-extrabold leading-tight text-[var(--text)] group-hover:text-[var(--orange)] transition-colors sm:text-sm">
-                        <Highlight text={item.name} query={query} />
-                      </h3>
-                      {item.tag && (
-                        <span className="shrink-0 rounded-full bg-gradient-to-r from-[var(--orange)] to-amber-500 px-1.5 py-0.5 text-[8.5px] font-black uppercase tracking-wider text-white shadow-2xs">
-                          {item.tag}
-                        </span>
-                      )}
-                    </div>
-                    {item.toppings && (
-                      <p className="mt-0.5 line-clamp-1 text-[10.5px] leading-tight text-[var(--muted)] sm:text-[11.5px]">
-                        <Highlight text={item.toppings} query={query} />
-                      </p>
-                    )}
-                  </div>
-
+              {/* Right: Food Photo + Action Button */}
+              <div className="relative shrink-0 flex flex-col items-center pt-0.5 pb-2">
+                <div className="relative h-20 w-20 min-[360px]:h-22 min-[360px]:w-22 sm:h-24 sm:w-24 overflow-hidden rounded-2xl border border-[var(--line)] shadow-sm bg-[var(--surface-strong)]">
+                  <FoodImage
+                    src={item.image || section.image}
+                    alt={item.name}
+                    category={section.title.includes('Pizza') ? 'Pizza' : 'Restaurant'}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-108"
+                  />
+                  {/* Floating Favorite Heart in Corner */}
                   <button
                     type="button"
                     data-fav-btn
@@ -157,10 +184,10 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                       event.stopPropagation()
                       onToggleFavorite(item.id, event.currentTarget)
                     }}
-                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-full border text-xs transition ${
+                    className={`absolute top-1.5 right-1.5 grid h-7 w-7 place-items-center rounded-full backdrop-blur-md text-xs transition active:scale-90 ${
                       favorites.includes(item.id)
-                        ? 'border-[var(--orange)] bg-[var(--orange)] text-white shadow-xs'
-                        : 'border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:border-[var(--orange)] hover:text-[var(--orange)]'
+                        ? 'bg-[var(--orange)] text-white shadow-xs'
+                        : 'bg-black/55 text-white hover:bg-black/75 border border-white/20'
                     }`}
                     aria-label={
                       favorites.includes(item.id)
@@ -172,25 +199,14 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                   </button>
                 </div>
 
-                <div className="mt-1 flex max-w-full flex-wrap items-center gap-1 min-[360px]:gap-1.5">
-                  {item.prices.map((price) => (
-                    <span
-                      key={`${item.id}-${price.label}-${price.value}`}
-                      data-price-chip
-                      className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)] px-1.5 py-0.5 text-[10px] min-[360px]:text-[11px] font-black text-[var(--text)] border border-[var(--line)] shadow-2xs group-hover:border-[var(--gold)]/40 transition-colors"
-                    >
-                      {price.label && (
-                        <span className="text-[9px] font-semibold text-[var(--muted)] uppercase tracking-wider">
-                          {price.label}:
-                        </span>
-                      )}
-                      <span className="text-[var(--orange)] font-black">{formatPrice(price.value)}</span>
-                    </span>
-                  ))}
-                  <span className="ml-auto hidden text-[10px] font-semibold text-[var(--muted)] group-hover:text-[var(--orange)] group-hover:inline-block transition-colors sm:inline-block">
-                    Customize &rarr;
-                  </span>
-                </div>
+                {/* Docked Customize Button */}
+                <button
+                  type="button"
+                  className="touch-target -mt-3 z-10 inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-white shadow-md shadow-orange-500/25 transition-transform duration-200 group-hover:scale-105 active:scale-95 border border-white/30 whitespace-nowrap"
+                >
+                  <span>Customize</span>
+                  <span className="text-xs font-black leading-none">+</span>
+                </button>
               </div>
             </div>
           </article>
