@@ -36,7 +36,7 @@ export default function FavoritesPage() {
   const totalFavorites = favoriteSections.reduce((acc, section) => acc + section.items.length, 0)
 
   return (
-    <div className="mx-auto max-w-2xl px-3 py-4 pb-20 sm:px-6 sm:py-6">
+    <div className="mx-auto  px-3 py-4 pb-20 sm:px-6 sm:py-6">
       <section className="mb-4 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 shadow-sm sm:mb-6 sm:p-5">
         <div className="flex items-center gap-3">
           <FiHeart className="text-2xl text-[var(--orange)] fill-[var(--orange)] sm:text-3xl" />

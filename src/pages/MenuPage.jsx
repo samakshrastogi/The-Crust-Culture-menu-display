@@ -132,7 +132,7 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-3 pb-20 pt-3 sm:px-6 sm:pb-20 sm:pt-5 lg:px-8">
+    <div className="mx-auto  px-3 pb-20 pt-3 sm:px-6 sm:pb-20 sm:pt-5 lg:px-8">
       <section className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3 shadow-sm sm:mb-4 sm:rounded-[1.5rem] sm:px-6 sm:py-4">
         <LiveStatusBadge />
       </section>

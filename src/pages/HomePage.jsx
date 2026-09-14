@@ -83,7 +83,7 @@ export default function HomePage() {
   return (
     <div ref={scopeRef} className="space-y-4">
       {/* Hero Section */}
-      <section className="mx-auto grid max-w-7xl gap-3 px-3 pb-4 pt-2 sm:gap-6 sm:px-6 sm:pb-6 sm:pt-4 lg:grid-cols-[1fr_0.9fr] lg:px-8 lg:py-8">
+      <section className="mx-auto grid  gap-3 px-3 pb-4 pt-2 sm:gap-6 sm:px-6 sm:pb-6 sm:pt-4 lg:grid-cols-[1fr_0.9fr] lg:px-8 lg:py-8">
         <div className="flex flex-col justify-center">
           <h1
             data-hero-title
@@ -141,7 +141,7 @@ export default function HomePage() {
       </section>
 
       {/* Badges Section */}
-      <section data-reveal className="mx-auto max-w-7xl px-3 py-2 sm:px-6 sm:py-4 lg:px-8">
+      <section data-reveal className="mx-auto  px-3 py-2 sm:px-6 sm:py-4 lg:px-8">
         <div className="grid gap-2.5 sm:grid-cols-3 sm:gap-4">
           {[
             { icon: FiStar, label: 'Menu', value: `${initialAllMenuItems.length} priced items` },
@@ -158,7 +158,7 @@ export default function HomePage() {
       </section>
 
       {/* Menu Sections Grid */}
-      <section data-reveal className="mx-auto max-w-7xl px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+      <section data-reveal className="mx-auto  px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
         <div className="mb-4 flex items-end justify-between gap-4">
           <div>
             <h2 className="font-display mt-1 text-2xl font-semibold text-[var(--text)] sm:text-3xl">Menu sections</h2>
@@ -182,7 +182,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories Horizontal / Grid */}
-      <section data-reveal className="mx-auto max-w-7xl px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
+      <section data-reveal className="mx-auto  px-3 py-3 sm:px-6 sm:py-4 lg:px-8">
         <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
           {initialCategories.slice(0, 4).map((category) => (
             <Link
@@ -200,7 +200,7 @@ export default function HomePage() {
       <section
         id="our-story"
         data-reveal
-        className="mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-8 lg:px-8 border-t border-[var(--line)]"
+        className="mx-auto  px-3 py-6 sm:px-6 sm:py-8 lg:px-8 border-t border-[var(--line)]"
       >
         <div className="grid gap-6 md:grid-cols-2 md:items-center">
           <div className="space-y-3">

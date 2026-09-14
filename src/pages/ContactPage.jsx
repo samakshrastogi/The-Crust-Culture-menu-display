@@ -2,7 +2,7 @@ import { FiMapPin, FiPhone } from 'react-icons/fi'
 
 export default function ContactPage() {
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div className="mx-auto  px-4 py-10 sm:px-6 lg:px-8">
       <section className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <h1 className="font-display mt-3 text-5xl font-semibold leading-tight text-[var(--text)]">

@@ -18,7 +18,7 @@ export default function AboutPage() {
   }, [])
 
   return (
-    <div ref={scopeRef} className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div ref={scopeRef} className="mx-auto  px-4 py-10 sm:px-6 lg:px-8">
       <section data-reveal className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
           <h1 className="font-display mt-3 text-5xl font-semibold leading-tight text-[var(--text)]">
