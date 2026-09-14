@@ -17,11 +17,21 @@ function Highlight({ text, query }) {
     return text
   }
 
-  const escapedQuery = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const parts = String(text).split(new RegExp(`(${escapedQuery})`, 'ig'))
+  const terms = query
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+
+  if (terms.length === 0) {
+    return text
+  }
+
+  const regex = new RegExp(`(${terms.join('|')})`, 'gi')
+  const parts = String(text).split(regex)
 
   return parts.map((part, index) =>
-    part.toLowerCase() === query.trim().toLowerCase() ? (
+    terms.some((term) => new RegExp(`^${term}$`, 'i').test(part)) ? (
       <mark key={`${part}-${index}`} className="rounded bg-[var(--gold)]/35 px-0.5 text-inherit">
         {part}
       </mark>
@@ -39,72 +49,8 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
       return undefined
     }
 
-    const context = gsap.context(() => {
-      const sectionElement = sectionRef.current
-      if (!sectionElement) {
-        return
-      }
-
-      const rows = gsap.utils.toArray('[data-menu-row]')
-      const chips = gsap.utils.toArray('[data-price-chip]')
-
-      gsap.fromTo(sectionElement, {
-        y: 18,
-        opacity: 0,
-      }, {
-        y: 0,
-        opacity: 1,
-        duration: 0.34,
-        ease: 'power2.out',
-        clearProps: 'transform,opacity',
-        scrollTrigger: {
-          trigger: sectionElement,
-          start: 'top 92%',
-          once: true,
-        },
-      })
-
-      gsap.fromTo(rows, {
-        x: -8,
-        opacity: 0,
-      }, {
-        x: 0,
-        opacity: 1,
-        duration: 0.24,
-        stagger: 0.026,
-        ease: 'power2.out',
-        clearProps: 'transform,opacity',
-        scrollTrigger: {
-          trigger: sectionElement,
-          start: 'top 86%',
-          once: true,
-        },
-      })
-
-      gsap.fromTo(chips, {
-        y: 5,
-        scale: 0.96,
-        opacity: 0,
-      }, {
-        y: 0,
-        scale: 1,
-        opacity: 1,
-        duration: 0.18,
-        stagger: 0.018,
-        ease: 'power2.out',
-        clearProps: 'transform,opacity',
-        scrollTrigger: {
-          trigger: sectionElement,
-          start: 'top 88%',
-          once: true,
-        },
-      })
-    }, sectionRef)
-
-    return () => {
-      context.revert()
-    }
-  }, [])
+    gsap.set(sectionRef.current, { opacity: 1, y: 0, clearProps: 'opacity,transform' })
+  }, [query])
 
   return (
     <section
@@ -115,7 +61,9 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
     >
       <div className="flex items-center justify-between gap-3 border-b border-[var(--line)] bg-[var(--surface-strong)] px-3 py-2 sm:px-4 sm:py-2.5">
         <div className="min-w-0">
-          <h2 className="truncate text-base font-black text-[var(--text)] sm:text-xl">{section.title}</h2>
+          <h2 className="truncate text-base font-black text-[var(--text)] sm:text-xl">
+            <Highlight text={section.title} query={query} />
+          </h2>
           <p className="text-[10px] font-semibold text-[var(--muted)] sm:text-xs">
             {section.items.length} items
           </p>

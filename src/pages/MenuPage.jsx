@@ -31,6 +31,25 @@ const initialAllMenuItems = initialSections.flatMap((section) =>
   })),
 )
 
+function isItemMatch(item, sectionTitle, query) {
+  const search = query.toLowerCase().trim()
+  if (!search) return true
+
+  const words = search.split(/\s+/).filter(Boolean)
+  const itemText = `${sectionTitle} ${item.name} ${item.toppings || ''} ${item.tag || ''} ${item.description || ''}`.toLowerCase()
+
+  return words.every((word) => {
+    if (itemText.includes(word)) return true
+    if (word.endsWith('s') && itemText.includes(word.slice(0, -1))) return true
+    if (word.endsWith('es') && itemText.includes(word.slice(0, -2))) return true
+    if (word === 'maggi' && itemText.includes('maggie')) return true
+    if (word === 'maggie' && itemText.includes('maggi')) return true
+    if (word === 'fry' && itemText.includes('fries')) return true
+    if (word === 'fries' && itemText.includes('fry')) return true
+    return false
+  })
+}
+
 export default function MenuPage() {
   const [searchParams] = useSearchParams()
   const requestedCategory = searchParams.get('category')
@@ -49,17 +68,11 @@ export default function MenuPage() {
   }, [])
 
   const filteredSections = useMemo(() => {
-    const search = query.toLowerCase().trim()
-
     return initialSections
       .map((section) => {
-        const items = section.items.filter((item) => {
-          if (!search) {
-            return true
-          }
-
-          return `${section.title} ${item.name} ${item.toppings || ''}`.toLowerCase().includes(search)
-        })
+        const items = section.items.filter((item) =>
+          isItemMatch(item, section.title, query),
+        )
 
         return { ...section, items }
       })
@@ -71,14 +84,13 @@ export default function MenuPage() {
   const favoriteCount = favorites.filter((id) => initialAllMenuItems.some((item) => item.id === id)).length
 
   const searchSuggestions = useMemo(() => {
-    const search = query.toLowerCase().trim()
-    if (!search) {
+    if (!query.trim()) {
       return []
     }
 
     return initialAllMenuItems
-      .filter((item) => `${item.sectionTitle} ${item.name} ${item.toppings || ''}`.toLowerCase().includes(search))
-      .slice(0, 6)
+      .filter((item) => isItemMatch(item, item.sectionTitle, query))
+      .slice(0, 8)
   }, [query])
 
   useEffect(() => {
@@ -87,11 +99,12 @@ export default function MenuPage() {
     }
 
     const cards = sectionsRef.current.querySelectorAll('[data-card]')
+    gsap.killTweensOf(cards)
     gsap.set(sectionsRef.current, { opacity: 1, y: 0 })
     gsap.fromTo(
       cards,
-      { y: 10 },
-      { y: 0, duration: 0.22, stagger: 0.025, ease: 'power2.out', clearProps: 'transform' },
+      { opacity: 0, y: 12 },
+      { opacity: 1, y: 0, duration: 0.22, stagger: 0.03, ease: 'power2.out', clearProps: 'all' },
     )
 
     return () => gsap.killTweensOf(cards)
@@ -128,7 +141,13 @@ export default function MenuPage() {
         <SearchBar value={query} onChange={setQuery} />
       </div>
 
-      <MenuImageStrip sections={initialSections} activeCategory={activeCategory} onSelect={handleCategoryChange} />
+      {(!query || filteredSections.length > 0) && (
+        <MenuImageStrip
+          sections={query ? filteredSections : initialSections}
+          activeCategory={activeCategory}
+          onSelect={handleCategoryChange}
+        />
+      )}
 
       {searchSuggestions.length > 0 && (
         <section className="mb-3 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:mb-5">
@@ -138,7 +157,7 @@ export default function MenuPage() {
                 key={item.id}
                 type="button"
                 onClick={() => setSelectedItem(item)}
-                className="shrink-0 rounded-full border border-[var(--line)] bg-[var(--bg-soft)] px-3 py-2 text-xs font-bold text-[var(--text)]"
+                className="shrink-0 rounded-full border border-[var(--line)] bg-[var(--bg-soft)] px-3 py-2 text-xs font-bold text-[var(--text)] transition hover:border-[var(--gold)]"
               >
                 {item.name}
               </button>
@@ -165,7 +184,7 @@ export default function MenuPage() {
           <div className="flex flex-col gap-3 lg:hidden">
             {filteredSections.map((section) => (
               <MenuSectionCard
-                key={section.id}
+                key={`${section.id}-${query ? 'search' : 'all'}`}
                 section={section}
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
@@ -175,32 +194,51 @@ export default function MenuPage() {
             ))}
           </div>
 
-          {/* Desktop view (two columns, distributed) */}
-          <div className="hidden lg:grid lg:grid-cols-2 lg:gap-4 items-start">
-            <div className="flex flex-col gap-4">
-              {filteredSections.filter((_, idx) => idx % 2 === 0).map((section) => (
+          {/* Desktop view */}
+          <div className="hidden lg:block">
+            {filteredSections.length === 1 ? (
+              <div className="max-w-3xl mx-auto">
                 <MenuSectionCard
-                  key={section.id}
-                  section={section}
+                  key={`${filteredSections[0].id}-${query ? 'search' : 'all'}`}
+                  section={filteredSections[0]}
                   favorites={favorites}
                   onToggleFavorite={toggleFavorite}
                   onSelectItem={setSelectedItem}
                   query={query}
                 />
-              ))}
-            </div>
-            <div className="flex flex-col gap-4">
-              {filteredSections.filter((_, idx) => idx % 2 !== 0).map((section) => (
-                <MenuSectionCard
-                  key={section.id}
-                  section={section}
-                  favorites={favorites}
-                  onToggleFavorite={toggleFavorite}
-                  onSelectItem={setSelectedItem}
-                  query={query}
-                />
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-4 items-start">
+                <div className="flex flex-col gap-4">
+                  {filteredSections
+                    .filter((_, idx) => idx % 2 === 0)
+                    .map((section) => (
+                      <MenuSectionCard
+                        key={`${section.id}-${query ? 'search' : 'all'}`}
+                        section={section}
+                        favorites={favorites}
+                        onToggleFavorite={toggleFavorite}
+                        onSelectItem={setSelectedItem}
+                        query={query}
+                      />
+                    ))}
+                </div>
+                <div className="flex flex-col gap-4">
+                  {filteredSections
+                    .filter((_, idx) => idx % 2 !== 0)
+                    .map((section) => (
+                      <MenuSectionCard
+                        key={`${section.id}-${query ? 'search' : 'all'}`}
+                        section={section}
+                        favorites={favorites}
+                        onToggleFavorite={toggleFavorite}
+                        onSelectItem={setSelectedItem}
+                        query={query}
+                      />
+                    ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -209,6 +247,13 @@ export default function MenuPage() {
         <div className="rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-8 text-center">
           <p className="text-lg font-black text-[var(--text)]">No dishes matched your search.</p>
           <p className="mt-2 text-sm text-[var(--muted)]">Try another category or remove a keyword.</p>
+          <button
+            type="button"
+            onClick={() => setQuery('')}
+            className="mt-4 inline-flex items-center rounded-full bg-[var(--gold)] px-5 py-2 text-xs font-black text-[#24150b] shadow-sm transition hover:brightness-105"
+          >
+            Clear search
+          </button>
         </div>
       )}
       <MenuItemSheet

@@ -7,7 +7,7 @@ export default function SearchBar({ value, onChange }) {
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder="Search pizza, pasta, coffee..."
+        placeholder="Search pizza, burger, momo, maggie..."
         className="w-full bg-transparent text-sm text-[var(--text)] outline-none placeholder:text-[var(--muted)] sm:text-base"
         type="search"
       />
