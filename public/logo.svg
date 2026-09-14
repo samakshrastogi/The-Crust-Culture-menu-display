@@ -1,109 +1,251 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
   <defs>
-    <!-- Background Gradient -->
+    <!-- Background Radial Gradient (Deep Roasted Hearth) -->
     <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#2a170d" />
-      <stop offset="65%" stop-color="#190e08" />
-      <stop offset="100%" stop-color="#0f0804" />
+      <stop offset="0%" stop-color="#2a140a" />
+      <stop offset="65%" stop-color="#180b05" />
+      <stop offset="100%" stop-color="#0c0502" />
     </radialGradient>
 
-    <!-- Ring Border Gradient -->
+    <!-- Ring Border Gold Gradient -->
     <linearGradient id="goldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fbbf24" />
-      <stop offset="30%" stop-color="#f59e0b" />
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="25%" stop-color="#f59e0b" />
       <stop offset="70%" stop-color="#d97706" />
       <stop offset="100%" stop-color="#ea580c" />
     </linearGradient>
 
-    <!-- Flame Core Gradient -->
-    <linearGradient id="flameGrad" x1="50%" y1="100%" x2="50%" y2="0%">
+    <!-- Sourdough Crust Gradient -->
+    <radialGradient id="crustGrad" cx="50%" cy="45%" r="55%">
+      <stop offset="65%" stop-color="#fde68a" />
+      <stop offset="82%" stop-color="#f59e0b" />
+      <stop offset="93%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#92400e" />
+    </radialGradient>
+
+    <!-- Tomato Sauce Gradient -->
+    <radialGradient id="sauceGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="70%" stop-color="#dc2626" />
+      <stop offset="100%" stop-color="#991b1b" />
+    </radialGradient>
+
+    <!-- Melted Mozzarella Cheese Gradient -->
+    <radialGradient id="cheeseGrad" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="35%" stop-color="#fef9c3" />
+      <stop offset="75%" stop-color="#fef08a" />
+      <stop offset="100%" stop-color="#fcd34d" />
+    </radialGradient>
+
+    <!-- Wood Flame Outer Gradient -->
+    <linearGradient id="flameOuter" x1="50%" y1="100%" x2="50%" y2="0%">
       <stop offset="0%" stop-color="#dc2626" />
-      <stop offset="35%" stop-color="#ea580c" />
-      <stop offset="70%" stop-color="#f97316" />
-      <stop offset="100%" stop-color="#fde047" />
+      <stop offset="40%" stop-color="#ea580c" />
+      <stop offset="80%" stop-color="#f97316" />
+      <stop offset="100%" stop-color="#fbbf24" />
     </linearGradient>
 
-    <!-- Inner Hot Flame -->
-    <linearGradient id="innerFlame" x1="50%" y1="100%" x2="50%" y2="0%">
+    <!-- Wood Flame Core Gradient -->
+    <linearGradient id="flameInner" x1="50%" y1="100%" x2="50%" y2="0%">
       <stop offset="0%" stop-color="#f97316" />
-      <stop offset="60%" stop-color="#fbbf24" />
+      <stop offset="50%" stop-color="#fbbf24" />
       <stop offset="100%" stop-color="#ffffff" />
     </linearGradient>
 
-    <!-- Crust Golden Gradient -->
-    <linearGradient id="crustGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fde047" />
-      <stop offset="40%" stop-color="#f59e0b" />
-      <stop offset="100%" stop-color="#b45309" />
+    <!-- Basil Leaf Gradient -->
+    <linearGradient id="basilGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80" />
+      <stop offset="40%" stop-color="#22c55e" />
+      <stop offset="100%" stop-color="#15803d" />
+    </linearGradient>
+
+    <!-- Paneer Cube Gradient -->
+    <linearGradient id="paneerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="60%" stop-color="#fef3c7" />
+      <stop offset="100%" stop-color="#fcd34d" />
     </linearGradient>
 
     <!-- Ambient Fire Glow Filter -->
     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feGaussianBlur stdDeviation="5" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <!-- Drop Shadow for Pizza Wheel -->
+    <filter id="pizzaShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.65" />
     </filter>
   </defs>
 
-  <!-- Outer Shadow & Base Circle -->
+  <!-- Outer Dark Emblem Circle -->
   <circle cx="120" cy="120" r="114" fill="url(#bgGrad)" stroke="url(#goldBorder)" stroke-width="4" />
-  <circle cx="120" cy="120" r="106" stroke="url(#goldBorder)" stroke-width="1.5" stroke-dasharray="3 3" opacity="0.6" />
+  <circle cx="120" cy="120" r="107" stroke="url(#goldBorder)" stroke-width="1.2" stroke-dasharray="3 3" opacity="0.55" />
 
-  <!-- Wood-Fired Oven Arch (Brick Hearth) -->
-  <path d="M56 160 A 64 64 0 0 1 184 160 Z" fill="#26140a" stroke="url(#goldBorder)" stroke-width="3" />
-  <path d="M64 160 A 56 56 0 0 1 176 160 Z" fill="#150b05" />
+  <!-- Wood-Fired Oven Arch In Background -->
+  <path d="M68 136 A 52 52 0 0 1 172 136 Z" fill="#1e0c05" stroke="url(#goldBorder)" stroke-width="2" opacity="0.8" />
 
-  <!-- Fire Hearth Floor / Pizza Stone Deck -->
-  <rect x="50" y="158" width="140" height="10" rx="5" fill="url(#crustGrad)" />
-
-  <!-- Sourdough Pizza Base / Rising Crust Arch -->
-  <path d="M72 156 Q 120 126 168 156 Q 120 142 72 156 Z" fill="url(#crustGrad)" />
-
-  <!-- Dancing Wood Fire Flame (Back Glow) -->
-  <path d="M120 72 C 108 92 98 108 98 126 C 98 144 108 154 120 154 C 132 154 142 144 142 126 C 142 108 132 92 120 72 Z" fill="#ea580c" opacity="0.4" filter="url(#glow)" />
-
-  <!-- Main Flame -->
-  <path d="M120 68 C 104 90 94 110 94 128 C 94 146 106 156 120 156 C 134 156 146 146 146 128 C 146 110 136 90 120 68 Z" fill="url(#flameGrad)" />
-
-  <!-- Inner Dynamic Flame Tongue -->
-  <path d="M120 94 C 112 108 106 120 106 132 C 106 144 112 152 120 152 C 128 152 134 144 134 132 C 134 120 128 108 120 94 Z" fill="url(#innerFlame)" />
-
-  <!-- Hot White Core Spark -->
-  <path d="M120 120 C 116 128 114 136 114 142 C 114 148 117 151 120 151 C 123 151 126 148 126 142 C 126 136 124 128 120 120 Z" fill="#ffffff" />
-
-  <!-- Wheat Ears / Artisan Stalks (Left) -->
-  <g fill="url(#goldBorder)" opacity="0.85">
-    <ellipse cx="44" cy="116" rx="4" ry="9" transform="rotate(-30 44 116)" />
-    <ellipse cx="40" cy="132" rx="4" ry="9" transform="rotate(-20 40 132)" />
-    <ellipse cx="40" cy="148" rx="4" ry="9" transform="rotate(-10 40 148)" />
-    <path d="M42 106 Q 40 136 46 166" stroke="url(#goldBorder)" stroke-width="2" fill="none" stroke-linecap="round" />
+  <!-- Background Wood-Fire Flame (Behind Pizza) -->
+  <g filter="url(#glow)">
+    <!-- Back Warm Aura -->
+    <path d="M120 50 C 102 72 92 90 92 110 C 92 126 104 136 120 136 C 136 136 148 126 148 110 C 148 90 138 72 120 50 Z" fill="#ea580c" opacity="0.35" />
+    <!-- Main Flame Body -->
+    <path d="M120 46 C 104 70 94 92 94 112 C 94 128 106 136 120 136 C 134 136 146 128 146 112 C 146 92 136 70 120 46 Z" fill="url(#flameOuter)" />
+    <!-- Center Tongue Flame -->
+    <path d="M120 68 C 111 84 104 98 104 112 C 104 125 111 133 120 133 C 129 133 136 125 136 112 C 136 98 129 84 120 68 Z" fill="url(#flameInner)" />
+    <!-- White Core Spark -->
+    <path d="M120 90 C 116 99 113 107 113 116 C 113 122 116 126 120 126 C 124 126 127 122 127 116 C 127 107 124 99 120 90 Z" fill="#ffffff" />
   </g>
 
-  <!-- Wheat Ears / Artisan Stalks (Right) -->
+  <!-- Golden Wheat Ears / Artisan Stalks (Left) -->
   <g fill="url(#goldBorder)" opacity="0.85">
-    <ellipse cx="196" cy="116" rx="4" ry="9" transform="rotate(30 196 116)" />
-    <ellipse cx="200" cy="132" rx="4" ry="9" transform="rotate(20 200 132)" />
-    <ellipse cx="200" cy="148" rx="4" ry="9" transform="rotate(10 200 148)" />
-    <path d="M198 106 Q 200 136 194 166" stroke="url(#goldBorder)" stroke-width="2" fill="none" stroke-linecap="round" />
+    <ellipse cx="44" cy="116" rx="3.5" ry="8" transform="rotate(-30 44 116)" />
+    <ellipse cx="40" cy="132" rx="3.5" ry="8" transform="rotate(-20 40 132)" />
+    <ellipse cx="40" cy="148" rx="3.5" ry="8" transform="rotate(-10 40 148)" />
+    <path d="M42 106 Q 40 136 46 166" stroke="url(#goldBorder)" stroke-width="1.8" fill="none" stroke-linecap="round" />
   </g>
 
-  <!-- Text Top Arc: "THE CRUST CULTURE" -->
-  <path id="topTextArc" d="M 38 120 A 82 82 0 0 1 202 120" fill="none" />
-  <text font-family="'Inter', 'Montserrat', 'Georgia', sans-serif" font-size="13.5" font-weight="900" fill="#fef3c7" letter-spacing="3.2">
+  <!-- Golden Wheat Ears / Artisan Stalks (Right) -->
+  <g fill="url(#goldBorder)" opacity="0.85">
+    <ellipse cx="196" cy="116" rx="3.5" ry="8" transform="rotate(30 196 116)" />
+    <ellipse cx="200" cy="132" rx="3.5" ry="8" transform="rotate(20 200 132)" />
+    <ellipse cx="200" cy="148" rx="3.5" ry="8" transform="rotate(10 200 148)" />
+    <path d="M198 106 Q 200 136 194 166" stroke="url(#goldBorder)" stroke-width="1.8" fill="none" stroke-linecap="round" />
+  </g>
+
+  <!-- ==================================================== -->
+  <!-- PIZZA CENTERPIECE (Artisan Wood-Fired Sourdough Pie) -->
+  <!-- ==================================================== -->
+  <g filter="url(#pizzaShadow)">
+    <!-- 1. Puffy Artisan Cornicione Crust -->
+    <circle cx="120" cy="132" r="46" fill="url(#crustGrad)" stroke="#78350f" stroke-width="1.5" />
+
+    <!-- 2. Authentic Wood-Fired Leopard Char Spots along the Crust -->
+    <!-- Top & Angles -->
+    <ellipse cx="120" cy="88" rx="3.5" ry="2" fill="#381a06" opacity="0.85" />
+    <circle cx="106" cy="91" r="2.2" fill="#451a03" opacity="0.9" />
+    <circle cx="134" cy="91" r="2.5" fill="#381a06" opacity="0.9" />
+    <ellipse cx="90" cy="104" rx="2.5" ry="4" transform="rotate(-35 90 104)" fill="#451a03" opacity="0.85" />
+    <ellipse cx="150" cy="104" rx="2.5" ry="4" transform="rotate(35 150 104)" fill="#381a06" opacity="0.85" />
+    <!-- Sides -->
+    <ellipse cx="76" cy="128" rx="2.5" ry="4.5" transform="rotate(-15 76 128)" fill="#451a03" opacity="0.9" />
+    <ellipse cx="164" cy="128" rx="2.5" ry="4.5" transform="rotate(15 164 128)" fill="#381a06" opacity="0.9" />
+    <circle cx="78" cy="142" r="2.2" fill="#451a03" opacity="0.8" />
+    <circle cx="162" cy="142" r="2.2" fill="#381a06" opacity="0.8" />
+    <!-- Bottom Blisters -->
+    <ellipse cx="94" cy="162" rx="3.5" ry="2.2" transform="rotate(20 94 162)" fill="#451a03" opacity="0.85" />
+    <ellipse cx="146" cy="162" rx="3.5" ry="2.2" transform="rotate(-20 146 162)" fill="#381a06" opacity="0.85" />
+    <circle cx="120" cy="176" r="2.8" fill="#451a03" opacity="0.9" />
+    <circle cx="132" cy="174" r="1.8" fill="#381a06" opacity="0.8" />
+
+    <!-- 3. San Marzano Rich Tomato Sauce Base -->
+    <circle cx="120" cy="132" r="38" fill="url(#sauceGrad)" />
+
+    <!-- 4. Melted Mozzarella & Fior di Latte Golden Cheese Pool -->
+    <path d="M 120 96 
+             C 136 96 154 108 154 124 
+             C 154 130 156 136 154 142 
+             C 151 152 144 162 134 166 
+             C 124 170 112 168 104 162 
+             C 94 154 88 142 88 130 
+             C 88 114 102 96 120 96 Z" 
+          fill="url(#cheeseGrad)" />
+
+    <!-- Additional melted cheese patches overlapping sauce -->
+    <ellipse cx="106" cy="116" rx="14" ry="10" transform="rotate(-15 106 116)" fill="url(#cheeseGrad)" opacity="0.95" />
+    <ellipse cx="134" cy="118" rx="13" ry="9" transform="rotate(20 134 118)" fill="url(#cheeseGrad)" opacity="0.95" />
+    <ellipse cx="122" cy="146" rx="16" ry="11" transform="rotate(5 122 146)" fill="url(#cheeseGrad)" opacity="0.95" />
+    <ellipse cx="140" cy="138" rx="11" ry="8" transform="rotate(-10 140 138)" fill="url(#cheeseGrad)" opacity="0.95" />
+
+    <!-- 5. Six Golden Pizza Slice Cut Lines (Subtle engraved crust cuts) -->
+    <g stroke="#991b1b" stroke-width="1.2" stroke-linecap="round" opacity="0.6">
+      <!-- Top to Bottom -->
+      <line x1="120" y1="94" x2="120" y2="170" />
+      <!-- Top-Right to Bottom-Left (60 deg) -->
+      <line x1="152" y1="113" x2="88" y2="151" />
+      <!-- Top-Left to Bottom-Right (120 deg) -->
+      <line x1="88" y1="113" x2="152" y2="151" />
+    </g>
+
+    <!-- 6. Gourmet Toppings -->
+    <!-- Ripe Cherry Tomato Slices -->
+    <g>
+      <!-- Tomato 1 (Top Left) -->
+      <circle cx="108" cy="112" r="5" fill="#dc2626" stroke="#b91c1c" stroke-width="0.8" />
+      <circle cx="108" cy="112" r="3.2" fill="#ef4444" />
+      <circle cx="106.8" cy="110.8" r="1" fill="#fef08a" opacity="0.9" />
+      <circle cx="109.2" cy="113.2" r="0.9" fill="#fef08a" opacity="0.9" />
+
+      <!-- Tomato 2 (Right) -->
+      <circle cx="138" cy="126" r="5" fill="#dc2626" stroke="#b91c1c" stroke-width="0.8" />
+      <circle cx="138" cy="126" r="3.2" fill="#ef4444" />
+      <circle cx="136.8" cy="124.8" r="1" fill="#fef08a" opacity="0.9" />
+      <circle cx="139.2" cy="127.2" r="0.9" fill="#fef08a" opacity="0.9" />
+
+      <!-- Tomato 3 (Bottom) -->
+      <circle cx="116" cy="154" r="5.2" fill="#dc2626" stroke="#b91c1c" stroke-width="0.8" />
+      <circle cx="116" cy="154" r="3.4" fill="#ef4444" />
+      <circle cx="114.8" cy="152.8" r="1" fill="#fef08a" opacity="0.9" />
+      <circle cx="117.2" cy="155.2" r="0.9" fill="#fef08a" opacity="0.9" />
+    </g>
+
+    <!-- Golden Artisan Grilled Paneer / Mozzarella Cubes -->
+    <g stroke="#d97706" stroke-width="0.6">
+      <!-- Cube 1 (Top Right) -->
+      <rect x="124" y="106" width="7" height="7" rx="1.5" fill="url(#paneerGrad)" transform="rotate(18 127 109)" />
+      <!-- Cube 2 (Left Center) -->
+      <rect x="94" y="128" width="7" height="7" rx="1.5" fill="url(#paneerGrad)" transform="rotate(-12 97 131)" />
+      <!-- Cube 3 (Bottom Right) -->
+      <rect x="131" y="144" width="7.5" height="7.5" rx="1.5" fill="url(#paneerGrad)" transform="rotate(25 134 147)" />
+    </g>
+
+    <!-- Fresh Vibrant Basil Leaves -->
+    <!-- Basil 1 (Center-Left) -->
+    <g transform="rotate(-28 116 128)">
+      <path d="M116 120 C 111 123 108 128 116 136 C 124 128 121 123 116 120 Z" fill="url(#basilGrad)" />
+      <path d="M116 122 L 116 134" stroke="#86efac" stroke-width="0.7" stroke-linecap="round" opacity="0.8" />
+    </g>
+    <!-- Basil 2 (Center-Right) -->
+    <g transform="rotate(35 126 136)">
+      <path d="M126 128 C 121 131 118 136 126 144 C 134 136 131 131 126 128 Z" fill="url(#basilGrad)" />
+      <path d="M126 130 L 126 142" stroke="#86efac" stroke-width="0.7" stroke-linecap="round" opacity="0.8" />
+    </g>
+    <!-- Basil 3 (Top Center) -->
+    <g transform="rotate(10 120 118)">
+      <path d="M120 111 C 116 114 114 118 120 125 C 126 118 124 114 120 111 Z" fill="url(#basilGrad)" />
+      <path d="M120 113 L 120 123" stroke="#86efac" stroke-width="0.6" stroke-linecap="round" opacity="0.8" />
+    </g>
+
+    <!-- Olive / Char Herb Flecks -->
+    <circle cx="127" cy="123" r="1.3" fill="#2e1405" opacity="0.8" />
+    <circle cx="112" cy="140" r="1.2" fill="#2e1405" opacity="0.8" />
+    <circle cx="122" cy="138" r="1" fill="#15803d" opacity="0.9" />
+    <circle cx="134" cy="112" r="1.1" fill="#15803d" opacity="0.9" />
+  </g>
+
+  <!-- ==================================================== -->
+  <!-- CIRCULAR BADGE TYPOGRAPHY (Top & Bottom Arcs)        -->
+  <!-- ==================================================== -->
+
+  <!-- Top Text Arc: "THE CRUST CULTURE" -->
+  <path id="topTextArc" d="M 36 120 A 84 84 0 0 1 204 120" fill="none" />
+  <text font-family="'Inter', 'Montserrat', 'Segoe UI', sans-serif" font-size="13" font-weight="900" fill="#fef3c7" letter-spacing="3.2">
     <textPath href="#topTextArc" startOffset="50%" text-anchor="middle">
       THE CRUST CULTURE
     </textPath>
   </text>
 
-  <!-- Text Bottom Arc: "WOOD FIRED CAFE" -->
-  <path id="bottomTextArc" d="M 202 126 A 82 82 0 0 1 38 126" fill="none" />
-  <text font-family="'Inter', 'Montserrat', sans-serif" font-size="10.5" font-weight="800" fill="#f59e0b" letter-spacing="3.2">
+  <!-- Bottom Text Arc: "★ WOOD FIRED CAFE ★" -->
+  <path id="bottomTextArc" d="M 204 126 A 84 84 0 0 1 36 126" fill="none" />
+  <text font-family="'Inter', 'Montserrat', 'Segoe UI', sans-serif" font-size="10.5" font-weight="800" fill="#f59e0b" letter-spacing="3.2">
     <textPath href="#bottomTextArc" startOffset="50%" text-anchor="middle">
       ★ WOOD FIRED CAFE ★
     </textPath>
   </text>
 
-  <!-- Star Accents -->
-  <circle cx="120" cy="46" r="2.5" fill="#fde047" />
-  <circle cx="108" cy="48" r="1.5" fill="#f59e0b" />
-  <circle cx="132" cy="48" r="1.5" fill="#f59e0b" />
+  <!-- Crest Star Accents at 12 O'Clock -->
+  <circle cx="120" cy="38" r="2.5" fill="#fde047" />
+  <circle cx="108" cy="40" r="1.6" fill="#f59e0b" />
+  <circle cx="132" cy="40" r="1.6" fill="#f59e0b" />
 </svg>

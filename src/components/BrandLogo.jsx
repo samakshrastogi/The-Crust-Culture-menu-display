@@ -10,9 +10,9 @@ export default function BrandLogo({ compact = false }) {
       <img
         src="/logo.svg"
         alt="The Crust Culture Logo"
-        width="40"
-        height="40"
-        className="h-9 w-9 shrink-0 rounded-full object-contain shadow-md shadow-orange-500/25 ring-1 ring-amber-500/30 sm:h-10 sm:w-10 transition-transform duration-200 group-hover:scale-105 group-hover:rotate-6"
+        width="44"
+        height="44"
+        className="h-9 w-9 shrink-0 rounded-full object-contain shadow-md shadow-orange-500/25 ring-1.5 ring-amber-500/35 sm:h-10.5 sm:w-10.5 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6"
       />
       {!compact && (
         <span className="min-w-0 leading-tight">

@@ -4,10 +4,20 @@ export default function ContactPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <section className="grid gap-6 md:gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-        <div>
-          <h1 className="font-display mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[var(--text)] sm:text-4xl lg:text-5xl">
-            Contact The Crust Culture
-          </h1>
+        <div className="flex items-center gap-3.5 sm:gap-4">
+          <img
+            src="/logo.svg"
+            alt="The Crust Culture"
+            className="h-14 w-14 sm:h-18 sm:w-18 shrink-0 rounded-full object-contain shadow-lg shadow-orange-500/20 ring-2 ring-amber-500/30"
+          />
+          <div>
+            <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[var(--gold)] sm:text-xs">
+              Wood Fired Cafe
+            </span>
+            <h1 className="font-display mt-1 text-2xl font-extrabold leading-tight tracking-tight text-[var(--text)] sm:text-4xl lg:text-5xl">
+              Contact The Crust Culture
+            </h1>
+          </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">

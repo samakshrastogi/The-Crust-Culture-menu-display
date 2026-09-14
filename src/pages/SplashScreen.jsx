@@ -38,7 +38,7 @@ export default function SplashScreen() {
       <div className="space-y-7">
         <div
           data-logo-mark
-          className="mx-auto flex h-28 w-28 items-center justify-center rounded-full border border-amber-500/30 bg-[var(--surface)] p-1.5 shadow-2xl shadow-orange-500/20"
+          className="mx-auto flex h-32 w-32 sm:h-36 sm:w-36 items-center justify-center rounded-full border-2 border-amber-500/40 bg-[#1a0c06] p-1.5 shadow-2xl shadow-orange-500/30 ring-4 ring-orange-500/15"
         >
           <img
             src="/logo.svg"
