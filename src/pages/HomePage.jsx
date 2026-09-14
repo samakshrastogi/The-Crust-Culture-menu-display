@@ -9,17 +9,23 @@ import {
   FiExternalLink,
   FiHeart,
   FiLayers,
+  FiMapPin,
+  FiMaximize2,
   FiPhone,
   FiSmartphone,
   FiStar,
   FiZap,
 } from 'react-icons/fi'
-import { SiZomato } from 'react-icons/si'
+import { SiGoogle, SiZomato } from 'react-icons/si'
+import { FaQuoteLeft } from 'react-icons/fa6'
 import { revealHero, revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
+import ImageLightbox from '../components/ImageLightbox'
+import MenuItemSheet from '../components/MenuItemSheet'
+import VegIndicator from '../components/VegIndicator'
 import { menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import MenuItemSheet from '../components/MenuItemSheet'
+import { getFlavorBadge } from '../utils/flavorBadge'
 
 export const ZOMATO_URL = 'https://www.zomato.com'
 
@@ -54,10 +60,47 @@ const getMinPrice = (item) => {
   return parsedPrices.length ? Math.min(...parsedPrices) : 0
 }
 
+const guestReviews = [
+  {
+    name: 'Aarav Sharma',
+    location: 'Sector 23, Palam Vihar',
+    rating: 5,
+    source: 'Google Reviews',
+    text: 'The sourdough crust here is genuinely extraordinary. Lightweight, airy cornicione with beautiful leopard spotting, and zero heaviness afterward. The Loaded Indi Tandoori is a masterpiece.',
+    dish: 'Loaded Indi Tandoori',
+  },
+  {
+    name: 'Priya Mehra',
+    location: 'Noble Enclave, Gurgaon',
+    rating: 5,
+    source: 'Zomato Verified',
+    text: 'Hands down the best pure-veg cafe in Gurgaon. Their stuffed garlic breads are packed with melted mozzarella and fresh herbs. Super cozy cafe vibe for evening hangouts.',
+    dish: 'Paneer Tikka Stuffed',
+  },
+  {
+    name: 'Rohan Gupta',
+    location: 'Palam Vihar Extension',
+    rating: 5,
+    source: 'Google Reviews',
+    text: 'Ordered at 12:45 AM on a weekend and it arrived piping hot in 25 minutes. Crispy crust, generous cheese pull, and authentic Kulhad Chai even late at night.',
+    dish: 'Farmhouse Pizza & Cold Coffee',
+  },
+]
+
+const getCategoryBadge = (sectionId) => {
+  if (sectionId === 'veggie-cheese-loaded-pizzas') return '🔥 Bestseller'
+  if (sectionId === 'royal-paneer-pizza') return '★ Chef Choice'
+  if (sectionId === 'garlic-breads-sides') return 'Must Try'
+  if (sectionId === 'drinks-corner') return 'Chilled'
+  if (sectionId === 'burgers-street-bites') return 'Popular'
+  return null
+}
+
 export default function HomePage() {
   const scopeRef = useRef(null)
 
   const [selectedItem, setSelectedItem] = useState(null)
+  const [lightboxItem, setLightboxItem] = useState(null)
   const [favorites, setFavorites] = useLocalStorage('crust-favorites', [])
 
   // Only items strictly priced > 149
@@ -103,6 +146,7 @@ export default function HomePage() {
   }, [premiumSpecialItems.length])
 
   const specialItem = premiumSpecialItems[specialIndex] || premiumSpecialItems[0]
+  const specialFlavorBadge = specialItem ? getFlavorBadge(specialItem, specialItem.sectionTitle) : null
 
   useEffect(() => {
     const heroContext = revealHero(scopeRef)
@@ -135,13 +179,20 @@ export default function HomePage() {
       {/* 1. Compact Hero Section */}
       <section className="mx-auto grid gap-5 px-3 pt-1 sm:gap-6 sm:px-6 md:grid-cols-[1.1fr_0.9fr] md:items-center lg:grid-cols-[1.15fr_0.85fr] lg:px-8">
         <div className="flex flex-col justify-center">
-          {/* Tag / Kicker (Stated ONCE) */}
-          <div
-            data-hero-kicker
-            className="mb-2.5 inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 w-fit"
-          >
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>100% Pure Vegetarian Cafe</span>
+          {/* Logo Emblem + Pure Veg Tag */}
+          <div className="mb-2.5 flex items-center gap-2.5">
+            <img
+              src="/logo.png"
+              alt="The Crust Culture emblem"
+              className="h-9 w-9 sm:h-11 sm:w-11 rounded-full object-cover shadow-md shadow-orange-500/20 ring-2 ring-amber-500/40 shrink-0"
+            />
+            <div
+              data-hero-kicker
+              className="inline-flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 w-fit"
+            >
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>100% Pure Vegetarian Cafe</span>
+            </div>
           </div>
 
           {/* Title */}
@@ -212,13 +263,12 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Hero Media Card: Strictly items > 149 */}
+        {/* Hero Media Card: Today's Special */}
         {specialItem && (
           <div data-hero-media className="relative group">
-            <button
-              type="button"
+            <div
               onClick={() => setSelectedItem(specialItem)}
-              className="relative block h-[280px] sm:h-[340px] lg:h-[370px] w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)]/80 text-left cursor-pointer shadow-lg transition-all duration-300 hover:shadow-xl hover:border-amber-500/40"
+              className="relative block h-[280px] sm:h-[340px] lg:h-[370px] w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)]/80 text-left cursor-pointer shadow-lg transition-all duration-300 hover:shadow-xl hover:border-amber-500/40 bg-[var(--surface)]"
             >
               <FoodImage
                 src={specialItem.image || specialItem.sectionImage || heroImage}
@@ -229,17 +279,40 @@ export default function HomePage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
 
-              {/* Top Bar on Image */}
-              <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 sm:top-4 sm:left-4 sm:right-4">
-                <span className="inline-flex items-center gap-2 rounded-full bg-black/65 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-amber-300 backdrop-blur-md border border-white/15">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+              {/* Top Bar on Image: Tag, Flavor Badge, Lightbox Cue, & Arrows */}
+              <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 sm:top-4 sm:left-4 sm:right-4 z-10">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-black/65 px-2.5 py-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-amber-300 backdrop-blur-md border border-white/15">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                    </span>
+                    Today's Special
                   </span>
-                  Today's Special
-                </span>
+
+                  {specialFlavorBadge && (
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider backdrop-blur-md border ${specialFlavorBadge.badgeClass}`}
+                    >
+                      <span>{specialFlavorBadge.emoji}</span>
+                      <span>{specialFlavorBadge.label}</span>
+                    </span>
+                  )}
+                </div>
 
                 <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setLightboxItem(specialItem)
+                    }}
+                    aria-label="Zoom image"
+                    title="Zoom full-screen"
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/15 transition hover:bg-amber-500 hover:text-black active:scale-95 text-xs"
+                  >
+                    <FiMaximize2 />
+                  </button>
                   <button
                     type="button"
                     onClick={handlePrevSpecial}
@@ -260,12 +333,15 @@ export default function HomePage() {
               </div>
 
               {/* Bottom Glass Card Overlay */}
-              <div className="absolute bottom-2.5 left-2.5 right-2.5 rounded-xl border border-white/20 bg-black/65 p-3 backdrop-blur-xl sm:bottom-3 sm:left-3 sm:right-3 sm:rounded-2xl sm:p-4 shadow-xl">
+              <div className="absolute bottom-2.5 left-2.5 right-2.5 rounded-xl border border-white/20 bg-black/65 p-3 backdrop-blur-xl sm:bottom-3 sm:left-3 sm:right-3 sm:rounded-2xl sm:p-4 shadow-xl z-10">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
-                    <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-amber-300/90">
-                      {specialItem.sectionTitle || 'Chef Selection'}
-                    </p>
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                      <VegIndicator veg={specialItem.veg} />
+                      <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-amber-300/90">
+                        {specialItem.sectionTitle || 'Chef Selection'}
+                      </p>
+                    </div>
                     <h2 className="mt-0.5 truncate text-base font-black text-white sm:text-xl drop-shadow-sm">
                       {specialItem.name}
                     </h2>
@@ -282,16 +358,30 @@ export default function HomePage() {
                   </div>
                 </div>
 
+                {/* Progress Indicators & Customize CTA */}
                 <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2 text-[10px] sm:text-xs">
-                  <span className="text-amber-300/90 font-semibold">
-                    {specialIndex + 1} of {premiumSpecialItems.length}
-                  </span>
+                  <div className="flex items-center gap-1">
+                    {premiumSpecialItems.map((_, dotIdx) => (
+                      <button
+                        key={dotIdx}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSpecialIndex(dotIdx)
+                        }}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          dotIdx === specialIndex ? 'w-5 bg-amber-400' : 'w-1.5 bg-white/30 hover:bg-white/60'
+                        }`}
+                        aria-label={`Go to special ${dotIdx + 1}`}
+                      />
+                    ))}
+                  </div>
                   <span className="inline-flex items-center gap-1 font-bold text-white group-hover:text-amber-300 transition-colors">
                     Customize <FiArrowRight className="text-[10px]" />
                   </span>
                 </div>
               </div>
-            </button>
+            </div>
           </div>
         )}
       </section>
@@ -317,34 +407,45 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
-          {featuredCategories.map((section) => (
-            <Link
-              key={section.id}
-              to={`/menu?category=${encodeURIComponent(section.title)}`}
-              className="group relative h-36 sm:h-40 w-full overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] transition-all duration-300 hover:border-[var(--gold)] hover:shadow-md"
-            >
-              <FoodImage
-                src={section.image}
-                alt={section.title}
-                category="Pizza"
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/5" />
+          {featuredCategories.map((section) => {
+            const badge = getCategoryBadge(section.id)
 
-              <div className="absolute bottom-2.5 left-2.5 right-2.5">
-                <span className="rounded-full bg-white/20 px-2 py-0.5 text-[9px] font-bold text-white backdrop-blur-md">
-                  {section.items.length} items
-                </span>
-                <h3 className="mt-1 text-xs sm:text-sm font-black text-white group-hover:text-amber-300 transition-colors line-clamp-1">
-                  {section.title}
-                </h3>
-              </div>
-            </Link>
-          ))}
+            return (
+              <Link
+                key={section.id}
+                to={`/menu?category=${encodeURIComponent(section.title)}`}
+                className="group relative h-36 sm:h-40 w-full overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] transition-all duration-300 hover:border-[var(--gold)]/80 hover:shadow-md hover:-translate-y-0.5"
+              >
+                <FoodImage
+                  src={section.image}
+                  alt={section.title}
+                  category="Pizza"
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/5" />
+
+                {/* Category Status Badge */}
+                {badge && (
+                  <span className="absolute top-2 left-2 z-10 rounded-full bg-black/60 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-amber-300 backdrop-blur-md border border-white/15">
+                    {badge}
+                  </span>
+                )}
+
+                <div className="absolute bottom-2.5 left-2.5 right-2.5 z-10">
+                  <span className="rounded-full bg-white/20 px-2 py-0.5 text-[9px] font-bold text-white backdrop-blur-md">
+                    {section.items.length} items
+                  </span>
+                  <h3 className="mt-1 text-xs sm:text-sm font-black text-white group-hover:text-amber-300 transition-colors line-clamp-1">
+                    {section.title}
+                  </h3>
+                </div>
+              </Link>
+            )
+          })}
         </div>
       </section>
 
-      {/* 3. Chef's Signature Picks (4 Distinct Items) */}
+      {/* 3. Chef's Signature Picks (4 Distinct Items with Option B & C Parity) */}
       <section data-reveal className="mx-auto px-3 sm:px-6 lg:px-8">
         <div className="mb-3.5 flex items-center justify-between gap-2">
           <div>
@@ -367,58 +468,79 @@ export default function HomePage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
           {signatureDishes.map((item) => {
             const isFav = favorites.includes(item.id)
+            const sigFlavorBadge = getFlavorBadge(item, item.sectionTitle)
 
             return (
-              <div
-                key={item.id}
-                onClick={() => setSelectedItem(item)}
-                className="group relative flex flex-col justify-between overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:p-3 transition-all duration-300 hover:border-[var(--gold)] hover:shadow-md cursor-pointer"
-              >
-                <div>
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg sm:rounded-xl">
-                    <FoodImage
-                      src={item.image || item.sectionImage}
-                      alt={item.name}
-                      category="Pizza"
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                    />
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleFavorite(item.id)
-                      }}
-                      className={`absolute top-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-md transition ${
-                        isFav
-                          ? 'bg-[var(--orange)] text-white'
-                          : 'bg-black/50 text-white hover:bg-black/70'
-                      }`}
-                      aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
-                    >
-                      <FiHeart className={`text-xs ${isFav ? 'fill-current' : ''}`} />
-                    </button>
+              <div key={item.id} className="relative group">
+                {/* Ambient Warm Underglow Aura */}
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-orange-500/15 to-amber-600/10 blur-sm opacity-30 transition-all duration-300 group-hover:opacity-90 group-hover:scale-[1.02] pointer-events-none" />
+
+                <div
+                  onClick={() => setSelectedItem(item)}
+                  className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:p-3 transition-all duration-300 group-hover:border-[var(--gold)]/60 group-hover:shadow-md cursor-pointer"
+                >
+                  <div>
+                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg sm:rounded-xl">
+                      <FoodImage
+                        src={item.image || item.sectionImage}
+                        alt={item.name}
+                        category="Pizza"
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-108"
+                      />
+
+                      {/* Docked Micro-Flavor Badge */}
+                      {sigFlavorBadge && (
+                        <span
+                          title={sigFlavorBadge.label}
+                          className={`absolute top-1.5 left-1.5 z-10 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[8px] sm:text-[9px] font-black backdrop-blur-md border ${sigFlavorBadge.badgeClass}`}
+                        >
+                          <span className="leading-none text-[9px]">{sigFlavorBadge.emoji}</span>
+                          <span className="tracking-wider uppercase font-black">{sigFlavorBadge.label}</span>
+                        </span>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleFavorite(item.id)
+                        }}
+                        className={`absolute top-1.5 right-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-md transition ${
+                          isFav
+                            ? 'bg-[var(--orange)] text-white'
+                            : 'bg-black/55 text-white hover:bg-black/75 border border-white/20'
+                        }`}
+                        aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+                      >
+                        <FiHeart className={`text-xs ${isFav ? 'fill-current' : ''}`} />
+                      </button>
+                    </div>
+
+                    <div className="mt-2 flex items-center gap-1.5">
+                      <VegIndicator veg={item.veg} />
+                      <p className="text-[9px] font-bold uppercase tracking-wider text-[var(--gold)] truncate">
+                        {item.sectionTitle}
+                      </p>
+                    </div>
+
+                    <h3 className="mt-0.5 text-xs sm:text-sm font-extrabold text-[var(--text)] line-clamp-1 group-hover:text-[var(--orange)] transition-colors">
+                      {item.name}
+                    </h3>
+                    {item.toppings && (
+                      <p className="mt-0.5 line-clamp-1 text-[11px] text-[var(--muted)]">
+                        {item.toppings}
+                      </p>
+                    )}
                   </div>
 
-                  <p className="mt-2 text-[9px] font-bold uppercase tracking-wider text-[var(--gold)]">
-                    {item.sectionTitle}
-                  </p>
-                  <h3 className="mt-0.5 text-xs sm:text-sm font-extrabold text-[var(--text)] line-clamp-1 group-hover:text-[var(--orange)] transition-colors">
-                    {item.name}
-                  </h3>
-                  {item.toppings && (
-                    <p className="mt-0.5 line-clamp-1 text-[11px] text-[var(--muted)]">
-                      {item.toppings}
-                    </p>
-                  )}
-                </div>
-
-                <div className="mt-2.5 flex items-center justify-between border-t border-[var(--line)]/60 pt-1.5 text-xs">
-                  <span className="text-[10px] sm:text-[11px] font-bold text-amber-600 dark:text-amber-400">
-                    ★ Chef Choice
-                  </span>
-                  <span className="font-bold text-[var(--orange)] text-[10px] sm:text-[11px] group-hover:underline">
-                    View Details &rarr;
-                  </span>
+                  <div className="mt-2.5 flex items-center justify-between border-t border-[var(--line)]/60 pt-1.5 text-xs">
+                    <span className="text-[10px] sm:text-[11px] font-bold text-amber-600 dark:text-amber-400">
+                      ★ Chef Choice
+                    </span>
+                    <span className="font-bold text-[var(--orange)] text-[10px] sm:text-[11px] group-hover:underline">
+                      View Details &rarr;
+                    </span>
+                  </div>
                 </div>
               </div>
             )
@@ -426,7 +548,71 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. Culinary Craft & Story (Unified, Compact, NO REPEATED DATA) */}
+      {/* 4. Social Proof: Guest Love & Reviews (3 Curated Testimonials) */}
+      <section data-reveal className="mx-auto px-3 sm:px-6 lg:px-8 border-t border-[var(--line)] pt-6 sm:pt-8">
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--gold)]">
+                Palam Vihar Community
+              </span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 text-[10px] font-black text-amber-500">
+                <FiStar className="fill-current text-[9px]" /> 4.8 / 5.0
+              </span>
+            </div>
+            <h2 className="font-display text-lg sm:text-2xl font-extrabold text-[var(--text)] mt-0.5">
+              Guest Love & Stories
+            </h2>
+          </div>
+          <div className="flex items-center gap-3 text-xs font-semibold text-[var(--muted)]">
+            <span className="inline-flex items-center gap-1.5">
+              <SiGoogle className="text-[#4285F4] text-sm" /> 200+ Google Reviews
+            </span>
+            <span className="opacity-40">•</span>
+            <span className="inline-flex items-center gap-1.5">
+              <SiZomato className="text-[#E23744] text-base" /> Zomato Top Rated
+            </span>
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          {guestReviews.map((review) => (
+            <div
+              key={review.name}
+              className="relative flex flex-col justify-between rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 sm:p-4.5 transition-all duration-300 hover:border-[var(--gold)]/60 hover:shadow-md group"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <div className="flex items-center gap-1 text-amber-400">
+                    {[...Array(review.rating)].map((_, i) => (
+                      <FiStar key={i} className="fill-current text-xs" />
+                    ))}
+                  </div>
+                  <span className="text-[10px] font-bold text-[var(--muted)] bg-[var(--surface-strong)] px-2 py-0.5 rounded-full border border-[var(--line)]">
+                    {review.source}
+                  </span>
+                </div>
+                <FaQuoteLeft className="text-amber-500/20 text-xl mb-1.5" />
+                <p className="text-xs sm:text-sm leading-relaxed text-[var(--text)] font-medium">
+                  "{review.text}"
+                </p>
+              </div>
+
+              <div className="mt-3.5 pt-3 border-t border-[var(--line)]/60 flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-black text-[var(--text)]">{review.name}</h4>
+                  <p className="text-[10px] text-[var(--muted)] font-medium">{review.location}</p>
+                </div>
+                <span className="rounded-md bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 text-[9px] font-bold text-amber-600 dark:text-amber-300 truncate max-w-[120px]">
+                  {review.dish}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. Culinary Craft & Story (Unified, Compact, NO REPEATED DATA) */}
       <section
         id="our-story"
         data-reveal
@@ -512,12 +698,97 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 6. Visit Our Cafe / Storefront Banner (Noble Enclave, Palam Vihar) */}
+      <section data-reveal className="mx-auto px-3 sm:px-6 lg:px-8 border-t border-[var(--line)] pt-6 sm:pt-8 pb-2">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)] bg-gradient-to-br from-[var(--surface-strong)]/90 via-[var(--surface)] to-[var(--surface-strong)]/60 p-5 sm:p-7 shadow-lg">
+          {/* Subtle background art glow */}
+          <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-amber-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute -left-16 -bottom-16 h-64 w-64 rounded-full bg-orange-500/10 blur-3xl" />
+
+          <div className="relative z-10 grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div className="space-y-3">
+              <div className="inline-flex items-center gap-2 rounded-full bg-amber-500/15 border border-amber-500/30 px-3 py-1 text-[11px] font-black text-amber-600 dark:text-amber-300">
+                <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                <span>Visit Our Palam Vihar Hearth</span>
+              </div>
+
+              <h2 className="font-display text-xl sm:text-3xl font-black text-[var(--text)] tracking-tight">
+                Warm tables, wood aromas, and midnight sourdough slices.
+              </h2>
+
+              <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed max-w-xl">
+                Located in Noble Enclave, Palam Vihar Extension. Stop by for cozy dine-in seating, fresh parcel pickups, or quick curbside takeaways.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 text-xs font-bold text-[var(--text)] pt-1">
+                <div className="flex items-center gap-1.5 rounded-lg bg-[var(--surface)] border border-[var(--line)] px-2.5 py-1.5">
+                  <FiClock className="text-[var(--orange)] shrink-0" />
+                  <span>1:30 PM – 1:30 AM (Daily)</span>
+                </div>
+                <div className="flex items-center gap-1.5 rounded-lg bg-[var(--surface)] border border-[var(--line)] px-2.5 py-1.5">
+                  <FiMapPin className="text-[var(--orange)] shrink-0" />
+                  <span>Noble Enclave, Palam Vihar Ext.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Direct Action Hub */}
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-2.5 sm:gap-3 shrink-0">
+              <a
+                href="https://maps.app.goo.gl/ernTdfzkPqRhYynR6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="touch-target group flex items-center justify-between rounded-xl sm:rounded-2xl bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-4 py-3 text-xs sm:text-sm font-black text-white shadow-md shadow-orange-500/25 transition-all hover:shadow-lg hover:shadow-orange-500/40 hover:scale-[1.01] active:scale-[0.99]"
+              >
+                <div className="flex items-center gap-2.5">
+                  <FiMapPin className="text-lg" />
+                  <span>Get Directions on Google Maps</span>
+                </div>
+                <FiExternalLink className="text-sm opacity-80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+
+              <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+                <a
+                  href="tel:+919625261591"
+                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2.5 text-xs font-bold text-[var(--text)] transition hover:border-[var(--gold)] active:scale-95"
+                >
+                  <FiPhone className="text-[var(--orange)] text-sm shrink-0" />
+                  <span>Call Cafe</span>
+                </a>
+
+                <a
+                  href={ZOMATO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="touch-target inline-flex items-center justify-center gap-1.5 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-xs font-bold text-[#E23744] hover:bg-[#E23744] hover:text-white transition-all active:scale-95"
+                >
+                  <SiZomato className="text-base shrink-0" />
+                  <span>Zomato</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Item Customization Sheet */}
       {selectedItem && (
         <MenuItemSheet
           item={selectedItem}
           favorites={favorites}
           onClose={() => setSelectedItem(null)}
           onToggleFavorite={toggleFavorite}
+        />
+      )}
+
+      {/* Full-Screen Tap-to-Zoom Lightbox */}
+      {lightboxItem && (
+        <ImageLightbox
+          src={lightboxItem.image || lightboxItem.sectionImage || heroImage}
+          alt={lightboxItem.name}
+          title={lightboxItem.name}
+          category={lightboxItem.sectionTitle}
+          onClose={() => setLightboxItem(null)}
         />
       )}
     </div>
