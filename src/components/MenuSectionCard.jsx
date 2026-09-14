@@ -3,6 +3,7 @@ import { FiHeart } from 'react-icons/fi'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
 import VegIndicator from './VegIndicator'
+import { getFlavorBadge } from '../utils/flavorBadge'
 
 function formatPrice(value) {
   if (!value) return ''
@@ -101,6 +102,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
       <div className="divide-y divide-[var(--line)]/40">
         {section.items.map((item) => {
           const toppingsText = item.toppings ? item.toppings.replace(/^\((.*)\)$/, '$1') : null
+          const flavorBadge = getFlavorBadge(item, section.title)
 
           return (
             <article
@@ -178,13 +180,28 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
 
                 {/* Right: Compact Food Photo + Action Button */}
                 <div className="relative shrink-0 flex flex-col items-center pt-0.5 pb-1">
-                  <div className="relative h-16 w-16 min-[360px]:h-17 min-[360px]:w-17 sm:h-20 sm:w-20 overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] shadow-2xs bg-[var(--surface-strong)]">
+                  {/* Ambient Warm Underglow Aura */}
+                  <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-amber-500/25 via-orange-500/20 to-amber-600/15 blur-sm opacity-40 transition-all duration-300 group-hover:opacity-95 group-hover:scale-105 pointer-events-none" />
+
+                  <div className="relative h-16 w-16 min-[360px]:h-17 min-[360px]:w-17 sm:h-20 sm:w-20 overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] shadow-2xs bg-[var(--surface-strong)] transition-all duration-300 group-hover:border-[var(--gold)]/50 group-hover:shadow-[0_8px_20px_rgba(249,115,22,0.18)]">
                     <FoodImage
                       src={item.image || section.image}
                       alt={item.name}
                       category={section.title.includes('Pizza') ? 'Pizza' : 'Restaurant'}
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-108"
                     />
+
+                    {/* Docked Micro Flavor Badge (Top Left) */}
+                    {flavorBadge && (
+                      <span
+                        title={flavorBadge.label}
+                        className={`absolute top-1 left-1 z-10 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[8px] sm:text-[9px] font-black backdrop-blur-md border ${flavorBadge.badgeClass}`}
+                      >
+                        <span className="leading-none text-[9px]">{flavorBadge.emoji}</span>
+                        <span className="hidden min-[380px]:inline tracking-wider uppercase font-black">{flavorBadge.label}</span>
+                      </span>
+                    )}
+
                     {/* Floating Favorite Heart */}
                     <button
                       type="button"
@@ -193,7 +210,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                         event.stopPropagation()
                         onToggleFavorite(item.id, event.currentTarget)
                       }}
-                      className={`absolute top-1 right-1 grid h-6 w-6 place-items-center rounded-full backdrop-blur-md text-[11px] transition active:scale-90 ${
+                      className={`absolute top-1 right-1 z-10 grid h-6 w-6 place-items-center rounded-full backdrop-blur-md text-[11px] transition active:scale-90 ${
                         favorites.includes(item.id)
                           ? 'bg-[var(--orange)] text-white shadow-xs'
                           : 'bg-black/55 text-white hover:bg-black/75 border border-white/20'

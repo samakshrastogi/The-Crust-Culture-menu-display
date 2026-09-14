@@ -51,17 +51,30 @@ export default function FoodImage({ src, alt, category = 'Restaurant', className
 
   return (
     <div className={`relative overflow-hidden bg-gradient-to-br ${style.gradient} ${className}`} {...props}>
+      {/* Background skeleton glow & geometric art */}
       <div className="absolute inset-0 opacity-40 pointer-events-none">
         <div className="absolute -left-10 -top-12 h-40 w-40 rounded-full border border-white/30" />
         <div className="absolute bottom-6 right-6 h-28 w-28 rounded-full border-[18px] border-white/15" />
         <div className="absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/20 shadow-2xl" />
       </div>
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-2 text-white sm:p-4 pointer-events-none">
-        <p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/75 sm:text-xs sm:tracking-[0.22em]">
-          {style.accent}
-        </p>
-        <p className="mt-1 hidden max-w-[14rem] text-lg font-black leading-tight sm:block">{alt}</p>
-      </div>
+
+      {/* Shimmer sweep animation while loading */}
+      {!loaded && !failed && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none z-1">
+          <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        </div>
+      )}
+
+      {/* Fallback category caption if image fails or before load */}
+      {(!loaded || failed) && (
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-2 text-white sm:p-3 pointer-events-none z-2">
+          <p className="text-[9px] font-black uppercase tracking-[0.16em] text-amber-200/80">
+            {style.accent}
+          </p>
+        </div>
+      )}
+
+      {/* Progressive blur-up food image */}
       {!failed && (
         <img
           src={src}
@@ -79,11 +92,17 @@ export default function FoodImage({ src, alt, category = 'Restaurant', className
             }
           }}
           onError={() => setFailed(true)}
-          className={`absolute inset-0 h-full w-full object-cover transition duration-300 ${
-            loaded ? 'opacity-100' : 'opacity-0'
+          className={`absolute inset-0 h-full w-full object-cover transition-all duration-500 ease-out will-change-[transform,opacity,filter] ${
+            loaded
+              ? 'opacity-100 blur-0 scale-100'
+              : 'opacity-0 blur-sm scale-105'
           }`}
         />
       )}
+
+      {/* Warm internal photographic depth vignette & rim highlight */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 opacity-60 z-3" />
+      <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/15 z-3 rounded-inherit" />
     </div>
   )
 }

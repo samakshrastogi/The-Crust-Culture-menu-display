@@ -4,6 +4,7 @@ import { FaWhatsapp } from 'react-icons/fa6'
 import { SiZomato } from 'react-icons/si'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
+import { getFlavorBadge } from '../utils/flavorBadge'
 import VegIndicator from './VegIndicator'
 
 const ZOMATO_URL = 'https://www.zomato.com'
@@ -79,6 +80,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
   const isFavorite = favorites?.includes(item.id)
   const isPizza = item.sectionTitle?.toLowerCase().includes('pizza') || item.name?.toLowerCase().includes('pizza')
   const cleanToppings = item.toppings?.replace(/^\((.*)\)$/, '$1') || item.toppings
+  const flavorBadge = getFlavorBadge(item, item.sectionTitle)
 
   const selectedPriceObj = item.prices?.[selectedSizeIndex] || item.prices?.[0]
   const portionSuffix = selectedPriceObj
@@ -143,13 +145,21 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             <FiX className="text-base" />
           </button>
 
-          {/* Tag badge (Popular, Chef Choice, etc.) */}
-          {item.tag && (
-            <span className="absolute left-3.5 top-3.5 z-20 inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-amber-500 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-white shadow-md border border-white/25">
-              <span>★</span>
-              <span>{item.tag}</span>
-            </span>
-          )}
+          {/* Tag & Flavor Badges */}
+          <div className="absolute left-3.5 top-3.5 z-20 flex flex-wrap items-center gap-1.5">
+            {item.tag && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-amber-500 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-white shadow-md border border-white/25">
+                <span>★</span>
+                <span>{item.tag}</span>
+              </span>
+            )}
+            {flavorBadge && (
+              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-black uppercase tracking-wider backdrop-blur-md border ${flavorBadge.badgeClass}`}>
+                <span>{flavorBadge.emoji}</span>
+                <span>{flavorBadge.label}</span>
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Card Content Body */}
@@ -162,6 +172,12 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                 <span className="inline-flex items-center rounded-full bg-[var(--gold)]/15 border border-[var(--gold)]/30 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
                   {item.sectionTitle}
                 </span>
+                {flavorBadge && (
+                  <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${flavorBadge.badgeClass}`}>
+                    <span>{flavorBadge.emoji}</span>
+                    <span>{flavorBadge.label}</span>
+                  </span>
+                )}
               </div>
               <h2 className="font-display text-xl sm:text-2xl font-bold leading-snug text-[var(--text)]">
                 {item.name}
