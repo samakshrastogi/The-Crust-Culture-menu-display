@@ -69,7 +69,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
       ref={sectionRef}
       data-card
       id={section.id}
-      className="overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] shadow-xs transition-[border-color,box-shadow] duration-200 hover:border-amber-500/30 hover:shadow-sm"
+      className="scroll-mt-28 sm:scroll-mt-32 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] shadow-xs transition-[border-color,box-shadow] duration-200 hover:border-amber-500/30 hover:shadow-sm"
     >
       <div className="flex items-center justify-between gap-2.5 border-b border-[var(--line)] bg-gradient-to-r from-[var(--surface-strong)]/60 via-[var(--surface)] to-[var(--surface-strong)]/60 px-3 py-2 sm:px-3.5 sm:py-2.5">
         <div className="flex items-center gap-2 min-w-0">

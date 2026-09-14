@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
   FiArrowRight,
   FiGrid,
   FiHeart,
+  FiRotateCcw,
   FiSearch,
   FiX,
 } from 'react-icons/fi'
@@ -37,6 +38,17 @@ const initialAllMenuItems = initialSections.flatMap((section) =>
   })),
 )
 
+function getItemMinPrice(item) {
+  if (!item?.prices?.length) return 0
+  const numericPrices = item.prices
+    .map((p) => {
+      const match = String(p.value || '').match(/(\d+)/)
+      return match ? parseInt(match[1], 10) : 0
+    })
+    .filter((v) => v > 0)
+  return numericPrices.length ? Math.min(...numericPrices) : 0
+}
+
 function isItemMatch(item, sectionTitle, query) {
   const search = query.toLowerCase().trim()
   if (!search) return true
@@ -56,16 +68,47 @@ function isItemMatch(item, sectionTitle, query) {
   })
 }
 
-const quickTags = [
-  { label: '🍕 Pizzas', term: 'pizza' },
-  { label: '🧀 Paneer Special', term: 'paneer' },
-  { label: '🥖 Garlic Bread', term: 'garlic bread' },
-  { label: '🍔 Burgers', term: 'burger' },
-  { label: '🥪 Sandwiches', term: 'sandwich' },
-  { label: '🥟 Momos', term: 'momo' },
-  { label: '🍟 Fries', term: 'fries' },
-  { label: '🍜 Maggie', term: 'maggie' },
-  { label: '🥤 Drinks & Shakes', term: 'drink' },
+const VIBE_FILTERS = [
+  { id: 'all', label: 'All Items', icon: '🍽️' },
+  { id: 'bestsellers', label: 'Bestsellers', icon: '🔥' },
+  { id: 'paneer', label: 'Royal Paneer', icon: '👑' },
+  { id: 'spicy', label: 'Spicy', icon: '🌶️' },
+  { id: 'under99', label: 'Under ₹99', icon: '⚡' },
+  { id: 'drinks', label: 'Drinks & Shakes', icon: '🥤' },
+]
+
+function matchesVibe(item, section, vibeId) {
+  if (vibeId === 'all') return true
+  if (vibeId === 'bestsellers') {
+    return Boolean(
+      item.tag ||
+      section.title.includes('Loaded') ||
+      section.title.includes('Everyday Classics')
+    )
+  }
+  if (vibeId === 'paneer') {
+    const text = `${item.name} ${item.toppings || ''} ${section.title}`.toLowerCase()
+    return text.includes('paneer')
+  }
+  if (vibeId === 'spicy') {
+    const text = `${item.name} ${item.toppings || ''} ${item.tag || ''}`.toLowerCase()
+    return text.includes('chilli') || text.includes('chili') || text.includes('spicy') || text.includes('peri peri') || text.includes('tandoori')
+  }
+  if (vibeId === 'under99') {
+    const minPrice = getItemMinPrice(item)
+    return minPrice > 0 && minPrice <= 99
+  }
+  if (vibeId === 'drinks') {
+    return section.title.includes('Drinks') || /coffee|shake|tea|chai|soda|beverage/i.test(item.name)
+  }
+  return true
+}
+
+const SEARCH_SUGGESTIONS = [
+  { label: '🍕 Veg Loaded Pizza', query: 'Veg Loaded' },
+  { label: '🥖 Stuffed Garlic Bread', query: 'Garlic Bread' },
+  { label: '🥤 Cold Coffee', query: 'Cold Coffee' },
+  { label: '👑 Paneer Tikka', query: 'Paneer' },
 ]
 
 export default function MenuPage() {
@@ -74,43 +117,82 @@ export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState(
     initialCategories.includes(requestedCategory) ? requestedCategory : 'All',
   )
+  const [activeVibeFilter, setActiveVibeFilter] = useState('all')
   const [query, setQuery] = useState('')
   const [selectedItem, setSelectedItem] = useState(null)
   const [favorites, setFavorites] = useLocalStorage('crust-favorites', [])
   const [loading, setLoading] = useState(true)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [activeScrollSection, setActiveScrollSection] = useState(initialSections[0]?.id || '')
+  const [showStickyBar, setShowStickyBar] = useState(false)
   const sectionsRef = useRef(null)
+  const stickyScrollRef = useRef(null)
 
   useEffect(() => {
     const timer = window.setTimeout(() => setLoading(false), 300)
     return () => window.clearTimeout(timer)
   }, [])
 
-  // Sections filtered by search query
+  // ScrollSpy & Sticky Sub-Header Controller
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY
+      setShowStickyBar(scrollY > 160)
+
+      // Find section in view
+      const offset = 140
+      for (const section of initialSections) {
+        const el = document.getElementById(section.id)
+        if (el) {
+          const rect = el.getBoundingClientRect()
+          if (rect.top <= offset && rect.bottom > offset) {
+            setActiveScrollSection(section.id)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Auto-center active category pill in sticky bar
+  useEffect(() => {
+    if (!stickyScrollRef.current || !activeScrollSection) return
+    const activeBtn = stickyScrollRef.current.querySelector(`[data-section-btn="${activeScrollSection}"]`)
+    if (activeBtn) {
+      const container = stickyScrollRef.current
+      const containerWidth = container.clientWidth
+      const btnLeft = activeBtn.offsetLeft
+      const btnWidth = activeBtn.clientWidth
+      container.scrollTo({
+        left: btnLeft - containerWidth / 2 + btnWidth / 2,
+        behavior: 'smooth',
+      })
+    }
+  }, [activeScrollSection])
+
+  // Sections filtered by query, category, and vibe
   const filteredSections = useMemo(() => {
     return initialSections
       .map((section) => {
-        const items = section.items.filter((item) =>
-          isItemMatch(item, section.title, query),
-        )
+        if (activeCategory !== 'All' && section.title !== activeCategory) {
+          return { ...section, items: [] }
+        }
+
+        const items = section.items.filter((item) => {
+          const matchQuery = isItemMatch(item, section.title, query)
+          const matchVibe = matchesVibe(item, section, activeVibeFilter)
+          return matchQuery && matchVibe
+        })
 
         return { ...section, items }
       })
       .filter((section) => section.items.length > 0)
-  }, [query])
+  }, [query, activeCategory, activeVibeFilter])
 
-  // Sections currently displayed (respecting activeCategory when not searching)
-  const displayedSections = useMemo(() => {
-    if (query) {
-      return filteredSections
-    }
-    if (activeCategory === 'All') {
-      return initialSections
-    }
-    return initialSections.filter((s) => s.title === activeCategory)
-  }, [query, activeCategory, filteredSections])
-
-  const visibleItemCount = displayedSections.reduce((total, section) => total + section.items.length, 0)
+  const visibleItemCount = filteredSections.reduce((total, section) => total + section.items.length, 0)
   const totalMenuItemsCount = initialAllMenuItems.length
   const favoriteCount = favorites.filter((id) => initialAllMenuItems.some((item) => item.id === id)).length
 
@@ -129,35 +211,47 @@ export default function MenuPage() {
     )
 
     return () => gsap.killTweensOf(cards)
-  }, [activeCategory, query, loading])
+  }, [activeCategory, activeVibeFilter, query, loading])
 
-  const toggleFavorite = (itemId, triggerElement) => {
+  const toggleFavorite = useCallback((itemId, triggerElement) => {
     animateFavoritePop(triggerElement)
     setFavorites((current) =>
       current.includes(itemId) ? current.filter((id) => id !== itemId) : [...current, itemId],
     )
-  }
+  }, [setFavorites])
 
-  const handleCategoryChange = (category) => {
+  const handleCategoryChange = useCallback((category) => {
     setActiveCategory(category)
     setQuery('')
     setIsDrawerOpen(false)
     scrollToTop()
-  }
+  }, [])
 
-  const handleQuickTagClick = (tag) => {
-    if (query === tag.term) {
-      setQuery('')
-    } else {
-      setQuery(tag.term)
+  const handleScrollToSection = useCallback((sectionId) => {
+    if (activeCategory !== 'All' || activeVibeFilter !== 'all' || query) {
       setActiveCategory('All')
+      setActiveVibeFilter('all')
+      setQuery('')
     }
-  }
+
+    window.setTimeout(() => {
+      const target = document.getElementById(sectionId)
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
+    }, 60)
+  }, [activeCategory, activeVibeFilter, query])
+
+  const handleResetFilters = useCallback(() => {
+    setQuery('')
+    setActiveCategory('All')
+    setActiveVibeFilter('all')
+  }, [])
 
   return (
     <div className="mx-auto max-w-7xl px-2.5 pb-20 pt-2 sm:px-6 sm:pb-24 sm:pt-3 lg:px-8">
-      {/* Search and Status Row (Compact, Single Row on all screens) */}
-      <div className="mb-2 flex items-center gap-2 sm:mb-3 sm:gap-3">
+      {/* 1. Search and Status Row (Compact, Single Row on all screens) */}
+      <div className="mb-2 flex items-center gap-2 sm:mb-2.5 sm:gap-3">
         <div className="min-w-0 flex-1">
           <SearchBar value={query} onChange={setQuery} />
         </div>
@@ -166,43 +260,32 @@ export default function MenuPage() {
         </div>
       </div>
 
-      {/* Quick Search Chips */}
+      {/* 2. Smart Vibe & Budget Filters */}
       <div className="no-scrollbar mb-2 flex items-center gap-1.5 overflow-x-auto py-0.5 sm:mb-2.5 sm:gap-2">
-        <button
-          type="button"
-          onClick={() => {
-            setQuery('')
-            setActiveCategory('All')
-          }}
-          className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold transition sm:px-3 sm:py-1.5 sm:text-xs ${
-            !query && activeCategory === 'All'
-              ? 'bg-[var(--orange)] text-white shadow-xs'
-              : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'
-          }`}
-        >
-          All Items ({totalMenuItemsCount})
-        </button>
-
-        {quickTags.map((tag) => {
-          const isActive = query.toLowerCase() === tag.term.toLowerCase()
+        {VIBE_FILTERS.map((filter) => {
+          const isActive = activeVibeFilter === filter.id
           return (
             <button
-              key={tag.label}
+              key={filter.id}
               type="button"
-              onClick={() => handleQuickTagClick(tag)}
-              className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold transition sm:px-3 sm:py-1.5 sm:text-xs ${
+              onClick={() => {
+                setActiveVibeFilter(filter.id)
+                if (activeCategory !== 'All') setActiveCategory('All')
+              }}
+              className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-extrabold transition-all duration-200 cursor-pointer sm:px-3 sm:py-1.2 sm:text-xs ${
                 isActive
-                  ? 'bg-gradient-to-r from-[var(--orange)] to-amber-500 text-white shadow-xs'
-                  : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]'
+                  ? 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] text-white shadow-xs scale-102'
+                  : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]/50'
               }`}
             >
-              {tag.label}
+              <span className="text-xs leading-none">{filter.icon}</span>
+              <span>{filter.label}</span>
             </button>
           )
         })}
       </div>
 
-      {/* Visual Category Photo Strip */}
+      {/* 3. Visual Category Photo Strip */}
       {(!query || filteredSections.length > 0) && (
         <MenuImageStrip
           sections={initialSections}
@@ -211,34 +294,82 @@ export default function MenuPage() {
         />
       )}
 
-      {/* Active Filter / Search Banner */}
-      {(query || activeCategory !== 'All') && (
+      {/* Sticky Sub-Header with Category ScrollSpy Navigation */}
+      <div
+        className={`sticky top-[52px] sm:top-[58px] z-30 transition-all duration-300 ${
+          showStickyBar
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 -translate-y-2 pointer-events-none'
+        } -mx-2.5 sm:-mx-6 lg:-mx-8 px-2.5 sm:px-6 lg:px-8 py-1.5 bg-[var(--bg)]/95 backdrop-blur-xl border-b border-[var(--line)] shadow-xs mb-2.5`}
+      >
+        <div className="mx-auto max-w-7xl flex items-center justify-between gap-2">
+          {/* Scrollable category pills */}
+          <div
+            ref={stickyScrollRef}
+            className="no-scrollbar flex items-center gap-1.5 overflow-x-auto py-0.5"
+          >
+            {initialSections.map((section) => {
+              const isCurrent = activeScrollSection === section.id
+              return (
+                <button
+                  key={section.id}
+                  data-section-btn={section.id}
+                  type="button"
+                  onClick={() => handleScrollToSection(section.id)}
+                  className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold transition-all duration-200 cursor-pointer ${
+                    isCurrent
+                      ? 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] text-white shadow-xs'
+                      : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]/40'
+                  }`}
+                >
+                  <span>{section.title}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Quick Category Drawer Button */}
+          <button
+            type="button"
+            onClick={() => setIsDrawerOpen(true)}
+            className="shrink-0 inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1 text-[11px] font-black text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
+            title="All Categories"
+          >
+            <FiGrid className="text-[var(--orange)] text-xs" />
+            <span className="hidden min-[480px]:inline">Categories</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Active Filter Banner */}
+      {(query || activeCategory !== 'All' || activeVibeFilter !== 'all') && (
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--orange)]/30 bg-[var(--orange)]/10 px-3 py-1.5 sm:mb-2.5 sm:px-3.5 sm:py-2 text-xs font-bold text-[var(--orange)]">
           <div className="flex items-center gap-2">
             {query ? (
               <span>
-                Search results for &ldquo;<span className="text-[var(--text)] font-extrabold">{query}</span>&rdquo;
+                Search: &ldquo;<span className="text-[var(--text)] font-extrabold">{query}</span>&rdquo;
+              </span>
+            ) : activeCategory !== 'All' ? (
+              <span>
+                Category: <span className="text-[var(--text)] font-extrabold">{activeCategory}</span>
               </span>
             ) : (
               <span>
-                Filtered by category: <span className="text-[var(--text)] font-extrabold">{activeCategory}</span>
+                Filter: <span className="text-[var(--text)] font-extrabold">{VIBE_FILTERS.find((f) => f.id === activeVibeFilter)?.label}</span>
               </span>
             )}
-            <span className="rounded-full bg-[var(--orange)] px-2 py-0.5 text-[10px] text-white font-black">
+            <span className="rounded-full bg-[var(--orange)] px-2 py-0.2 text-[10px] text-white font-black">
               {visibleItemCount} items
             </span>
           </div>
 
           <button
             type="button"
-            onClick={() => {
-              setQuery('')
-              setActiveCategory('All')
-            }}
-            className="inline-flex items-center gap-1 rounded-full bg-[var(--surface)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--text)] border border-[var(--line)] transition hover:border-[var(--orange)]"
+            onClick={handleResetFilters}
+            className="inline-flex items-center gap-1 rounded-full bg-[var(--surface)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--text)] border border-[var(--line)] transition hover:border-[var(--orange)] cursor-pointer"
           >
-            <FiX className="text-xs" />
-            <span>Reset to All</span>
+            <FiRotateCcw className="text-xs" />
+            <span>Reset</span>
           </button>
         </div>
       )}
@@ -246,7 +377,7 @@ export default function MenuPage() {
       {/* Count & Favorites Bar */}
       <div className="mb-2 flex items-center justify-between gap-3 text-[11px] font-semibold text-[var(--muted)] sm:mb-2.5 sm:text-xs">
         <p>
-          Showing <span className="font-extrabold text-[var(--text)]">{visibleItemCount}</span> delicious dishes
+          Showing <span className="font-extrabold text-[var(--text)]">{visibleItemCount}</span> dishes
         </p>
         <p className="flex items-center gap-1.5">
           <FiHeart className="text-[var(--orange)] fill-[var(--orange)] text-xs sm:text-sm" />
@@ -261,9 +392,9 @@ export default function MenuPage() {
         <div ref={sectionsRef}>
           {/* Mobile view (single column < 768px) */}
           <div className="flex flex-col gap-2.5 sm:gap-3 md:hidden">
-            {displayedSections.map((section) => (
+            {filteredSections.map((section) => (
               <MenuSectionCard
-                key={`${section.id}-${query ? 'search' : activeCategory}`}
+                key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
                 section={section}
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
@@ -275,11 +406,11 @@ export default function MenuPage() {
 
           {/* Tablet & Desktop view (2 columns masonry >= 768px) */}
           <div className="hidden md:block">
-            {displayedSections.length === 1 ? (
+            {filteredSections.length === 1 ? (
               <div className="max-w-xl mx-auto">
                 <MenuSectionCard
-                  key={`${displayedSections[0].id}-${query ? 'search' : activeCategory}`}
-                  section={displayedSections[0]}
+                  key={`${filteredSections[0].id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
+                  section={filteredSections[0]}
                   favorites={favorites}
                   onToggleFavorite={toggleFavorite}
                   onSelectItem={setSelectedItem}
@@ -289,11 +420,11 @@ export default function MenuPage() {
             ) : (
               <div className="grid grid-cols-2 gap-3.5 items-start">
                 <div className="flex flex-col gap-3.5">
-                  {displayedSections
+                  {filteredSections
                     .filter((_, idx) => idx % 2 === 0)
                     .map((section) => (
                       <MenuSectionCard
-                        key={`${section.id}-${query ? 'search' : activeCategory}`}
+                        key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
                         section={section}
                         favorites={favorites}
                         onToggleFavorite={toggleFavorite}
@@ -303,11 +434,11 @@ export default function MenuPage() {
                     ))}
                 </div>
                 <div className="flex flex-col gap-3.5">
-                  {displayedSections
+                  {filteredSections
                     .filter((_, idx) => idx % 2 !== 0)
                     .map((section) => (
                       <MenuSectionCard
-                        key={`${section.id}-${query ? 'search' : activeCategory}`}
+                        key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
                         section={section}
                         favorites={favorites}
                         onToggleFavorite={toggleFavorite}
@@ -322,29 +453,49 @@ export default function MenuPage() {
         </div>
       )}
 
-      {/* Zero Results State */}
+      {/* Smart Zero Results State & Suggestions */}
       {!loading && visibleItemCount === 0 && (
-        <div className="rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-8 text-center sm:p-12 shadow-sm">
-          <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-2xl bg-[var(--orange)]/10 text-2xl text-[var(--orange)]">
+        <div className="rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6 text-center sm:p-10 shadow-xs space-y-4">
+          <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[var(--orange)]/10 text-xl text-[var(--orange)]">
             <FiSearch />
           </div>
-          <h3 className="text-lg font-black text-[var(--text)] sm:text-xl">
-            No dishes matched your search
-          </h3>
-          <p className="mt-1.5 text-xs text-[var(--muted)] max-w-sm mx-auto sm:text-sm">
-            We couldn&apos;t find any items matching &ldquo;{query}&rdquo;. Try another dish name or explore our categories.
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              setQuery('')
-              setActiveCategory('All')
-            }}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-6 py-2.5 text-xs font-black text-white shadow-md transition hover:brightness-105"
-          >
-            <span>Show All Dishes</span>
-            <FiArrowRight className="text-xs" />
-          </button>
+          <div className="space-y-1">
+            <h3 className="text-base font-black text-[var(--text)] sm:text-lg">
+              No dishes found
+            </h3>
+            <p className="text-xs text-[var(--muted)] max-w-sm mx-auto">
+              We couldn&apos;t find any items matching your current filters. Try one of our popular dishes below:
+            </p>
+          </div>
+
+          {/* Clickable Recovery Suggestions */}
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+            {SEARCH_SUGGESTIONS.map((suggestion) => (
+              <button
+                key={suggestion.label}
+                type="button"
+                onClick={() => {
+                  setQuery(suggestion.query)
+                  setActiveCategory('All')
+                  setActiveVibeFilter('all')
+                }}
+                className="rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-3 py-1 text-xs font-bold text-[var(--text)] hover:border-[var(--orange)] hover:text-[var(--orange)] transition cursor-pointer"
+              >
+                {suggestion.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-5 py-2 text-xs font-black text-white shadow-md transition hover:brightness-105 cursor-pointer"
+            >
+              <span>Show All Menu Dishes</span>
+              <FiArrowRight className="text-xs" />
+            </button>
+          </div>
         </div>
       )}
 
@@ -353,11 +504,11 @@ export default function MenuPage() {
         <button
           type="button"
           onClick={() => setIsDrawerOpen(true)}
-          className="flex items-center gap-2 rounded-full bg-[#1c120c] px-5 py-2.5 text-xs font-black text-white shadow-2xl border border-white/20 backdrop-blur-xl transition hover:scale-105 active:scale-95"
+          className="flex items-center gap-2 rounded-full bg-[#1c120c] px-4 py-2 text-xs font-black text-white shadow-2xl border border-white/20 backdrop-blur-xl transition hover:scale-105 active:scale-95 cursor-pointer"
         >
           <FiGrid className="text-sm text-[var(--orange)]" />
           <span>Categories</span>
-          <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--orange)] px-1 text-[10px] font-black text-white">
+          <span className="flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-[var(--orange)] px-1 text-[9px] font-black text-white">
             {initialSections.length}
           </span>
         </button>
@@ -366,39 +517,39 @@ export default function MenuPage() {
       {/* Mobile Category Selection Drawer Modal */}
       {isDrawerOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-xs md:hidden">
-          <div className="max-h-[80vh] w-full overflow-y-auto rounded-t-3xl border-t border-[var(--line)] bg-[var(--surface)] p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl">
-            <div className="mb-4 flex items-center justify-between">
+          <div className="max-h-[80vh] w-full overflow-y-auto rounded-t-3xl border-t border-[var(--line)] bg-[var(--surface)] p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FiGrid className="text-[var(--orange)] text-base" />
-                <h3 className="font-display text-lg font-black text-[var(--text)]">
+                <h3 className="font-display text-base font-black text-[var(--text)]">
                   Menu Categories
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setIsDrawerOpen(false)}
-                className="grid h-8 w-8 place-items-center rounded-full border border-[var(--line)] text-[var(--text)]"
+                className="grid h-8 w-8 place-items-center rounded-full border border-[var(--line)] text-[var(--text)] cursor-pointer"
                 aria-label="Close categories drawer"
               >
                 <FiX />
               </button>
             </div>
 
-            <div className="grid grid-cols-1 gap-2">
+            <div className="grid grid-cols-1 gap-1.5">
               <button
                 type="button"
                 onClick={() => handleCategoryChange('All')}
-                className={`flex items-center justify-between rounded-xl p-3 text-left font-extrabold text-xs transition ${
+                className={`flex items-center justify-between rounded-xl p-2.5 text-left font-extrabold text-xs transition cursor-pointer ${
                   activeCategory === 'All'
                     ? 'bg-[var(--orange)] text-white'
                     : 'bg-[var(--bg-soft)] text-[var(--text)] hover:bg-[var(--line)]/40'
                 }`}
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   <span className="text-base">🍽️</span>
                   <span>All Dishes</span>
                 </div>
-                <span className="text-[11px] font-bold opacity-80">
+                <span className="text-[10px] font-bold opacity-80">
                   {totalMenuItemsCount} items
                 </span>
               </button>
@@ -408,7 +559,7 @@ export default function MenuPage() {
                   key={section.id}
                   type="button"
                   onClick={() => handleCategoryChange(section.title)}
-                  className={`flex items-center justify-between rounded-xl p-2.5 text-left font-extrabold text-xs transition ${
+                  className={`flex items-center justify-between rounded-xl p-2 text-left font-extrabold text-xs transition cursor-pointer ${
                     activeCategory === section.title
                       ? 'bg-[var(--orange)] text-white'
                       : 'bg-[var(--bg-soft)] text-[var(--text)] hover:bg-[var(--line)]/40'
@@ -418,11 +569,11 @@ export default function MenuPage() {
                     <img
                       src={section.image}
                       alt=""
-                      className="h-8 w-8 rounded-lg object-cover border border-white/20"
+                      className="h-7 w-7 rounded-lg object-cover border border-white/20"
                     />
                     <span className="truncate">{section.title}</span>
                   </div>
-                  <span className="shrink-0 text-[11px] font-bold opacity-80 ml-2">
+                  <span className="shrink-0 text-[10px] font-bold opacity-80 ml-2">
                     {section.items.length}
                   </span>
                 </button>
@@ -444,3 +595,4 @@ export default function MenuPage() {
     </div>
   )
 }
+

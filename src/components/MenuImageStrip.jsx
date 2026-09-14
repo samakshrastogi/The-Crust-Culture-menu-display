@@ -54,9 +54,9 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
   return (
     <section
       ref={stripRef}
-      className="mb-3 sm:mb-4 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:p-2.5 shadow-xs"
+      className="mb-2 sm:mb-2.5 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-1.5 sm:p-2 shadow-xs"
     >
-      <div className="no-scrollbar relative flex gap-2.5 sm:gap-3 overflow-x-auto py-1 px-0.5">
+      <div className="no-scrollbar relative flex gap-2 sm:gap-2.5 overflow-x-auto py-0.5 px-0.5">
         {/* 'All Dishes' Tile */}
         <button
           ref={(element) => {
@@ -65,14 +65,14 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
           data-menu-tile
           type="button"
           onClick={() => onSelect('All')}
-          className={`group flex flex-col shrink-0 w-28 sm:w-34 overflow-hidden rounded-2xl border text-left transition-all duration-200 cursor-pointer ${
+          className={`group flex flex-col shrink-0 w-25 sm:w-28 overflow-hidden rounded-xl border text-left transition-all duration-200 cursor-pointer ${
             activeCategory === 'All'
-              ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/40 shadow-md shadow-orange-500/20 bg-gradient-to-b from-[var(--surface)] to-[var(--orange)]/10'
+              ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/40 shadow-sm bg-gradient-to-b from-[var(--surface)] to-[var(--orange)]/10'
               : 'border-[var(--line)] bg-[var(--surface)] hover:border-amber-500/40 hover:shadow-xs'
           }`}
         >
           {/* Unobstructed Food Photo Window */}
-          <div className="relative h-20 sm:h-24 w-full overflow-hidden bg-[var(--surface-strong)]">
+          <div className="relative h-15 sm:h-17 w-full overflow-hidden bg-[var(--surface-strong)]">
             <FoodImage
               src="/images/pizza-margherita.jpg"
               alt="All dishes"
@@ -80,17 +80,17 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
               loading="eager"
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-108"
             />
-            <span className="absolute top-1.5 right-1.5 rounded-full bg-black/60 backdrop-blur-xs px-2 py-0.5 text-[9px] font-extrabold text-white border border-white/20">
+            <span className="absolute top-1 right-1 rounded-full bg-black/65 backdrop-blur-xs px-1.5 py-0.2 text-[8px] sm:text-[9px] font-black text-white border border-white/20">
               {totalItems}
             </span>
           </div>
 
           {/* Clean Label Surface Below Photo */}
-          <div className="p-2 sm:p-2.5">
-            <h3 className="truncate text-xs sm:text-[13px] font-black leading-tight text-[var(--text)] group-hover:text-[var(--orange)] transition-colors">
+          <div className="p-1.5 sm:p-2">
+            <h3 className="truncate text-[11px] sm:text-xs font-black leading-tight text-[var(--text)] group-hover:text-[var(--orange)] transition-colors">
               All Dishes
             </h3>
-            <p className="mt-0.5 text-[10px] sm:text-[11px] font-bold text-[var(--muted)] truncate">
+            <p className="mt-0.5 text-[10px] font-bold text-[var(--muted)] truncate">
               {totalItems} items
             </p>
           </div>
@@ -109,14 +109,14 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
               data-menu-tile
               type="button"
               onClick={() => onSelect(section.title)}
-              className={`group flex flex-col shrink-0 w-28 sm:w-34 overflow-hidden rounded-2xl border text-left transition-all duration-200 cursor-pointer ${
+              className={`group flex flex-col shrink-0 w-25 sm:w-28 overflow-hidden rounded-xl border text-left transition-all duration-200 cursor-pointer ${
                 isActive
-                  ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/40 shadow-md shadow-orange-500/20 bg-gradient-to-b from-[var(--surface)] to-[var(--orange)]/10'
+                  ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/40 shadow-sm bg-gradient-to-b from-[var(--surface)] to-[var(--orange)]/10'
                   : 'border-[var(--line)] bg-[var(--surface)] hover:border-amber-500/40 hover:shadow-xs'
               }`}
             >
               {/* Unobstructed Food Photo Window */}
-              <div className="relative h-20 sm:h-24 w-full overflow-hidden bg-[var(--surface-strong)]">
+              <div className="relative h-15 sm:h-17 w-full overflow-hidden bg-[var(--surface-strong)]">
                 <FoodImage
                   src={section.image}
                   alt={section.title}
@@ -124,18 +124,18 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
                   loading="eager"
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-108"
                 />
-                <span className="absolute top-1.5 right-1.5 rounded-full bg-black/60 backdrop-blur-xs px-2 py-0.5 text-[9px] font-extrabold text-white border border-white/20">
+                <span className="absolute top-1 right-1 rounded-full bg-black/65 backdrop-blur-xs px-1.5 py-0.2 text-[8px] sm:text-[9px] font-black text-white border border-white/20">
                   {section.items.length}
                 </span>
               </div>
 
               {/* Clean Label Surface Below Photo */}
-              <div className="p-2 sm:p-2.5">
-                <h3 className="truncate text-xs sm:text-[13px] font-black leading-tight text-[var(--text)] group-hover:text-[var(--orange)] transition-colors">
+              <div className="p-1.5 sm:p-2">
+                <h3 className="truncate text-[11px] sm:text-xs font-black leading-tight text-[var(--text)] group-hover:text-[var(--orange)] transition-colors">
                   {section.title}
                 </h3>
-                <p className="mt-0.5 text-[10px] sm:text-[11px] font-bold text-[var(--orange)] truncate">
-                  {lowestPrice ? `From ₹${lowestPrice}` : `${section.items.length} items`}
+                <p className="mt-0.5 text-[10px] font-black text-[var(--orange)] truncate">
+                  {lowestPrice ? `₹${lowestPrice}` : `${section.items.length} items`}
                 </p>
               </div>
             </button>
