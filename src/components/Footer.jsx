@@ -15,7 +15,7 @@ import BrandLogo from './BrandLogo'
 export default function Footer() {
   return (
     <footer className="relative mt-8 sm:mt-12 lg:mt-16 overflow-hidden border-t border-[var(--line)] bg-[var(--surface)] text-[var(--text)] transition-colors">
-      <div className="relative mx-auto max-w-6xl px-4 py-4 sm:px-6 sm:py-5">
+      <div className="relative mx-auto  px-4 py-4 sm:px-6 sm:py-5">
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-12 lg:gap-6 items-start">
           {/* Brand & Essence */}
           <div className="space-y-2 lg:col-span-5">

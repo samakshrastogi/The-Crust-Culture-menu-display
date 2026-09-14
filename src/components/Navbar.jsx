@@ -14,7 +14,7 @@ export default function Navbar({ theme, onToggleTheme }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--bg)]/90 backdrop-blur-xl transition-colors">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-2 px-3 py-2 sm:gap-4 sm:px-6 sm:py-2.5 lg:px-8">
+      <nav className="mx-auto flex  items-center justify-between gap-2 px-3 py-2 sm:gap-4 sm:px-6 sm:py-2.5 lg:px-8">
         {/* Brand */}
         <BrandLogo />
 

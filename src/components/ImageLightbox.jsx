@@ -272,7 +272,7 @@ export default function ImageLightbox({ src, alt, title, category, onClose }) {
       onMouseUp={handleMouseUp}
     >
       {/* Top Header Controls Bar */}
-      <header className="z-20 flex w-full max-w-6xl items-center justify-between px-3.5 py-3 sm:px-6 sm:py-4">
+      <header className="z-20 flex w-full  items-center justify-between px-3.5 py-3 sm:px-6 sm:py-4">
         {/* Dish Title & Category */}
         <div className="flex items-center gap-2.5 min-w-0">
           <span className="shrink-0 rounded-full bg-[var(--gold)]/20 border border-[var(--gold)]/40 px-2.5 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
