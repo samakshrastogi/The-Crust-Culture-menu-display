@@ -152,12 +152,36 @@ const rawMenuSections = [
     title: "Garlic Breads & Sides",
     labels: [""],
     items: [
-      { name: "Veg Parcel", prices: ["49"] },
-      { name: "Indi Tandoori Parcel", prices: ["69"] },
-      { name: "Garlic Bread", prices: ["99"] },
-      { name: "Veggie Garlic Bread", prices: ["149"] },
-      { name: "Garlic Bread Stuffed", prices: ["149"] },
-      { name: "Paneer Tikka Stuffed", prices: ["169"] },
+      {
+        name: "Veg Parcel",
+        toppings: "(Seasoned Veggies, Creamy Mozzarella & Herb Marinara)",
+        prices: ["49"],
+      },
+      {
+        name: "Indi Tandoori Parcel",
+        toppings: "(Tandoori Spiced Veggies, Paneer & Rich Herb Butter)",
+        prices: ["69"],
+      },
+      {
+        name: "Garlic Bread",
+        toppings: "(Freshly Baked Artisan Loaf, Roasted Garlic Butter & Parsley)",
+        prices: ["99"],
+      },
+      {
+        name: "Veggie Garlic Bread",
+        toppings: "(Melted Mozzarella, Sweet Corn, Bell Peppers & Garlic Butter)",
+        prices: ["149"],
+      },
+      {
+        name: "Garlic Bread Stuffed",
+        toppings: "(Loaded Melted Mozzarella, Golden Sweet Corn, Jalapenos & Herb Butter)",
+        prices: ["149"],
+      },
+      {
+        name: "Paneer Tikka Stuffed",
+        toppings: "(Smoky Paneer Tikka, Molten Mozzarella Cheese & Garlic Herb Butter)",
+        prices: ["169"],
+      },
       { name: "Veg Nuggets", labels: ["H", "F"], prices: ["49", "89"] },
     ],
   },

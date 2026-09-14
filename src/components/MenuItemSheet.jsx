@@ -84,6 +84,8 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
   const isPizza = item.sectionTitle?.toLowerCase().includes('pizza') || item.name?.toLowerCase().includes('pizza')
   const cleanToppings = item.toppings?.replace(/^\((.*)\)$/, '$1') || item.toppings
   const flavorBadge = getFlavorBadge(item, item.sectionTitle)
+  const showFlavorBadgeOnImage = !item.tag && Boolean(flavorBadge)
+  const showFlavorBadgeInBody = !showFlavorBadgeOnImage && Boolean(flavorBadge)
 
   const selectedPriceObj = item.prices?.[selectedSizeIndex] || item.prices?.[0]
   const portionSuffix = selectedPriceObj
@@ -127,7 +129,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
 
         {/* Hero Food Media with Tap-to-Zoom Lightbox Trigger */}
         <div
-          className="group/hero relative aspect-[16/10] overflow-hidden bg-black/10 cursor-zoom-in"
+          className="group/hero relative aspect-[16/10] overflow-hidden bg-stone-900 cursor-zoom-in"
           onClick={() => setIsLightboxOpen(true)}
           title="Click to view full photo & zoom"
         >
@@ -139,8 +141,9 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             loading="eager"
             data-sheet-img
           />
-          {/* Subtle bottom gradient to blend with card surface */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[var(--surface)] to-transparent" />
+          {/* Subtle top and bottom dark gradient vignettes for maximum contrast and zero milky wash-out */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/60 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent" />
 
           {/* Close button */}
           <button
@@ -149,7 +152,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
               e.stopPropagation()
               closeWithAnimation()
             }}
-            className="touch-target absolute right-3.5 top-3.5 z-20 grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/20 transition-all hover:bg-black/80 hover:scale-105 active:scale-95"
+            className="touch-target absolute right-3 top-3 z-20 grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-full bg-black/50 text-white backdrop-blur-md border border-white/25 transition-all hover:bg-black/80 hover:scale-105 active:scale-95 shadow-md"
             aria-label="Close details"
           >
             <FiX className="text-base" />
@@ -162,63 +165,65 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
               e.stopPropagation()
               setIsLightboxOpen(true)
             }}
-            className="touch-target absolute right-3 bottom-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-black/60 px-2.5 py-1 text-[10px] sm:text-[11px] font-bold text-white backdrop-blur-md border border-white/20 shadow-md transition-all hover:bg-black/80 hover:scale-105 active:scale-95"
+            className="touch-target absolute right-3 bottom-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-black/65 px-3 py-1 text-[11px] font-bold text-white backdrop-blur-md border border-white/25 shadow-lg transition-all hover:bg-amber-500 hover:text-black hover:scale-105 active:scale-95"
             aria-label="Zoom photo"
           >
             <FiMaximize2 className="text-xs text-amber-300" />
             <span>Tap to Zoom</span>
           </button>
 
-          {/* Tag & Flavor Badges */}
-          <div className="absolute left-3.5 top-3.5 z-20 flex flex-wrap items-center gap-1.5 pointer-events-none">
-            {item.tag && (
+          {/* Tag Pill (Top Left - Exactly One Badge) */}
+          <div className="absolute left-3 top-3 z-20 flex items-center gap-1.5 pointer-events-none">
+            {item.tag ? (
               <span className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-amber-500 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-white shadow-md border border-white/25">
                 <span>★</span>
                 <span>{item.tag}</span>
               </span>
-            )}
-            {flavorBadge && (
+            ) : showFlavorBadgeOnImage ? (
               <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-black uppercase tracking-wider backdrop-blur-md border ${flavorBadge.badgeClass}`}>
                 <span>{flavorBadge.emoji}</span>
                 <span>{flavorBadge.label}</span>
               </span>
-            )}
+            ) : null}
           </div>
         </div>
 
         {/* Card Content Body */}
         <div className="space-y-4 p-4.5 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:p-5.5">
-          {/* Header Row: Veg + Category + Title + Favorite */}
-          <div data-sheet-item className="flex items-start justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <div className="mb-1.5 flex flex-wrap items-center gap-2">
+          {/* Header Row: Category + Dietary + Title + Favorite */}
+          <div data-sheet-item className="space-y-2">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2">
                 <VegIndicator veg={item.veg} />
-                <span className="inline-flex items-center rounded-full bg-[var(--gold)]/15 border border-[var(--gold)]/30 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
+                <span className="inline-flex items-center rounded-full bg-[var(--gold)]/10 border border-[var(--gold)]/30 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
                   {item.sectionTitle}
                 </span>
-                {flavorBadge && (
+                {showFlavorBadgeInBody && (
                   <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider ${flavorBadge.badgeClass}`}>
                     <span>{flavorBadge.emoji}</span>
                     <span>{flavorBadge.label}</span>
                   </span>
                 )}
               </div>
-              <h2 className="font-display text-xl sm:text-2xl font-bold leading-snug text-[var(--text)]">
-                {item.name}
-              </h2>
+
+              {/* Heart Toggle */}
+              <button
+                type="button"
+                onClick={(event) => onToggleFavorite(item.id, event.currentTarget)}
+                className={`grid h-9 w-9 shrink-0 place-items-center rounded-full border transition-all duration-200 active:scale-90 ${
+                  isFavorite
+                    ? 'border-orange-500 bg-gradient-to-tr from-[var(--orange)] to-amber-500 text-white shadow-md shadow-orange-500/25 ring-2 ring-orange-400/20'
+                    : 'border-[var(--line)] bg-[var(--surface-strong)]/60 text-[var(--muted)] hover:border-red-400 hover:text-red-500 hover:bg-[var(--surface)]'
+                }`}
+                aria-label={isFavorite ? `Remove ${item.name} from favorites` : `Add ${item.name} to favorites`}
+              >
+                <FiHeart className={`text-sm ${isFavorite ? 'fill-current' : ''}`} />
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={(event) => onToggleFavorite(item.id, event.currentTarget)}
-              className={`grid h-10 w-10 shrink-0 place-items-center rounded-full border transition-all duration-200 active:scale-90 ${
-                isFavorite
-                  ? 'border-[var(--orange)] bg-gradient-to-tr from-[var(--orange)] to-amber-500 text-white shadow-md shadow-orange-500/25'
-                  : 'border-[var(--line)] bg-[var(--surface-strong)]/60 text-[var(--muted)] hover:border-[var(--orange)]/40 hover:text-[var(--orange)]'
-              }`}
-              aria-label={isFavorite ? `Remove ${item.name} from favorites` : `Add ${item.name} to favorites`}
-            >
-              <FiHeart className={isFavorite ? 'fill-current' : ''} />
-            </button>
+
+            <h2 className="font-display text-2xl sm:text-3xl font-black leading-tight tracking-tight text-[var(--text)]">
+              {item.name}
+            </h2>
           </div>
 
           {/* Description */}
@@ -230,12 +235,14 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
 
           {/* Toppings / Ingredients */}
           {cleanToppings && (
-            <div data-sheet-item className="rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)]/35 p-3 sm:p-3.5">
-              <div className="flex items-center gap-1.5 mb-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[var(--gold)]">
-                <span>🌿</span>
-                <span>Toppings & Ingredients</span>
+            <div data-sheet-item className="rounded-2xl border border-[var(--line)] bg-gradient-to-br from-[var(--surface-strong)]/60 to-[var(--surface-strong)]/20 p-3.5 sm:p-4 shadow-xs">
+              <div className="flex items-center gap-2 mb-1.5 text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-[var(--gold)]">
+                <span className="flex h-5 w-5 items-center justify-center rounded-md bg-amber-500/15 text-amber-500">
+                  🌿
+                </span>
+                <span>Fresh Ingredients & Toppings</span>
               </div>
-              <p className="text-xs sm:text-sm font-medium leading-relaxed text-[var(--text)]">
+              <p className="text-xs sm:text-sm font-semibold leading-relaxed text-[var(--text)]">
                 {cleanToppings}
               </p>
             </div>
@@ -243,14 +250,14 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
 
           {/* Pricing & Size Selection */}
           {item.prices && item.prices.length > 1 ? (
-            <div data-sheet-item className="space-y-2 rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)]/25 p-3 sm:p-3.5">
+            <div data-sheet-item className="space-y-2.5 rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)]/25 p-3.5 sm:p-4">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-black uppercase tracking-wider text-[var(--gold)]">
+                <span className="text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
                   Select Size & Portion
                 </span>
                 {selectedPriceObj && (
-                  <span className="text-xs font-extrabold text-[var(--orange)]">
-                    {formatPrice(selectedPriceObj.value)}
+                  <span className="text-xs font-black text-[var(--orange)]">
+                    {selectedPriceObj.label ? `${selectedPriceObj.label} • ` : ''}{formatPrice(selectedPriceObj.value)}
                   </span>
                 )}
               </div>
@@ -266,7 +273,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                       onClick={() => setSelectedSizeIndex(idx)}
                       className={`flex flex-col items-center justify-center rounded-xl p-2.5 sm:p-3 border text-center transition-all duration-200 active:scale-95 cursor-pointer ${
                         isSelected
-                          ? 'border-[var(--orange)] bg-gradient-to-b from-[var(--orange)]/15 via-[var(--surface)] to-[var(--orange)]/5 ring-2 ring-[var(--orange)]/40 shadow-xs'
+                          ? 'border-[var(--orange)] bg-gradient-to-b from-orange-500/15 via-[var(--surface)] to-orange-500/5 ring-2 ring-[var(--orange)]/40 shadow-xs'
                           : 'border-[var(--line)] bg-[var(--surface)] hover:border-amber-500/35'
                       }`}
                     >
@@ -296,80 +303,97 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             </div>
           ) : (
             item.prices && item.prices.length === 1 && (
-              <div data-sheet-item className="flex items-center justify-between rounded-2xl border border-[var(--line)] bg-[var(--surface-strong)]/35 p-3.5">
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-[var(--gold)] block">
-                    Price
-                  </span>
-                  <span className="text-xs font-semibold text-[var(--muted)]">
+              <div
+                data-sheet-item
+                className="relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-[var(--surface)] to-orange-500/10 p-3.5 sm:p-4 shadow-xs flex items-center justify-between"
+              >
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
+                      Fresh Portion
+                    </span>
+                  </div>
+                  <p className="text-xs font-bold text-[var(--muted)]">
                     {item.prices[0].label || 'Standard Fresh Portion'}
-                  </span>
+                  </p>
                 </div>
-                <span className="text-xl sm:text-2xl font-black text-[var(--orange)] tracking-tight">
-                  {formatPrice(item.prices[0].value)}
-                </span>
+
+                <div className="text-right">
+                  <span className="text-2xl sm:text-3xl font-black tracking-tight text-[var(--orange)] drop-shadow-xs">
+                    {formatPrice(item.prices[0].value)}
+                  </span>
+                  <span className="block text-[9px] font-bold text-[var(--muted)]">Taxes Included</span>
+                </div>
               </div>
             )
           )}
 
           {/* Action Dock: Zomato Delivery + Direct Contact */}
-          <div data-sheet-item className="space-y-2 pt-1">
+          <div data-sheet-item className="space-y-2.5 pt-1">
             {/* Primary Action: Order on Zomato */}
             <a
               href={ZOMATO_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="touch-target group relative flex w-full items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-[#cb202d] via-[#E23744] to-[#f04856] px-4 py-3 text-white shadow-md shadow-red-500/25 transition-all duration-200 hover:shadow-lg hover:shadow-red-500/40 hover:scale-[1.01] active:scale-[0.99] border border-white/20"
+              className="touch-target group relative flex w-full items-center justify-between overflow-hidden rounded-2xl bg-gradient-to-r from-[#cb202d] via-[#E23744] to-[#f04856] px-4 py-3 sm:py-3.5 text-white shadow-md shadow-red-500/25 transition-all duration-200 hover:shadow-lg hover:shadow-red-500/40 hover:scale-[1.01] active:scale-[0.99] border border-white/20"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/20 backdrop-blur-xs text-xl">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/20 backdrop-blur-xs text-2xl shadow-xs">
                   <SiZomato />
                 </div>
                 <div className="min-w-0 text-left">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs sm:text-sm font-black tracking-wide">
+                    <span className="text-sm sm:text-base font-black tracking-wide">
                       Order on Zomato
                     </span>
-                    <span className="rounded-full bg-white/20 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider">
+                    <span className="rounded-full bg-white/25 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider">
                       Delivery
                     </span>
                   </div>
-                  <p className="text-[10px] sm:text-[11px] text-red-100 font-medium truncate">
+                  <p className="text-[11px] text-red-100 font-medium truncate">
                     Fast doorstep delivery • Live tracking
                   </p>
                 </div>
               </div>
-              <FiExternalLink className="shrink-0 text-base text-white/80 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <div className="flex items-center gap-1.5 font-bold text-xs bg-black/20 hover:bg-black/30 px-3 py-1.5 rounded-xl transition">
+                <span>Order</span>
+                <FiExternalLink className="text-xs transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </div>
             </a>
 
             {/* Direct Orders: Call & WhatsApp */}
             <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
               <a
                 href="tel:+919625261591"
-                className="touch-target inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl border border-orange-500/35 bg-[var(--surface-strong)]/60 px-3 py-2.5 text-xs sm:text-sm font-bold text-[var(--orange)] transition-all duration-200 hover:bg-[var(--orange)] hover:text-white active:scale-95"
+                className="touch-target inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[var(--line)] bg-[var(--surface-strong)]/60 px-3 py-3 text-xs sm:text-sm font-bold text-[var(--text)] transition-all duration-200 hover:border-[var(--orange)] hover:text-[var(--orange)] hover:bg-[var(--surface)] active:scale-95 shadow-xs"
               >
-                <FiPhone className="text-sm sm:text-base shrink-0" />
+                <FiPhone className="text-sm sm:text-base text-[var(--orange)] shrink-0" />
                 <span className="truncate">Call Cafe</span>
               </a>
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="touch-target inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-xl bg-gradient-to-r from-[#075E54] to-[#25D366] px-3 py-2.5 text-xs sm:text-sm font-bold text-white shadow-xs shadow-emerald-500/25 transition-all duration-200 hover:brightness-105 active:scale-95"
+                className="touch-target inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#075E54] to-[#25D366] px-3 py-3 text-xs sm:text-sm font-black text-white shadow-md shadow-emerald-600/20 transition-all duration-200 hover:brightness-105 active:scale-95"
               >
-                <FaWhatsapp className="text-sm sm:text-base shrink-0" />
+                <FaWhatsapp className="text-base shrink-0" />
                 <span className="truncate">WhatsApp Order</span>
               </a>
             </div>
           </div>
 
           {/* Cafe Quality Footer Accents */}
-          <div data-sheet-item className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 pt-1 text-[10px] sm:text-[11px] font-bold text-[var(--muted)] border-t border-[var(--line)]/50">
-            <span className="inline-flex items-center gap-1">🌱 100% Pure Veg Cafe</span>
-            <span className="opacity-30">•</span>
-            <span className="inline-flex items-center gap-1">🪵 Wood-Fired Hearth</span>
-            <span className="opacity-30">•</span>
-            <span className="inline-flex items-center gap-1">⏱️ Baked Fresh</span>
+          <div data-sheet-item className="grid grid-cols-3 gap-1.5 pt-2 border-t border-[var(--line)]/50 text-[10px] sm:text-[11px] font-bold text-[var(--muted)] text-center">
+            <div className="rounded-lg bg-[var(--surface-strong)]/40 py-1.5 px-1 truncate">
+              🌱 100% Pure Veg
+            </div>
+            <div className="rounded-lg bg-[var(--surface-strong)]/40 py-1.5 px-1 truncate">
+              🪵 Wood-Fired
+            </div>
+            <div className="rounded-lg bg-[var(--surface-strong)]/40 py-1.5 px-1 truncate">
+              ⏱️ Baked Fresh
+            </div>
           </div>
         </div>
       </div>
