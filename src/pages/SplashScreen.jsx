@@ -38,9 +38,13 @@ export default function SplashScreen() {
       <div className="space-y-7">
         <div
           data-logo-mark
-          className="mx-auto grid h-28 w-28 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-4xl font-black text-[var(--gold)] shadow-2xl"
+          className="mx-auto flex h-28 w-28 items-center justify-center rounded-full border border-amber-500/30 bg-[var(--surface)] p-1.5 shadow-2xl shadow-orange-500/20"
         >
-          CC
+          <img
+            src="/logo.svg"
+            alt="The Crust Culture Logo"
+            className="h-full w-full object-contain"
+          />
         </div>
         <div className="space-y-3">
           <p data-splash-copy className="text-sm font-bold uppercase tracking-[0.26em] text-[var(--orange)]">
