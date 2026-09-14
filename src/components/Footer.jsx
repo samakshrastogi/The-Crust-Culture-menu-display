@@ -171,7 +171,7 @@ export default function Footer() {
               </div>
 
               <a
-                href="https://maps.app.goo.gl/1DKJ87ZCokYP1QbR8"
+                href="https://maps.app.goo.gl/ernTdfzkPqRhYynR6"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-4 py-2.5 text-xs font-bold text-white shadow-md transition hover:shadow-lg hover:brightness-105 active:scale-95 w-full"

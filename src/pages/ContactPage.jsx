@@ -17,7 +17,7 @@ export default function ContactPage() {
               icon: FiMapPin,
               label: 'Address',
               value: 'The Crust Culture infront of royal pg and sheetal pg and adjacent of panchayat cafe gali no. 6 noble enclave palam vihar extension gurgaon haryana pincode 122015',
-              href: 'https://maps.app.goo.gl/1DKJ87ZCokYP1QbR8',
+              href: 'https://maps.app.goo.gl/ernTdfzkPqRhYynR6',
               external: true,
             },
           ].map((item) => {

@@ -57,7 +57,7 @@ export default function AboutPage() {
           </div>
         </div>
         <a
-          href="https://maps.app.goo.gl/1DKJ87ZCokYP1QbR8"
+          href="https://maps.app.goo.gl/ernTdfzkPqRhYynR6"
           target="_blank"
           rel="noopener noreferrer"
           className="group rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-6 transition hover:border-[var(--gold)] block"
@@ -75,7 +75,7 @@ export default function AboutPage() {
 
       <section data-reveal className="mt-10 rounded-[2rem] border border-[var(--line)] bg-[var(--surface)] p-5">
         <a
-          href="https://maps.app.goo.gl/1DKJ87ZCokYP1QbR8"
+          href="https://maps.app.goo.gl/ernTdfzkPqRhYynR6"
           target="_blank"
           rel="noopener noreferrer"
           className="group grid min-h-[220px] place-items-center rounded-[1.5rem] border border-dashed border-[var(--line)] bg-[var(--bg-soft)] p-6 text-center transition hover:border-[var(--gold)]"
