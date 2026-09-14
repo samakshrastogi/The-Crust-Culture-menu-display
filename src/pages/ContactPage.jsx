@@ -6,9 +6,9 @@ export default function ContactPage() {
       <section className="grid gap-6 md:gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="flex items-center gap-3.5 sm:gap-4">
           <img
-            src="/logo.svg"
+            src="/logo.png"
             alt="The Crust Culture"
-            className="h-14 w-14 sm:h-18 sm:w-18 shrink-0 rounded-full object-contain shadow-lg shadow-orange-500/20 ring-2 ring-amber-500/30"
+            className="h-14 w-14 sm:h-18 sm:w-18 shrink-0 rounded-full object-cover shadow-lg shadow-orange-500/20 ring-2 ring-amber-500/35"
           />
           <div>
             <span className="text-[10px] font-black uppercase tracking-[0.22em] text-[var(--gold)] sm:text-xs">

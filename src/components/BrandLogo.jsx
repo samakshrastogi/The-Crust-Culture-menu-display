@@ -8,11 +8,11 @@ export default function BrandLogo({ compact = false }) {
       aria-label="The Crust Culture home"
     >
       <img
-        src="/logo.svg"
+        src="/logo.png"
         alt="The Crust Culture Logo"
         width="44"
         height="44"
-        className="h-9 w-9 shrink-0 rounded-full object-contain shadow-md shadow-orange-500/25 ring-1.5 ring-amber-500/35 sm:h-10.5 sm:w-10.5 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6"
+        className="h-9 w-9 shrink-0 rounded-full object-cover shadow-md shadow-orange-500/25 ring-2 ring-amber-500/40 sm:h-10.5 sm:w-10.5 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6"
       />
       {!compact && (
         <span className="min-w-0 leading-tight">

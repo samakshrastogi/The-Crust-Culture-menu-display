@@ -38,12 +38,12 @@ export default function SplashScreen() {
       <div className="space-y-7">
         <div
           data-logo-mark
-          className="mx-auto flex h-32 w-32 sm:h-36 sm:w-36 items-center justify-center rounded-full border-2 border-amber-500/40 bg-[#1a0c06] p-1.5 shadow-2xl shadow-orange-500/30 ring-4 ring-orange-500/15"
+          className="mx-auto flex h-36 w-36 sm:h-44 sm:w-44 items-center justify-center rounded-full border-2 border-amber-500/40 bg-[#1a0c06] p-1 shadow-2xl shadow-orange-500/30 ring-4 ring-orange-500/15 overflow-hidden"
         >
           <img
-            src="/logo.svg"
+            src="/logo.png"
             alt="The Crust Culture Logo"
-            className="h-full w-full object-contain"
+            className="h-full w-full object-cover rounded-full"
           />
         </div>
         <div className="space-y-3">
