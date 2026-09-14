@@ -155,7 +155,7 @@ export default function HomePage() {
   }
 
   return (
-    <div ref={scopeRef} className="mx-auto max-w-7xl space-y-7 sm:space-y-9">
+    <div ref={scopeRef} className="mx-auto max-w-7xl space-y-7 sm:space-y-9 pb-4 sm:pb-6">
       {/* 1. Compact Hero Section */}
       <section className="mx-auto grid gap-5 px-3 pt-1 sm:gap-6 sm:px-6 md:grid-cols-[1.1fr_0.9fr] md:items-center lg:grid-cols-[1.15fr_0.85fr] lg:px-8">
         <div className="flex flex-col justify-center">
