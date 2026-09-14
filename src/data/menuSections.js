@@ -317,7 +317,7 @@ const sectionImages = {
   "sweet-corn-specials": "/images/pizza-veggie.jpg",
   "wok-rice-bowls": "/images/fried-rice.jpg",
   wraps: "/images/kathi-wrap.jpg",
-  "drinks-corner": "/images/drinks-corner.svg",
+  "drinks-corner": "/images/cold-coffee.jpg",
   "poha-corner": "/images/vada-pav.jpg",
   "crispy-starters": "/images/garlic-bread.jpg",
   "indo-chinese-specials": "/images/fried-rice.jpg",
@@ -336,13 +336,14 @@ const imageCollections = {
     "/images/pizza-paneer.jpg",
   ],
   paneerPizza: [
+    "/images/tandoori-paneer-pizza.jpg",
     "/images/pizza-paneer.jpg",
-    "/images/pizza-veggie.jpg",
-    "/images/pizza-margherita.jpg",
+    "/images/cheesy-corn-pizza.jpg",
   ],
   sides: [
+    "/images/garlic-bread-stuffed.jpg",
+    "/images/veg-parcel.jpg",
     "/images/garlic-bread.jpg",
-    "/images/french-fries.jpg",
   ],
   sandwiches: [
     "/images/grilled-sandwich.jpg",
@@ -354,6 +355,7 @@ const imageCollections = {
     "/images/vada-pav.jpg",
   ],
   corn: [
+    "/images/cheesy-corn-pizza.jpg",
     "/images/pizza-veggie.jpg",
     "/images/masala-maggie.jpg",
   ],
@@ -364,13 +366,19 @@ const imageCollections = {
     "/images/veg-momos.jpg",
   ],
   fries: [
+    "/images/cheese-loaded-fries.jpg",
+    "/images/peri-peri-fries.jpg",
+    "/images/honey-chilli-potato.jpg",
     "/images/french-fries.jpg",
   ],
   wraps: [
     "/images/kathi-wrap.jpg",
   ],
   drinks: [
-    "/images/drinks-corner.svg",
+    "/images/cold-coffee.jpg",
+    "/images/lemon-soda.jpg",
+    "/images/cold-coffee-icecream.jpg",
+    "/images/masala-chai.jpg",
   ],
   poha: [
     "/images/vada-pav.jpg",
@@ -440,21 +448,69 @@ const itemMetadata = {
     tag: "Popular",
     image: "/images/pizza-veggie.jpg",
   },
-  "double-paneer-premium": {
-    tag: "Best Seller",
+  "corn-cheese": {
+    tag: "Popular",
+    image: "/images/cheesy-corn-pizza.jpg",
+  },
+  "golden-corn": {
+    tag: "Popular",
+    image: "/images/cheesy-corn-pizza.jpg",
+  },
+  "golden-corn-onion": {
+    tag: "Popular",
+    image: "/images/cheesy-corn-pizza.jpg",
+  },
+  "cheesy-corn-paneer": {
+    tag: "Popular",
+    image: "/images/cheesy-corn-pizza.jpg",
+  },
+  "hot-peri-paneer": {
+    tag: "Spicy",
+    image: "/images/tandoori-paneer-pizza.jpg",
+  },
+  "paneer-special": {
+    tag: "Chef Special",
     image: "/images/pizza-paneer.jpg",
   },
   "loaded-indi-tandoori": {
     tag: "Must Try",
+    image: "/images/tandoori-paneer-pizza.jpg",
+  },
+  "double-paneer-premium": {
+    tag: "Best Seller",
+    image: "/images/tandoori-paneer-pizza.jpg",
+  },
+  "paneer-makhani": {
+    tag: "Rich & Creamy",
+    image: "/images/tandoori-paneer-pizza.jpg",
+  },
+  "peppy-paneer": {
+    tag: "Popular",
     image: "/images/pizza-paneer.jpg",
+  },
+  "garlic-bread": {
+    tag: "Classic",
+    image: "/images/garlic-bread.jpg",
   },
   "garlic-bread-stuffed": {
     tag: "Popular",
-    image: "/images/garlic-bread.jpg",
+    image: "/images/garlic-bread-stuffed.jpg",
+  },
+  "veggie-garlic-bread": {
+    tag: "Must Try",
+    image: "/images/garlic-bread-stuffed.jpg",
   },
   "paneer-tikka-stuffed": {
     tag: "Must Try",
-    image: "/images/garlic-bread.jpg",
+    image: "/images/paneer-tikka-stuffed.jpg",
+  },
+  "veg-parcel": {
+    tag: "Special",
+    image: "/images/veg-parcel.jpg",
+  },
+  "indi-tandoori-parcel": {
+    tag: "Must Try",
+    image: "/images/veg-parcel.jpg",
   },
   "aloo-tikki-burger": {
     tag: "Value Pick",
@@ -476,21 +532,49 @@ const itemMetadata = {
     tag: "Must Try",
     image: "/images/veg-momos.jpg",
   },
+  "salted-fries": {
+    tag: "Classic",
+    image: "/images/french-fries.jpg",
+  },
   "peri-peri-fries": {
     tag: "Spicy",
-    image: "/images/french-fries.jpg",
+    image: "/images/peri-peri-fries.jpg",
+  },
+  "cheese-loaded-fries": {
+    tag: "Best Seller",
+    image: "/images/cheese-loaded-fries.jpg",
+  },
+  "chilli-potato": {
+    tag: "Crispy",
+    image: "/images/honey-chilli-potato.jpg",
+  },
+  "honey-chilli-potato": {
+    tag: "Must Try",
+    image: "/images/honey-chilli-potato.jpg",
   },
   "cold-coffee": {
     tag: "Popular",
-    image: "/images/french-fries.jpg",
+    image: "/images/cold-coffee.jpg",
   },
   "cold-coffee-with-ice-cream": {
     tag: "Must Try",
-    image: "/images/french-fries.jpg",
+    image: "/images/cold-coffee-icecream.jpg",
   },
-  "veggie-garlic-bread": {
-    tag: "Must Try",
-    image: "/images/garlic-bread.jpg",
+  "lemon-soda": {
+    tag: "Refreshing",
+    image: "/images/lemon-soda.jpg",
+  },
+  shikanji: {
+    tag: "Refreshing",
+    image: "/images/lemon-soda.jpg",
+  },
+  "masala-chai": {
+    tag: "Best Seller",
+    image: "/images/masala-chai.jpg",
+  },
+  "ginger-tea": {
+    tag: "Popular",
+    image: "/images/masala-chai.jpg",
   },
   "veg-nuggets": {
     tag: "Crispy",
@@ -515,10 +599,6 @@ const itemMetadata = {
   "veg-taco": {
     tag: "Popular",
     image: "/images/veg-tacos.jpg",
-  },
-  "cheese-loaded-fries": {
-    tag: "Best Seller",
-    image: "/images/french-fries.jpg",
   },
 };
 
