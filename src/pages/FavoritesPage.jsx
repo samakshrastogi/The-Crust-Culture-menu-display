@@ -7,16 +7,7 @@ import FoodImage from '../components/FoodImage'
 import { menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
-const getMinPrice = (item) => {
-  if (!item || !item.prices || item.prices.length === 0) return 0
-  const parsedPrices = item.prices
-    .map((p) => {
-      const match = String(p.value || '').match(/(\d+)/)
-      return match ? parseInt(match[1], 10) : 0
-    })
-    .filter((v) => v > 0)
-  return parsedPrices.length ? Math.min(...parsedPrices) : 0
-}
+
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useLocalStorage('crust-favorites', [])
@@ -151,7 +142,6 @@ export default function FavoritesPage() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
                 {popularSuggestions.map((item) => {
-                  const minPrice = getMinPrice(item)
                   const isFav = favorites.includes(item.id)
 
                   return (
@@ -194,8 +184,8 @@ export default function FavoritesPage() {
                       </div>
 
                       <div className="mt-3 flex items-center justify-between border-t border-[var(--line)]/60 pt-2 text-xs">
-                        <span className="font-black text-[var(--text)]">
-                          ₹{minPrice}+
+                        <span className="text-[10px] sm:text-[11px] font-bold text-amber-600 dark:text-amber-400">
+                          ★ Chef Choice
                         </span>
                         <span className="font-bold text-[var(--orange)] text-[11px] group-hover:underline">
                           View details &rarr;
