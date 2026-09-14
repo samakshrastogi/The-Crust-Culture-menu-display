@@ -8,6 +8,7 @@ import {
   FiPhone,
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
+import { SiZomato } from 'react-icons/si'
 import BrandLogo from './BrandLogo'
 
 export default function Footer() {
@@ -30,7 +31,7 @@ export default function Footer() {
           </div>
           <div className="flex items-center gap-2 text-[var(--gold)]">
             <FiClock className="text-base" />
-            <span>Open Daily: 1:30 PM – 1:30 AM</span>
+            <span>Open 7 Days: 1:30 PM – 1:30 AM</span>
           </div>
         </div>
       </div>
@@ -117,10 +118,10 @@ export default function Footer() {
             <div className="rounded-2xl border border-[var(--line)] bg-[var(--bg-soft)] p-3.5 sm:p-4 space-y-2">
               <div className="flex items-center gap-2 text-xs font-bold text-[var(--text)] sm:text-sm">
                 <FiClock className="shrink-0 text-[var(--orange)]" />
-                <span>Monday – Sunday</span>
+                <span>Open 7 Days a Week</span>
               </div>
               <p className="text-xs font-semibold text-[var(--gold)] sm:text-sm">
-                1:30 PM – 1:30 AM
+                1:30 PM – 1:30 AM (Daily)
               </p>
               <p className="text-[11px] leading-tight text-[var(--muted)]">
                 Dine-in, takeaway, & late-night table ordering.
@@ -128,6 +129,16 @@ export default function Footer() {
             </div>
 
             <div className="space-y-2 pt-1">
+              <a
+                href="https://www.zomato.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 rounded-xl border border-red-500/30 bg-red-500/10 px-3.5 py-2 text-xs font-bold text-[#E23744] transition hover:bg-[#E23744] hover:text-white sm:text-sm group"
+              >
+                <SiZomato className="text-base text-[#E23744] group-hover:text-white transition" />
+                <span>Order on Zomato</span>
+                <FiExternalLink className="ml-auto text-xs opacity-70 group-hover:opacity-100" />
+              </a>
               <a
                 href="tel:+919625261591"
                 className="flex items-center gap-2.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3.5 py-2 text-xs font-bold text-[var(--text)] transition hover:border-[var(--orange)] hover:text-[var(--orange)] sm:text-sm"

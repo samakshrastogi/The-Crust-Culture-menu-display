@@ -44,7 +44,8 @@ export default function AboutPage() {
           <FiClock className="mb-4 text-3xl text-[var(--orange)]" />
           <h2 className="text-2xl font-black text-[var(--text)]">Opening hours</h2>
           <div className="mt-4 space-y-2 text-sm text-[var(--muted)]">
-            <p>All days: 1:30 PM - 1:30 AM</p>
+            <p className="font-bold text-[var(--orange)]">Open 7 Days: 1:30 PM – 1:30 AM</p>
+            <p className="text-xs">Monday through Sunday (Including Holidays)</p>
           </div>
         </div>
         <div className="rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-6">

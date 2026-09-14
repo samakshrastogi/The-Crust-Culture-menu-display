@@ -6,17 +6,23 @@ import {
   FiCheckCircle,
   FiChevronLeft,
   FiChevronRight,
+  FiClock,
+  FiExternalLink,
   FiHeart,
   FiLayers,
+  FiPhone,
   FiSmartphone,
   FiStar,
   FiZap,
 } from 'react-icons/fi'
+import { SiZomato } from 'react-icons/si'
 import { revealHero, revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
 import { menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import MenuItemSheet from '../components/MenuItemSheet'
+
+export const ZOMATO_URL = 'https://www.zomato.com'
 
 const isRestrictedTime = () => {
   const hours = new Date().getHours()
@@ -136,10 +142,14 @@ export default function HomePage() {
           {/* Tag / Kicker */}
           <div
             data-hero-kicker
-            className="mb-3 inline-flex items-center gap-2 rounded-full border border-amber-500/25 bg-amber-500/10 px-3.5 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 w-fit"
+            className="mb-3 inline-flex flex-wrap items-center gap-2 rounded-full border border-amber-500/25 bg-amber-500/10 px-3.5 py-1.5 text-xs font-bold text-amber-700 dark:text-amber-300 w-fit"
           >
             <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
-            Wood-Fired Kitchen • 100% Pure Veg
+            <span>Wood-Fired Kitchen</span>
+            <span>•</span>
+            <span>100% Pure Veg</span>
+            <span>•</span>
+            <span className="text-[var(--orange)] font-extrabold">Open 7 Days (1:30 PM – 1:30 AM)</span>
           </div>
 
           {/* Title */}
@@ -167,15 +177,27 @@ export default function HomePage() {
           <div data-hero-actions className="mt-5 flex flex-wrap items-center gap-3 sm:mt-7">
             <Link
               to="/menu"
-              className="touch-target group inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-7 py-3.5 text-sm font-black text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 sm:text-base"
+              className="touch-target group inline-flex items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:shadow-orange-500/40 hover:-translate-y-0.5 active:translate-y-0 sm:text-base"
             >
               Explore Menu{' '}
               <FiArrowRight className="text-lg transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
+
+            <a
+              href={ZOMATO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="touch-target group inline-flex items-center justify-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 hover:bg-[#E23744] px-5 py-3.5 text-sm font-bold text-[#E23744] hover:text-white transition-all duration-200 shadow-sm hover:shadow-red-500/25 hover:-translate-y-0.5 active:translate-y-0 sm:text-base"
+            >
+              <SiZomato className="text-xl transition-transform duration-200 group-hover:scale-110" />
+              <span>Order on Zomato</span>
+              <FiExternalLink className="text-xs opacity-70 group-hover:opacity-100" />
+            </a>
+
             <button
               type="button"
               onClick={() => document.getElementById('our-story')?.scrollIntoView({ behavior: 'smooth' })}
-              className="touch-target inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-[var(--surface)] px-6 py-3.5 text-sm font-bold text-[var(--text)] transition hover:border-[var(--gold)] hover:bg-[var(--surface)]/80 sm:text-base"
+              className="touch-target inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-[var(--surface)] px-5 py-3.5 text-sm font-bold text-[var(--text)] transition hover:border-[var(--gold)] hover:bg-[var(--surface)]/80 sm:text-base"
             >
               Our Story
             </button>
@@ -183,6 +205,12 @@ export default function HomePage() {
 
           {/* Trust Highlights */}
           <div className="mt-6 flex flex-wrap items-center gap-4 sm:gap-6 border-t border-[var(--line)]/60 pt-4 text-xs font-semibold text-[var(--muted)]">
+            <div className="flex items-center gap-1.5">
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                <FiClock className="h-3 w-3" />
+              </span>
+              <span className="font-bold text-[var(--text)]">Open 7 Days: 1:30 PM – 1:30 AM</span>
+            </div>
             <div className="flex items-center gap-1.5">
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400">
                 <FiStar className="h-3 w-3 fill-current" />
@@ -196,10 +224,10 @@ export default function HomePage() {
               <span>100% Pure Veg</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/15 text-[var(--orange)]">
-                <FiZap className="h-3 w-3" />
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500/15 text-[#E23744]">
+                <SiZomato className="h-3 w-3" />
               </span>
-              <span>Fast Dine-In & Takeaway</span>
+              <span>Live on Zomato</span>
             </div>
           </div>
         </div>
@@ -477,7 +505,87 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Our Story Section */}
+      {/* 5. Online Delivery & Operating Hours Callout */}
+      <section data-reveal className="mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-red-500/25 bg-gradient-to-br from-red-500/10 via-[var(--surface)] to-amber-500/10 p-5 sm:p-8 lg:p-10 shadow-lg">
+          <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div className="space-y-3">
+              <div className="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/15 px-3.5 py-1 text-xs font-black uppercase tracking-wider text-[#E23744]">
+                <SiZomato className="text-base" />
+                <span>Doorstep Delivery & Takeaway</span>
+              </div>
+              <h2 className="font-display text-2xl font-black text-[var(--text)] sm:text-3xl lg:text-4xl">
+                Craving hot, fresh sourdough pizza at home?
+              </h2>
+              <p className="text-xs leading-relaxed text-[var(--muted)] sm:text-sm max-w-xl">
+                Order your favorites directly through <strong className="text-[var(--text)]">Zomato</strong> for
+                fast doorstep delivery across Palam Vihar and nearby Gurgaon sectors. We are open and
+                delivering <strong className="text-[var(--text)]">7 days a week from 1:30 PM to 1:30 AM</strong>.
+              </p>
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <a
+                  href={ZOMATO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="touch-target inline-flex items-center gap-2 rounded-full bg-[#E23744] hover:bg-[#c92c39] px-6 py-3 text-sm font-black text-white shadow-lg shadow-red-500/30 transition-all hover:scale-105 active:scale-95"
+                >
+                  <SiZomato className="text-xl" />
+                  <span>Order on Zomato</span>
+                  <FiExternalLink className="text-xs" />
+                </a>
+                <a
+                  href="tel:+919625261591"
+                  className="touch-target inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface)] px-5 py-3 text-sm font-bold text-[var(--text)] hover:border-[var(--orange)] hover:text-[var(--orange)] transition"
+                >
+                  <FiPhone className="text-sm text-[var(--orange)]" />
+                  <span>+91 96252 61591</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Operating Hours Card */}
+            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)]/90 p-5 sm:p-6 backdrop-blur-md space-y-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                  <FiClock className="text-2xl" />
+                </div>
+                <div>
+                  <span className="text-[11px] font-black uppercase tracking-wider text-[var(--gold)]">
+                    Operating Hours
+                  </span>
+                  <h3 className="text-lg font-black text-[var(--text)]">
+                    Open 7 Days a Week
+                  </h3>
+                </div>
+              </div>
+
+              <div className="space-y-2 border-t border-[var(--line)]/60 pt-3 text-xs sm:text-sm">
+                <div className="flex items-center justify-between font-semibold">
+                  <span className="text-[var(--muted)]">Every Day (Mon – Sun):</span>
+                  <span className="font-extrabold text-[var(--orange)]">1:30 PM – 1:30 AM</span>
+                </div>
+                <div className="flex items-center justify-between font-semibold">
+                  <span className="text-[var(--muted)]">Services:</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-400">Dine-In • Takeaway • Delivery</span>
+                </div>
+                <div className="flex items-center justify-between font-semibold">
+                  <span className="text-[var(--muted)]">Platform:</span>
+                  <span className="font-bold text-[#E23744]">Available on Zomato</span>
+                </div>
+              </div>
+
+              <div className="pt-1">
+                <span className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 py-2 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+                  <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  Open 7 Days • Late Night Kitchen Active
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Our Story Section */}
       <section
         id="our-story"
         data-reveal
@@ -507,9 +615,12 @@ export default function HomePage() {
               <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-3 py-1 text-xs font-bold text-[var(--text)]">
                 🌱 100% Pure Vegetarian
               </span>
+              <span className="rounded-full bg-[var(--surface-strong)] border border-amber-500/30 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300">
+                ⏰ Open 7 Days (1:30 PM – 1:30 AM)
+              </span>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 flex flex-wrap items-center gap-3">
               <Link
                 to="/menu"
                 className="touch-target inline-flex items-center gap-2 rounded-full bg-[var(--orange)] px-6 py-2.5 text-xs font-black text-white shadow-md transition hover:bg-[#ea580c] sm:text-sm"
@@ -517,6 +628,15 @@ export default function HomePage() {
                 <span>Browse Full Menu</span>
                 <FiArrowRight className="text-sm" />
               </Link>
+              <a
+                href={ZOMATO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="touch-target inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-5 py-2.5 text-xs font-bold text-[#E23744] hover:bg-[#E23744] hover:text-white transition sm:text-sm"
+              >
+                <SiZomato className="text-base" />
+                <span>Zomato</span>
+              </a>
             </div>
           </div>
 
