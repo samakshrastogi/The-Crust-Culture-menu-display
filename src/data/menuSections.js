@@ -296,207 +296,101 @@ const rawMenuSections = [
 ];
 
 const sectionImages = {
-  "extra-toppings":
-    "https://images.unsplash.com/photo-1511689660979-10d2b1aada49?auto=format&fit=crop&w=600&q=75",
-  "everyday-classics":
-    "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=600&q=75",
-  "classic-veg-combos":
-    "https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=600&q=75",
-  "veggie-cheese-loaded-pizzas":
-    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=75",
-  "signature-veg-pizzas":
-    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=75",
-  "royal-paneer-pizza":
-    "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=75",
-  "royal-paneer-collection":
-    "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=75",
-  "garlic-breads-sides":
-    "https://images.unsplash.com/photo-1573140401552-3fab0b24306f?auto=format&fit=crop&w=600&q=75",
-  "grilled-sandwiches":
-    "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=75",
-  "burgers-street-bites":
-    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=75",
-  momos:
-    new URL("../assets/item-images/momo/fried-momo.jpg", import.meta.url).href,
-  "momo-specials":
-    new URL("../assets/item-images/momo/fried-momo.jpg", import.meta.url).href,
-  taco:
-    "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=75",
-  "french-fries":
-    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75",
-  "fry-fiesta":
-    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75",
-  "maggie-special":
-    "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=75",
-  "maggi-mania":
-    "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=75",
-  "mumbai-street-special":
-    "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=75",
-  "sweet-corn-specials":
-    "https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=75",
-  "wok-rice-bowls":
-    "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=75",
-  wraps:
-    "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=75",
-  "drinks-corner":
-    "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=75",
-  "poha-corner":
-    "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=75",
-  "crispy-starters":
-    "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=75",
-  "indo-chinese-specials":
-    "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=600&q=75",
-  "south-indian-specials":
-    "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=600&q=75",
-  "protein-shakes-salads":
-    "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=75",
+  "extra-toppings": "/images/pizza-veggie.jpg",
+  "everyday-classics": "/images/pizza-margherita.jpg",
+  "classic-veg-combos": "/images/pizza-veggie.jpg",
+  "veggie-cheese-loaded-pizzas": "/images/pizza-veggie.jpg",
+  "signature-veg-pizzas": "/images/pizza-margherita.jpg",
+  "royal-paneer-pizza": "/images/pizza-paneer.jpg",
+  "royal-paneer-collection": "/images/pizza-paneer.jpg",
+  "garlic-breads-sides": "/images/garlic-bread.jpg",
+  "grilled-sandwiches": "/images/grilled-sandwich.jpg",
+  "burgers-street-bites": "/images/veg-burger.jpg",
+  momos: "/images/veg-momos.jpg",
+  "momo-specials": "/images/veg-momos.jpg",
+  taco: "/images/veg-tacos.jpg",
+  "french-fries": "/images/french-fries.jpg",
+  "fry-fiesta": "/images/french-fries.jpg",
+  "maggie-special": "/images/masala-maggie.jpg",
+  "maggi-mania": "/images/masala-maggie.jpg",
+  "mumbai-street-special": "/images/vada-pav.jpg",
+  "sweet-corn-specials": "/images/pizza-veggie.jpg",
+  "wok-rice-bowls": "/images/fried-rice.jpg",
+  wraps: "/images/kathi-wrap.jpg",
+  "drinks-corner": "/images/french-fries.jpg",
+  "poha-corner": "/images/vada-pav.jpg",
+  "crispy-starters": "/images/garlic-bread.jpg",
+  "indo-chinese-specials": "/images/fried-rice.jpg",
+  "south-indian-specials": "/images/vada-pav.jpg",
+  "protein-shakes-salads": "/images/kathi-wrap.jpg",
 };
 
 const imageCollections = {
   toppings: [
-    "https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1511689660979-10d2b1aada49?auto=format&fit=crop&w=600&q=75",
+    "/images/pizza-veggie.jpg",
+    "/images/pizza-margherita.jpg",
   ],
   pizza: [
-    "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1601924582970-9238bcb495d9?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1601924582971-c86e7b34eec4?auto=format&fit=crop&w=600&q=75",
+    "/images/pizza-margherita.jpg",
+    "/images/pizza-veggie.jpg",
+    "/images/pizza-paneer.jpg",
   ],
   paneerPizza: [
-    "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1601924582970-9238bcb495d9?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1620374645498-af6bd681a946?auto=format&fit=crop&w=600&q=75",
+    "/images/pizza-paneer.jpg",
+    "/images/pizza-veggie.jpg",
+    "/images/pizza-margherita.jpg",
   ],
   sides: [
-    "https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1573140401552-3fab0b24306f?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=600&q=75",
+    "/images/garlic-bread.jpg",
+    "/images/french-fries.jpg",
   ],
   sandwiches: [
-    "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1481070555726-e2fe8357725c?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?auto=format&fit=crop&w=600&q=75",
+    "/images/grilled-sandwich.jpg",
   ],
   burgers: [
-    "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1550317138-10000687a72b?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=600&q=75",
+    "/images/veg-burger.jpg",
   ],
   street: [
-    "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&fit=crop&w=600&q=75",
+    "/images/vada-pav.jpg",
   ],
   corn: [
-    "https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1571680322279-a226e6a4cc2a?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1615485500704-8e990f9900f7?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1598514983318-2f64f8f4796c?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1506808547685-e2ba962ded60?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1511689660979-10d2b1aada49?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=600&q=75",
+    "/images/pizza-veggie.jpg",
+    "/images/masala-maggie.jpg",
   ],
   maggi: [
-    "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1637024698421-533d83c7b883?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1618841557871-b4664fbf0cb3?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=75",
+    "/images/masala-maggie.jpg",
   ],
   momo: [
-    new URL("../assets/item-images/momo/fried-momo.jpg", import.meta.url).href,
-    new URL("../assets/item-images/momo/fried-momo.jpg", import.meta.url).href,
+    "/images/veg-momos.jpg",
   ],
   fries: [
-    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1576107232684-1279f390859f?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1630384060421-cb20d0e0649d?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1623238912680-26fc5ffb57e0?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?auto=format&fit=crop&w=600&q=75",
+    "/images/french-fries.jpg",
   ],
   wraps: [
-    "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=75",
+    "/images/kathi-wrap.jpg",
   ],
   drinks: [
-    "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=75",
+    "/images/french-fries.jpg",
+    "/images/pizza-margherita.jpg",
   ],
   poha: [
-    "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?auto=format&fit=crop&w=600&q=75",
+    "/images/vada-pav.jpg",
   ],
   crispy: [
-    "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1604909052743-94e838986d24?auto=format&fit=crop&w=600&q=75",
+    "/images/garlic-bread.jpg",
+    "/images/french-fries.jpg",
   ],
   chinese: [
-    "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=75",
+    "/images/fried-rice.jpg",
   ],
   southIndian: [
-    "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1610192244261-3f33de3f72e1?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1630383249896-424e482df921?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1617692855027-33b14f061079?auto=format&fit=crop&w=600&q=75",
+    "/images/vada-pav.jpg",
   ],
   tacos: [
-    "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1615870216519-2f9fa575fa5c?auto=format&fit=crop&w=600&q=75",
+    "/images/veg-tacos.jpg",
   ],
   protein: [
-    "https://images.unsplash.com/photo-1622484211148-a645df14f0ed?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1577805947697-89e18249d767?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=600&q=75",
+    "/images/kathi-wrap.jpg",
   ],
 };
 
@@ -533,121 +427,99 @@ const sectionImageCollections = {
 const itemMetadata = {
   margherita: {
     tag: "Best Seller",
-    image:
-      "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=600&q=75",
+    image: "/images/pizza-margherita.jpg",
   },
   "double-cheese-margherita": {
     tag: "Must Try",
-    image:
-      "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=75",
+    image: "/images/pizza-margherita.jpg",
   },
   "fiesta-popper": {
     tag: "Spicy",
-    image:
-      "https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=600&q=75",
+    image: "/images/pizza-veggie.jpg",
   },
   "farmhouse-pizza": {
     tag: "Popular",
-    image:
-      "https://images.unsplash.com/photo-1601924582970-9238bcb495d9?auto=format&fit=crop&w=600&q=75",
+    image: "/images/pizza-veggie.jpg",
   },
   "double-paneer-premium": {
     tag: "Best Seller",
-    image:
-      "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=75",
+    image: "/images/pizza-paneer.jpg",
   },
   "loaded-indi-tandoori": {
     tag: "Must Try",
-    image:
-      "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=75",
+    image: "/images/pizza-paneer.jpg",
   },
   "garlic-bread-stuffed": {
     tag: "Popular",
-    image:
-      "https://images.unsplash.com/photo-1573140401552-3fab0b24306f?auto=format&fit=crop&w=600&q=75",
+    image: "/images/garlic-bread.jpg",
   },
   "paneer-tikka-stuffed": {
     tag: "Must Try",
-    image:
-      "https://images.unsplash.com/photo-1573140401552-3fab0b24306f?auto=format&fit=crop&w=600&q=75",
+    image: "/images/garlic-bread.jpg",
   },
   "aloo-tikki-burger": {
     tag: "Value Pick",
-    image:
-      "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=75",
+    image: "/images/veg-burger.jpg",
   },
   "cheese-paneer": {
     tag: "Popular",
-    image:
-      "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=600&q=75",
+    image: "/images/veg-burger.jpg",
   },
   "vada-pav": {
     tag: "Value Pick",
-    image:
-      "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=75",
+    image: "/images/vada-pav.jpg",
   },
   "cheese-maggie": {
     tag: "Popular",
-    image:
-      "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=75",
+    image: "/images/masala-maggie.jpg",
   },
   "paneer-fried-momo": {
     tag: "Must Try",
-    image:
-      "https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?auto=format&fit=crop&w=600&q=75",
+    image: "/images/veg-momos.jpg",
   },
   "peri-peri-fries": {
     tag: "Spicy",
-    image:
-      "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75",
+    image: "/images/french-fries.jpg",
   },
   "cold-coffee": {
     tag: "Popular",
-    image:
-      "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=600&q=75",
+    image: "/images/french-fries.jpg",
   },
   "cold-coffee-with-ice-cream": {
     tag: "Must Try",
-    image:
-      "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=75",
+    image: "/images/french-fries.jpg",
   },
   "veggie-garlic-bread": {
     tag: "Must Try",
-    image:
-      "https://images.unsplash.com/photo-1573140401552-3fab0b24306f?auto=format&fit=crop&w=600&q=75",
+    image: "/images/garlic-bread.jpg",
   },
   "veg-nuggets": {
     tag: "Crispy",
-    image:
-      "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=75",
+    image: "/images/garlic-bread.jpg",
   },
   "double-cheese-burger": {
     tag: "Popular",
-    image:
-      "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=75",
+    image: "/images/veg-burger.jpg",
   },
   "cheese-paneer-burger": {
     tag: "Popular",
-    image:
-      "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=600&q=75",
+    image: "/images/veg-burger.jpg",
   },
   "veg-fried-momos": {
     tag: "Must Try",
-    image: new URL("../assets/item-images/momo/fried-momo.jpg", import.meta.url).href,
+    image: "/images/veg-momos.jpg",
   },
   "paneer-fried-momos": {
     tag: "Must Try",
-    image: new URL("../assets/item-images/momo/fried-momo.jpg", import.meta.url).href,
+    image: "/images/veg-momos.jpg",
   },
   "veg-taco": {
     tag: "Popular",
-    image:
-      "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=75",
+    image: "/images/veg-tacos.jpg",
   },
   "cheese-loaded-fries": {
     tag: "Best Seller",
-    image:
-      "https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=600&q=75",
+    image: "/images/french-fries.jpg",
   },
 };
 

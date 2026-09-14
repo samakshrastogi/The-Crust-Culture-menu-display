@@ -15,12 +15,18 @@
       "category": "Pizza",
       "description": "San Marzano tomato, basil, mozzarella, extra virgin olive oil, and blistered crust.",
       "price": 349,
-      "image": "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/pizza-margherita.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": true,
       "spiceLevel": "Mild",
-      "ingredients": ["San Marzano tomato", "fresh mozzarella", "basil", "olive oil", "sourdough crust"]
+      "ingredients": [
+        "San Marzano tomato",
+        "fresh mozzarella",
+        "basil",
+        "olive oil",
+        "sourdough crust"
+      ]
     },
     {
       "id": "pizza-truffle-fungi",
@@ -28,12 +34,18 @@
       "category": "Pizza",
       "description": "Roasted mushrooms, truffle cream, mozzarella, parmesan, thyme, and garlic oil.",
       "price": 499,
-      "image": "https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/pizza-margherita.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": false,
       "spiceLevel": "Mild",
-      "ingredients": ["button mushrooms", "truffle cream", "mozzarella", "parmesan", "thyme"]
+      "ingredients": [
+        "button mushrooms",
+        "truffle cream",
+        "mozzarella",
+        "parmesan",
+        "thyme"
+      ]
     },
     {
       "id": "pizza-pepperoni",
@@ -41,12 +53,18 @@
       "category": "Pizza",
       "description": "Crisp pepperoni cups, mozzarella, chilli honey, oregano, and slow-cooked tomato sauce.",
       "price": 549,
-      "image": "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/pizza-margherita.jpg",
       "veg": false,
       "popular": true,
       "bestSeller": true,
       "spiceLevel": "Medium",
-      "ingredients": ["pepperoni", "mozzarella", "tomato sauce", "oregano", "chilli honey"]
+      "ingredients": [
+        "pepperoni",
+        "mozzarella",
+        "tomato sauce",
+        "oregano",
+        "chilli honey"
+      ]
     },
     {
       "id": "pizza-bbq-chicken",
@@ -54,12 +72,18 @@
       "category": "Pizza",
       "description": "Charred chicken, smoked BBQ glaze, onions, cheddar, mozzarella, and coriander.",
       "price": 579,
-      "image": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/pizza-margherita.jpg",
       "veg": false,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "Medium",
-      "ingredients": ["grilled chicken", "BBQ sauce", "red onion", "cheddar", "mozzarella"]
+      "ingredients": [
+        "grilled chicken",
+        "BBQ sauce",
+        "red onion",
+        "cheddar",
+        "mozzarella"
+      ]
     },
     {
       "id": "pizza-paneer-tikka",
@@ -67,12 +91,18 @@
       "category": "Pizza",
       "description": "Tandoori paneer, peppers, onions, mint drizzle, mozzarella, and masala sauce.",
       "price": 489,
-      "image": "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/pizza-margherita.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": false,
       "spiceLevel": "Hot",
-      "ingredients": ["paneer tikka", "bell peppers", "onion", "mint chutney", "mozzarella"]
+      "ingredients": [
+        "paneer tikka",
+        "bell peppers",
+        "onion",
+        "mint chutney",
+        "mozzarella"
+      ]
     },
     {
       "id": "burger-classic",
@@ -80,12 +110,18 @@
       "category": "Burgers",
       "description": "Toasted brioche, smashed patty, cheddar, lettuce, tomato, pickle, and house sauce.",
       "price": 329,
-      "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/veg-burger.jpg",
       "veg": false,
       "popular": true,
       "bestSeller": true,
       "spiceLevel": "Mild",
-      "ingredients": ["smashed chicken patty", "brioche", "cheddar", "lettuce", "house sauce"]
+      "ingredients": [
+        "smashed chicken patty",
+        "brioche",
+        "cheddar",
+        "lettuce",
+        "house sauce"
+      ]
     },
     {
       "id": "burger-veg-crunch",
@@ -93,12 +129,18 @@
       "category": "Burgers",
       "description": "Crispy vegetable patty, slaw, jalapeno mayo, tomato, lettuce, and toasted sesame bun.",
       "price": 279,
-      "image": "https://images.unsplash.com/photo-1550317138-10000687a72b?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/veg-burger.jpg",
       "veg": true,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "Medium",
-      "ingredients": ["vegetable patty", "slaw", "jalapeno mayo", "tomato", "sesame bun"]
+      "ingredients": [
+        "vegetable patty",
+        "slaw",
+        "jalapeno mayo",
+        "tomato",
+        "sesame bun"
+      ]
     },
     {
       "id": "burger-peri-peri",
@@ -106,12 +148,18 @@
       "category": "Burgers",
       "description": "Flame grilled chicken, peri peri glaze, cheese, onion jam, lettuce, and garlic aioli.",
       "price": 369,
-      "image": "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/veg-burger.jpg",
       "veg": false,
       "popular": true,
       "bestSeller": false,
       "spiceLevel": "Hot",
-      "ingredients": ["chicken fillet", "peri peri glaze", "cheese", "onion jam", "garlic aioli"]
+      "ingredients": [
+        "chicken fillet",
+        "peri peri glaze",
+        "cheese",
+        "onion jam",
+        "garlic aioli"
+      ]
     },
     {
       "id": "burger-mushroom",
@@ -119,12 +167,18 @@
       "category": "Burgers",
       "description": "Grilled mushroom steak, Swiss cheese, caramelized onions, lettuce, and pepper sauce.",
       "price": 349,
-      "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/veg-burger.jpg",
       "veg": true,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "Mild",
-      "ingredients": ["portobello mushroom", "Swiss cheese", "caramelized onion", "pepper sauce", "brioche"]
+      "ingredients": [
+        "portobello mushroom",
+        "Swiss cheese",
+        "caramelized onion",
+        "pepper sauce",
+        "brioche"
+      ]
     },
     {
       "id": "pasta-alfredo",
@@ -132,12 +186,18 @@
       "category": "Pasta",
       "description": "Silky parmesan cream, fettuccine, cracked pepper, parsley, and garlic butter crumbs.",
       "price": 389,
-      "image": "https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/masala-maggie.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": false,
       "spiceLevel": "Mild",
-      "ingredients": ["fettuccine", "parmesan", "cream", "parsley", "garlic crumbs"]
+      "ingredients": [
+        "fettuccine",
+        "parmesan",
+        "cream",
+        "parsley",
+        "garlic crumbs"
+      ]
     },
     {
       "id": "pasta-arrabbiata",
@@ -145,12 +205,18 @@
       "category": "Pasta",
       "description": "Penne tossed with chilli tomato sauce, garlic, basil, parmesan, and olive oil.",
       "price": 359,
-      "image": "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/masala-maggie.jpg",
       "veg": true,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "Hot",
-      "ingredients": ["penne", "tomato", "red chilli", "garlic", "parmesan"]
+      "ingredients": [
+        "penne",
+        "tomato",
+        "red chilli",
+        "garlic",
+        "parmesan"
+      ]
     },
     {
       "id": "pasta-pesto",
@@ -158,12 +224,18 @@
       "category": "Pasta",
       "description": "Handmade basil pesto, fusilli, toasted pine nuts, cherry tomatoes, and parmesan.",
       "price": 419,
-      "image": "https://images.unsplash.com/photo-1608897013039-887f21d8c804?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/masala-maggie.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": false,
       "spiceLevel": "Mild",
-      "ingredients": ["fusilli", "basil pesto", "pine nuts", "cherry tomato", "parmesan"]
+      "ingredients": [
+        "fusilli",
+        "basil pesto",
+        "pine nuts",
+        "cherry tomato",
+        "parmesan"
+      ]
     },
     {
       "id": "pasta-chicken-rose",
@@ -171,12 +243,18 @@
       "category": "Pasta",
       "description": "Rigatoni in tomato cream sauce with grilled chicken, basil, parmesan, and chilli oil.",
       "price": 459,
-      "image": "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/masala-maggie.jpg",
       "veg": false,
       "popular": true,
       "bestSeller": true,
       "spiceLevel": "Medium",
-      "ingredients": ["rigatoni", "grilled chicken", "tomato cream", "basil", "chilli oil"]
+      "ingredients": [
+        "rigatoni",
+        "grilled chicken",
+        "tomato cream",
+        "basil",
+        "chilli oil"
+      ]
     },
     {
       "id": "sandwich-caprese",
@@ -184,12 +262,18 @@
       "category": "Sandwiches",
       "description": "Fresh mozzarella, tomatoes, basil pesto, rocket, and balsamic glaze on sourdough.",
       "price": 249,
-      "image": "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/grilled-sandwich.jpg",
       "veg": true,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "Mild",
-      "ingredients": ["sourdough", "mozzarella", "tomato", "basil pesto", "balsamic"]
+      "ingredients": [
+        "sourdough",
+        "mozzarella",
+        "tomato",
+        "basil pesto",
+        "balsamic"
+      ]
     },
     {
       "id": "sandwich-paneer",
@@ -197,12 +281,18 @@
       "category": "Sandwiches",
       "description": "Tandoori paneer, cheese, onions, peppers, green chutney, and toasted milk bread.",
       "price": 289,
-      "image": "https://images.unsplash.com/photo-1509722747041-616f39b57569?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/grilled-sandwich.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": true,
       "spiceLevel": "Medium",
-      "ingredients": ["paneer", "cheese", "onion", "pepper", "green chutney"]
+      "ingredients": [
+        "paneer",
+        "cheese",
+        "onion",
+        "pepper",
+        "green chutney"
+      ]
     },
     {
       "id": "sandwich-bbq",
@@ -210,12 +300,18 @@
       "category": "Sandwiches",
       "description": "Pulled chicken, BBQ sauce, cheddar, pickled onions, and butter toasted sourdough.",
       "price": 339,
-      "image": "https://images.unsplash.com/photo-1567234669003-dce7a7a88821?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/grilled-sandwich.jpg",
       "veg": false,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "Medium",
-      "ingredients": ["pulled chicken", "BBQ sauce", "cheddar", "pickled onion", "sourdough"]
+      "ingredients": [
+        "pulled chicken",
+        "BBQ sauce",
+        "cheddar",
+        "pickled onion",
+        "sourdough"
+      ]
     },
     {
       "id": "starter-garlic-bread",
@@ -223,12 +319,18 @@
       "category": "Starters",
       "description": "Baked baguette with roasted garlic butter, mozzarella, herbs, and chilli flakes.",
       "price": 199,
-      "image": "https://images.unsplash.com/photo-1573140401552-3fab0b24306f?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/garlic-bread.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": true,
       "spiceLevel": "Mild",
-      "ingredients": ["baguette", "garlic butter", "mozzarella", "parsley", "chilli flakes"]
+      "ingredients": [
+        "baguette",
+        "garlic butter",
+        "mozzarella",
+        "parsley",
+        "chilli flakes"
+      ]
     },
     {
       "id": "starter-fries",
@@ -236,12 +338,18 @@
       "category": "Starters",
       "description": "Crispy fries with truffle oil, parmesan, parsley, cracked pepper, and aioli.",
       "price": 249,
-      "image": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/garlic-bread.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": false,
       "spiceLevel": "Mild",
-      "ingredients": ["potato fries", "truffle oil", "parmesan", "parsley", "aioli"]
+      "ingredients": [
+        "potato fries",
+        "truffle oil",
+        "parmesan",
+        "parsley",
+        "aioli"
+      ]
     },
     {
       "id": "starter-wings",
@@ -249,12 +357,18 @@
       "category": "Starters",
       "description": "Grilled chicken wings tossed in house hot sauce with ranch dip and celery.",
       "price": 359,
-      "image": "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/garlic-bread.jpg",
       "veg": false,
       "popular": true,
       "bestSeller": true,
       "spiceLevel": "Hot",
-      "ingredients": ["chicken wings", "hot sauce", "butter", "ranch", "celery"]
+      "ingredients": [
+        "chicken wings",
+        "hot sauce",
+        "butter",
+        "ranch",
+        "celery"
+      ]
     },
     {
       "id": "starter-nachos",
@@ -262,12 +376,18 @@
       "category": "Starters",
       "description": "Corn chips, cheese sauce, beans, salsa, jalapenos, sour cream, and guacamole.",
       "price": 299,
-      "image": "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/garlic-bread.jpg",
       "veg": true,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "Medium",
-      "ingredients": ["corn chips", "cheese sauce", "beans", "salsa", "guacamole"]
+      "ingredients": [
+        "corn chips",
+        "cheese sauce",
+        "beans",
+        "salsa",
+        "guacamole"
+      ]
     },
     {
       "id": "starter-mozzarella",
@@ -275,12 +395,18 @@
       "category": "Starters",
       "description": "Golden mozzarella bites served with marinara, basil, and parmesan dust.",
       "price": 269,
-      "image": "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/garlic-bread.jpg",
       "veg": true,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "Mild",
-      "ingredients": ["mozzarella", "breadcrumbs", "marinara", "basil", "parmesan"]
+      "ingredients": [
+        "mozzarella",
+        "breadcrumbs",
+        "marinara",
+        "basil",
+        "parmesan"
+      ]
     },
     {
       "id": "dessert-tiramisu",
@@ -288,12 +414,18 @@
       "category": "Desserts",
       "description": "Mascarpone cream, espresso-soaked sponge, cocoa, and dark chocolate curls.",
       "price": 279,
-      "image": "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/french-fries.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": true,
       "spiceLevel": "None",
-      "ingredients": ["mascarpone", "espresso", "sponge", "cocoa", "dark chocolate"]
+      "ingredients": [
+        "mascarpone",
+        "espresso",
+        "sponge",
+        "cocoa",
+        "dark chocolate"
+      ]
     },
     {
       "id": "dessert-brownie",
@@ -301,12 +433,18 @@
       "category": "Desserts",
       "description": "Warm chocolate brownie with vanilla gelato, salted caramel, and roasted nuts.",
       "price": 299,
-      "image": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/french-fries.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": false,
       "spiceLevel": "None",
-      "ingredients": ["dark chocolate", "butter", "vanilla gelato", "caramel", "nuts"]
+      "ingredients": [
+        "dark chocolate",
+        "butter",
+        "vanilla gelato",
+        "caramel",
+        "nuts"
+      ]
     },
     {
       "id": "dessert-cheesecake",
@@ -314,12 +452,17 @@
       "category": "Desserts",
       "description": "Caramelized cheesecake with berry compote, cream, and citrus zest.",
       "price": 329,
-      "image": "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/french-fries.jpg",
       "veg": true,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "None",
-      "ingredients": ["cream cheese", "cream", "berry compote", "citrus zest"]
+      "ingredients": [
+        "cream cheese",
+        "cream",
+        "berry compote",
+        "citrus zest"
+      ]
     },
     {
       "id": "dessert-panna-cotta",
@@ -327,12 +470,18 @@
       "category": "Desserts",
       "description": "Silky vanilla cream with mango coulis, toasted coconut, and mint.",
       "price": 249,
-      "image": "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/french-fries.jpg",
       "veg": true,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "None",
-      "ingredients": ["vanilla cream", "mango coulis", "coconut", "mint", "sugar"]
+      "ingredients": [
+        "vanilla cream",
+        "mango coulis",
+        "coconut",
+        "mint",
+        "sugar"
+      ]
     },
     {
       "id": "bev-mocktail",
@@ -340,12 +489,18 @@
       "category": "Beverages",
       "description": "Orange, lime, basil, soda, and crushed ice for a bright table refresher.",
       "price": 189,
-      "image": "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/french-fries.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": false,
       "spiceLevel": "None",
-      "ingredients": ["orange", "lime", "basil", "soda", "ice"]
+      "ingredients": [
+        "orange",
+        "lime",
+        "basil",
+        "soda",
+        "ice"
+      ]
     },
     {
       "id": "bev-cold-coffee",
@@ -353,12 +508,18 @@
       "category": "Beverages",
       "description": "Cold brew, milk, vanilla, chocolate dust, and a creamy foam crown.",
       "price": 209,
-      "image": "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/french-fries.jpg",
       "veg": true,
       "popular": true,
       "bestSeller": true,
       "spiceLevel": "None",
-      "ingredients": ["cold brew", "milk", "vanilla", "cream", "chocolate"]
+      "ingredients": [
+        "cold brew",
+        "milk",
+        "vanilla",
+        "cream",
+        "chocolate"
+      ]
     },
     {
       "id": "bev-lemonade",
@@ -366,12 +527,18 @@
       "category": "Beverages",
       "description": "Fresh lemons, cane sugar, sparkling water, mint, and citrus peel.",
       "price": 159,
-      "image": "https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/french-fries.jpg",
       "veg": true,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "None",
-      "ingredients": ["lemon", "cane sugar", "sparkling water", "mint", "citrus peel"]
+      "ingredients": [
+        "lemon",
+        "cane sugar",
+        "sparkling water",
+        "mint",
+        "citrus peel"
+      ]
     },
     {
       "id": "bev-hot-chocolate",
@@ -379,12 +546,18 @@
       "category": "Beverages",
       "description": "Thick cocoa, steamed milk, toasted marshmallow, cinnamon, and chocolate shards.",
       "price": 229,
-      "image": "https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=900&q=80",
+      "image": "/images/french-fries.jpg",
       "veg": true,
       "popular": false,
       "bestSeller": false,
       "spiceLevel": "None",
-      "ingredients": ["cocoa", "milk", "marshmallow", "cinnamon", "chocolate"]
+      "ingredients": [
+        "cocoa",
+        "milk",
+        "marshmallow",
+        "cinnamon",
+        "chocolate"
+      ]
     }
   ]
 }

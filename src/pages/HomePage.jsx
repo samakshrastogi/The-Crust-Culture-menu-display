@@ -27,8 +27,7 @@ const initialAllMenuItems = initialSections.flatMap((section) =>
   })),
 )
 
-const heroImage =
-  'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1400&q=85'
+const heroImage = '/images/pizza-veggie.jpg'
 
 const getMinPrice = (item) => {
   if (!item || !item.prices || item.prices.length === 0) return 0
@@ -219,7 +218,7 @@ export default function HomePage() {
           </div>
           <div className="relative overflow-hidden rounded-[1.25rem] border border-[var(--line)] max-w-md mx-auto w-full">
             <FoodImage
-              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&q=80"
+              src="/images/pizza-margherita.jpg"
               alt="The Crust Culture restaurant kitchen"
               category="Restaurant"
               className="aspect-[4/3] w-full object-cover transition duration-500 hover:scale-102"

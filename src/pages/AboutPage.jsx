@@ -4,9 +4,9 @@ import { revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
 
 const restaurantImages = [
-  'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&q=80',
-  'https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=900&q=80',
-  'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=900&q=80',
+  '/images/pizza-margherita.jpg',
+  '/images/pizza-veggie.jpg',
+  '/images/pizza-paneer.jpg',
 ]
 
 export default function AboutPage() {
