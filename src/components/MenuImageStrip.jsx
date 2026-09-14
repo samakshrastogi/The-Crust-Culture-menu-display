@@ -29,9 +29,9 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
 
     if (activeTile) {
       gsap.to(activeTile, {
-        scale: 1.035,
-        boxShadow: '0 14px 34px rgba(249, 115, 22, 0.2)',
-        duration: 0.25,
+        scale: 1.02,
+        boxShadow: '0 6px 18px rgba(249, 115, 22, 0.25)',
+        duration: 0.22,
         ease: 'power2.out',
         overwrite: 'auto',
       })
@@ -54,9 +54,9 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
   return (
     <section
       ref={stripRef}
-      className="mb-4 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:mb-6 sm:p-3 shadow-sm"
+      className="mb-2 sm:mb-3 overflow-hidden rounded-xl border border-[var(--line)] bg-[var(--surface)] p-1.5 sm:p-2 shadow-xs"
     >
-      <div className="no-scrollbar relative flex gap-2.5 overflow-x-auto py-0.5">
+      <div className="no-scrollbar relative flex gap-2 overflow-x-auto py-0.5">
         {/* 'All Dishes' Tile */}
         <button
           ref={(element) => {
@@ -65,9 +65,9 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
           data-menu-tile
           type="button"
           onClick={() => onSelect('All')}
-          className={`relative h-24 w-32 shrink-0 overflow-hidden rounded-2xl border text-left transition-all duration-200 sm:h-28 sm:w-40 ${
+          className={`relative h-15 w-24 sm:h-18 sm:w-32 shrink-0 overflow-hidden rounded-lg sm:rounded-xl border text-left transition-all duration-200 ${
             activeCategory === 'All'
-              ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/35 shadow-lg shadow-orange-500/20'
+              ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/35 shadow-md shadow-orange-500/20'
               : 'border-[var(--line)] hover:border-[var(--gold)] opacity-85 hover:opacity-100'
           }`}
         >
@@ -78,9 +78,9 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
             className="h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-2.5 text-white">
-            <h3 className="text-xs font-extrabold leading-tight sm:text-sm">All Dishes</h3>
-            <p className="mt-0.5 text-[10px] font-bold text-amber-300">
+          <div className="absolute inset-x-0 bottom-0 p-1.5 sm:p-2 text-white">
+            <h3 className="text-[11px] font-black leading-tight sm:text-xs truncate">All Dishes</h3>
+            <p className="text-[9px] font-bold text-amber-300">
               {totalItems} items
             </p>
           </div>
@@ -99,9 +99,9 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
               data-menu-tile
               type="button"
               onClick={() => onSelect(section.title)}
-              className={`relative h-24 w-36 shrink-0 overflow-hidden rounded-2xl border text-left transition-all duration-200 sm:h-28 sm:w-44 ${
+              className={`relative h-15 w-28 sm:h-18 sm:w-36 shrink-0 overflow-hidden rounded-lg sm:rounded-xl border text-left transition-all duration-200 ${
                 isActive
-                  ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/35 shadow-lg shadow-orange-500/20'
+                  ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/35 shadow-md shadow-orange-500/20'
                   : 'border-[var(--line)] hover:border-[var(--gold)] opacity-90 hover:opacity-100'
               }`}
             >
@@ -112,10 +112,10 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
                 className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-2.5 text-white">
-                <h3 className="line-clamp-1 text-xs font-extrabold leading-tight sm:text-sm">{section.title}</h3>
-                <p className="mt-0.5 text-[10px] font-bold text-amber-300">
-                  {section.items.length} items{lowestPrice ? ` · From ₹${lowestPrice}` : ''}
+              <div className="absolute inset-x-0 bottom-0 p-1.5 sm:p-2 text-white">
+                <h3 className="line-clamp-1 text-[11px] font-black leading-tight sm:text-xs">{section.title}</h3>
+                <p className="text-[9px] font-bold text-amber-300 truncate">
+                  {section.items.length} items{lowestPrice ? ` · ₹${lowestPrice}+` : ''}
                 </p>
               </div>
             </button>

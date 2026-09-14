@@ -155,9 +155,9 @@ export default function MenuPage() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-3 pb-24 pt-3 sm:px-6 sm:pb-24 sm:pt-4 lg:px-8">
-      {/* Search and Status Row */}
-      <div className="mb-3 flex flex-col gap-2 sm:mb-4 sm:flex-row sm:items-center sm:gap-3">
+    <div className="mx-auto max-w-7xl px-2.5 pb-20 pt-2 sm:px-6 sm:pb-24 sm:pt-3 lg:px-8">
+      {/* Search and Status Row (Compact, Single Row on all screens) */}
+      <div className="mb-2 flex items-center gap-2 sm:mb-3 sm:gap-3">
         <div className="min-w-0 flex-1">
           <SearchBar value={query} onChange={setQuery} />
         </div>
@@ -167,16 +167,16 @@ export default function MenuPage() {
       </div>
 
       {/* Quick Search Chips */}
-      <div className="no-scrollbar mb-3 flex items-center gap-1.5 overflow-x-auto py-0.5 sm:mb-4 sm:gap-2">
+      <div className="no-scrollbar mb-2 flex items-center gap-1.5 overflow-x-auto py-0.5 sm:mb-2.5 sm:gap-2">
         <button
           type="button"
           onClick={() => {
             setQuery('')
             setActiveCategory('All')
           }}
-          className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition ${
+          className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold transition sm:px-3 sm:py-1.5 sm:text-xs ${
             !query && activeCategory === 'All'
-              ? 'bg-[var(--orange)] text-white shadow-sm'
+              ? 'bg-[var(--orange)] text-white shadow-xs'
               : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'
           }`}
         >
@@ -190,9 +190,9 @@ export default function MenuPage() {
               key={tag.label}
               type="button"
               onClick={() => handleQuickTagClick(tag)}
-              className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold transition ${
+              className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold transition sm:px-3 sm:py-1.5 sm:text-xs ${
                 isActive
-                  ? 'bg-gradient-to-r from-[var(--orange)] to-amber-500 text-white shadow-sm'
+                  ? 'bg-gradient-to-r from-[var(--orange)] to-amber-500 text-white shadow-xs'
                   : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]'
               }`}
             >
@@ -213,7 +213,7 @@ export default function MenuPage() {
 
       {/* Active Filter / Search Banner */}
       {(query || activeCategory !== 'All') && (
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[var(--orange)]/30 bg-[var(--orange)]/10 p-3 sm:px-4 text-xs sm:text-sm font-bold text-[var(--orange)]">
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--orange)]/30 bg-[var(--orange)]/10 px-3 py-1.5 sm:mb-2.5 sm:px-3.5 sm:py-2 text-xs font-bold text-[var(--orange)]">
           <div className="flex items-center gap-2">
             {query ? (
               <span>
@@ -235,7 +235,7 @@ export default function MenuPage() {
               setQuery('')
               setActiveCategory('All')
             }}
-            className="inline-flex items-center gap-1 rounded-full bg-[var(--surface)] px-3 py-1 text-xs font-bold text-[var(--text)] border border-[var(--line)] transition hover:border-[var(--orange)]"
+            className="inline-flex items-center gap-1 rounded-full bg-[var(--surface)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--text)] border border-[var(--line)] transition hover:border-[var(--orange)]"
           >
             <FiX className="text-xs" />
             <span>Reset to All</span>
@@ -244,12 +244,12 @@ export default function MenuPage() {
       )}
 
       {/* Count & Favorites Bar */}
-      <div className="mb-3.5 flex items-center justify-between gap-4 text-xs font-semibold text-[var(--muted)] sm:mb-4 sm:text-sm">
+      <div className="mb-2 flex items-center justify-between gap-3 text-[11px] font-semibold text-[var(--muted)] sm:mb-2.5 sm:text-xs">
         <p>
           Showing <span className="font-extrabold text-[var(--text)]">{visibleItemCount}</span> delicious dishes
         </p>
         <p className="flex items-center gap-1.5">
-          <FiHeart className="text-[var(--orange)] fill-[var(--orange)] text-sm" />
+          <FiHeart className="text-[var(--orange)] fill-[var(--orange)] text-xs sm:text-sm" />
           <span>{favoriteCount} saved</span>
         </p>
       </div>
@@ -260,7 +260,7 @@ export default function MenuPage() {
       ) : (
         <div ref={sectionsRef}>
           {/* Mobile view (single column < 768px) */}
-          <div className="flex flex-col gap-4 md:hidden">
+          <div className="flex flex-col gap-2.5 sm:gap-3 md:hidden">
             {displayedSections.map((section) => (
               <MenuSectionCard
                 key={`${section.id}-${query ? 'search' : activeCategory}`}
@@ -287,8 +287,8 @@ export default function MenuPage() {
                 />
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-5 items-start">
-                <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-2 gap-3.5 items-start">
+                <div className="flex flex-col gap-3.5">
                   {displayedSections
                     .filter((_, idx) => idx % 2 === 0)
                     .map((section) => (
@@ -302,7 +302,7 @@ export default function MenuPage() {
                       />
                     ))}
                 </div>
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-3.5">
                   {displayedSections
                     .filter((_, idx) => idx % 2 !== 0)
                     .map((section) => (
