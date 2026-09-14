@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { FiArrowRight, FiHeart, FiMenu, FiStar, FiTrash2 } from 'react-icons/fi'
+import { FiArrowRight, FiAward, FiHeart, FiMenu, FiTrash2 } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
 import MenuSectionCard from '../components/MenuSectionCard'
 import MenuItemSheet from '../components/MenuItemSheet'
@@ -134,7 +134,7 @@ export default function FavoritesPage() {
           {popularSuggestions.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <FiStar className="text-[var(--gold)] text-lg fill-current" />
+                <FiAward className="text-[var(--gold)] text-lg" />
                 <h3 className="font-display text-lg font-bold text-[var(--text)] sm:text-xl">
                   Popular Chef Recommendations
                 </h3>

@@ -9,7 +9,7 @@ import {
   FiShield,
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
-import { SiGoogle, SiZomato } from 'react-icons/si'
+import { SiZomato } from 'react-icons/si'
 import BrandLogo from './BrandLogo'
 
 export default function Footer() {
@@ -124,11 +124,6 @@ export default function Footer() {
               >
                 <SiZomato className="text-xs" />
               </a>
-
-              <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--muted)] pl-1">
-                <SiGoogle className="text-[#4285F4] text-xs" />
-                <span>4.8 ★</span>
-              </span>
             </div>
           </div>
         </div>

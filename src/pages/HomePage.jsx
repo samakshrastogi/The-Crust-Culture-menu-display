@@ -10,11 +10,8 @@ import {
   FiLayers,
   FiMaximize2,
   FiSmartphone,
-  FiStar,
   FiZap,
 } from 'react-icons/fi'
-import { SiGoogle, SiZomato } from 'react-icons/si'
-import { FaQuoteLeft } from 'react-icons/fa6'
 import { revealHero, revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
 import ImageLightbox from '../components/ImageLightbox'
@@ -56,33 +53,6 @@ const getMinPrice = (item) => {
     .filter((v) => v > 0)
   return parsedPrices.length ? Math.min(...parsedPrices) : 0
 }
-
-const guestReviews = [
-  {
-    name: 'Aarav Sharma',
-    location: 'Sector 23, Palam Vihar',
-    rating: 5,
-    source: 'Google Reviews',
-    text: 'The sourdough crust here is genuinely extraordinary. Lightweight, airy cornicione with beautiful leopard spotting, and zero heaviness afterward. The Loaded Indi Tandoori is a masterpiece.',
-    dish: 'Loaded Indi Tandoori',
-  },
-  {
-    name: 'Priya Mehra',
-    location: 'Noble Enclave, Gurgaon',
-    rating: 5,
-    source: 'Zomato Verified',
-    text: 'Hands down the best pure-veg cafe in Gurgaon. Their stuffed garlic breads are packed with melted mozzarella and fresh herbs. Super cozy cafe vibe for evening hangouts.',
-    dish: 'Paneer Tikka Stuffed',
-  },
-  {
-    name: 'Rohan Gupta',
-    location: 'Palam Vihar Extension',
-    rating: 5,
-    source: 'Google Reviews',
-    text: 'Ordered at 12:45 AM on a weekend and it arrived piping hot in 25 minutes. Crispy crust, generous cheese pull, and authentic Kulhad Chai even late at night.',
-    dish: 'Farmhouse Pizza & Cold Coffee',
-  },
-]
 
 const getCategoryBadge = (sectionId) => {
   if (sectionId === 'veggie-cheese-loaded-pizzas') return '🔥 Bestseller'
@@ -244,19 +214,15 @@ export default function HomePage() {
             </a>
           </div>
 
-          {/* Key Info Strip (Freshness, Rating, Dining Services - Stated ONCE) */}
+          {/* Key Info Strip (Freshness & Dining Services) */}
           <div className="mt-4 flex flex-wrap items-center gap-3 sm:gap-5 border-t border-[var(--line)]/60 pt-3 text-xs font-semibold text-[var(--muted)]">
             <div className="flex items-center gap-1.5 text-[var(--text)]">
               <FiClock className="h-3.5 w-3.5 text-[var(--orange)]" />
               <span className="font-bold">Baked Fresh in 15 Mins</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <FiStar className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-              <span>4.8 Rating</span>
-            </div>
-            <div className="flex items-center gap-1.5">
               <FiZap className="h-3.5 w-3.5 text-amber-500" />
-              <span>Dine-In • Takeaway • Delivery</span>
+              <span>Dine-In • Takeaway • Midnight Delivery</span>
             </div>
           </div>
         </div>
@@ -546,71 +512,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. Social Proof: Guest Love & Reviews (3 Curated Testimonials) */}
-      <section data-reveal className="mx-auto px-3 sm:px-6 lg:px-8 border-t border-[var(--line)] pt-6 sm:pt-8">
-        <div className="mb-4 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--gold)]">
-                Palam Vihar Community
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 text-[10px] font-black text-amber-500">
-                <FiStar className="fill-current text-[9px]" /> 4.8 / 5.0
-              </span>
-            </div>
-            <h2 className="font-display text-lg sm:text-2xl font-extrabold text-[var(--text)] mt-0.5">
-              Guest Love & Stories
-            </h2>
-          </div>
-          <div className="flex items-center gap-3 text-xs font-semibold text-[var(--muted)]">
-            <span className="inline-flex items-center gap-1.5">
-              <SiGoogle className="text-[#4285F4] text-sm" /> 200+ Google Reviews
-            </span>
-            <span className="opacity-40">•</span>
-            <span className="inline-flex items-center gap-1.5">
-              <SiZomato className="text-[#E23744] text-base" /> Zomato Top Rated
-            </span>
-          </div>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-3">
-          {guestReviews.map((review) => (
-            <div
-              key={review.name}
-              className="relative flex flex-col justify-between rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 sm:p-4.5 transition-all duration-300 hover:border-[var(--gold)]/60 hover:shadow-md group"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-2.5">
-                  <div className="flex items-center gap-1 text-amber-400">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <FiStar key={i} className="fill-current text-xs" />
-                    ))}
-                  </div>
-                  <span className="text-[10px] font-bold text-[var(--muted)] bg-[var(--surface-strong)] px-2 py-0.5 rounded-full border border-[var(--line)]">
-                    {review.source}
-                  </span>
-                </div>
-                <FaQuoteLeft className="text-amber-500/20 text-xl mb-1.5" />
-                <p className="text-xs sm:text-sm leading-relaxed text-[var(--text)] font-medium">
-                  "{review.text}"
-                </p>
-              </div>
-
-              <div className="mt-3.5 pt-3 border-t border-[var(--line)]/60 flex items-center justify-between">
-                <div>
-                  <h4 className="text-xs font-black text-[var(--text)]">{review.name}</h4>
-                  <p className="text-[10px] text-[var(--muted)] font-medium">{review.location}</p>
-                </div>
-                <span className="rounded-md bg-amber-500/10 border border-amber-500/25 px-2 py-0.5 text-[9px] font-bold text-amber-600 dark:text-amber-300 truncate max-w-[120px]">
-                  {review.dish}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 5. Culinary Craft & Story (Unified, Compact, NO REPEATED DATA) */}
+      {/* 4. Culinary Craft & Story (Unified, Compact, NO REPEATED DATA) */}
       <section
         id="our-story"
         data-reveal
