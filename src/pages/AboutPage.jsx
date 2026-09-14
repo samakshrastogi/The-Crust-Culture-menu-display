@@ -21,25 +21,25 @@ export default function AboutPage() {
     <div ref={scopeRef} className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <section data-reveal className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <div>
-          <h1 className="font-display mt-3 text-5xl font-semibold leading-tight text-[var(--text)]">
+          <h1 className="font-display mt-2 text-3xl font-extrabold leading-tight tracking-tight text-[var(--text)] sm:text-4xl lg:text-5xl">
             Fire, fermentation, and a table built for sharing.
           </h1>
         </div>
       </section>
 
-      <section data-reveal className="grid gap-4 py-10 sm:grid-cols-3">
+      <section data-reveal className="grid gap-3.5 py-6 sm:py-8 sm:grid-cols-3">
         {restaurantImages.map((image, index) => (
           <FoodImage
             key={image}
             src={image}
             alt={`The Crust Culture restaurant ${index + 1}`}
             category="Restaurant"
-            className="aspect-[4/5] w-full rounded-[1.5rem] border border-[var(--line)] object-cover sm:aspect-[4/3]"
+            className="aspect-[16/10] sm:aspect-[4/3] w-full rounded-2xl sm:rounded-[1.5rem] border border-[var(--line)] object-cover"
           />
         ))}
       </section>
 
-      <section data-reveal className="grid gap-4 lg:grid-cols-3">
+      <section data-reveal className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-[1.5rem] border border-[var(--line)] bg-[var(--surface)] p-6">
           <FiClock className="mb-4 text-3xl text-[var(--orange)]" />
           <h2 className="text-2xl font-black text-[var(--text)]">Opening hours</h2>

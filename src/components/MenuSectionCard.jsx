@@ -119,8 +119,8 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
               gsap.to(event.currentTarget, { scale: 1, duration: 0.16, ease: 'power2.out' })
             }}
           >
-            <div className="flex min-w-0 gap-3">
-              <div className="relative h-14 w-14 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)]">
+            <div className="flex min-w-0 gap-2.5 sm:gap-3">
+              <div className="relative h-13 w-13 min-[360px]:h-14 min-[360px]:w-14 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)]">
                 <FoodImage
                   src={item.image || section.image}
                   alt={item.name}
@@ -177,7 +177,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                     <span
                       key={`${item.id}-${price.label}-${price.value}`}
                       data-price-chip
-                      className="inline-flex items-center gap-1 rounded-lg bg-[var(--surface-strong)] px-2 py-0.5 text-xs font-black text-[var(--text)] border border-[var(--line)] shadow-2xs group-hover:border-[var(--gold)]/40 transition-colors"
+                      className="inline-flex items-center gap-1 rounded-lg bg-[var(--surface-strong)] px-1.5 min-[360px]:px-2 py-0.5 text-[11px] min-[360px]:text-xs font-black text-[var(--text)] border border-[var(--line)] shadow-2xs group-hover:border-[var(--gold)]/40 transition-colors"
                     >
                       {price.label && (
                         <span className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-wider">

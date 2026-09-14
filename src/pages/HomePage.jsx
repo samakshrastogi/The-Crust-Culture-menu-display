@@ -134,9 +134,9 @@ export default function HomePage() {
   }
 
   return (
-    <div ref={scopeRef} className="space-y-7 sm:space-y-9">
+    <div ref={scopeRef} className="mx-auto max-w-7xl space-y-7 sm:space-y-9">
       {/* 1. Compact Hero Section */}
-      <section className="mx-auto grid gap-5 px-3 pt-1 sm:gap-6 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:px-8">
+      <section className="mx-auto grid gap-5 px-3 pt-1 sm:gap-6 sm:px-6 md:grid-cols-[1.1fr_0.9fr] md:items-center lg:grid-cols-[1.15fr_0.85fr] lg:px-8">
         <div className="flex flex-col justify-center">
           {/* Tag / Kicker (Stated ONCE) */}
           <div
@@ -368,7 +368,7 @@ export default function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
           {signatureDishes.map((item) => {
             const itemMinPrice = getMinPrice(item)
             const isFav = favorites.includes(item.id)
@@ -437,7 +437,7 @@ export default function HomePage() {
         data-reveal
         className="mx-auto px-3 sm:px-6 lg:px-8 border-t border-[var(--line)] pt-6 sm:pt-8"
       >
-        <div className="grid gap-6 lg:grid-cols-[1fr_1.15fr] lg:items-center">
+        <div className="grid gap-6 md:grid-cols-2 md:items-center lg:grid-cols-[1fr_1.15fr]">
           {/* Left Narrative */}
           <div className="space-y-3">
             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--gold)]">

@@ -259,8 +259,8 @@ export default function MenuPage() {
         <SkeletonLoader count={8} />
       ) : (
         <div ref={sectionsRef}>
-          {/* Mobile view (single column) */}
-          <div className="flex flex-col gap-4 lg:hidden">
+          {/* Mobile view (single column < 768px) */}
+          <div className="flex flex-col gap-4 md:hidden">
             {displayedSections.map((section) => (
               <MenuSectionCard
                 key={`${section.id}-${query ? 'search' : activeCategory}`}
@@ -273,8 +273,8 @@ export default function MenuPage() {
             ))}
           </div>
 
-          {/* Desktop view */}
-          <div className="hidden lg:block">
+          {/* Tablet & Desktop view (2 columns masonry >= 768px) */}
+          <div className="hidden md:block">
             {displayedSections.length === 1 ? (
               <div className="max-w-3xl mx-auto">
                 <MenuSectionCard
@@ -366,7 +366,7 @@ export default function MenuPage() {
       {/* Mobile Category Selection Drawer Modal */}
       {isDrawerOpen && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-xs md:hidden">
-          <div className="max-h-[80vh] w-full overflow-y-auto rounded-t-3xl border-t border-[var(--line)] bg-[var(--surface)] p-5 shadow-2xl">
+          <div className="max-h-[80vh] w-full overflow-y-auto rounded-t-3xl border-t border-[var(--line)] bg-[var(--surface)] p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl">
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <FiGrid className="text-[var(--orange)] text-base" />

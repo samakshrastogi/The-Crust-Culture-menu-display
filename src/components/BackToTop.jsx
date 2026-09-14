@@ -20,10 +20,10 @@ export default function BackToTop() {
     <button
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      className="fixed bottom-4 left-3 z-40 grid h-10 w-10 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--text)] shadow-2xl sm:bottom-7 sm:left-7 sm:h-12 sm:w-12"
+      className="fixed bottom-20 left-3.5 z-40 grid h-10 w-10 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)]/90 backdrop-blur-md text-[var(--text)] shadow-xl transition-all duration-200 hover:border-[var(--orange)] hover:text-[var(--orange)] active:scale-95 sm:bottom-6 sm:left-6 sm:h-12 sm:w-12"
       aria-label="Back to top"
     >
-      <FiArrowUp />
+      <FiArrowUp className="text-base sm:text-lg" />
     </button>
   )
 }

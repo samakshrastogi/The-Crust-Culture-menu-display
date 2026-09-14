@@ -16,8 +16,11 @@ import SplashScreen from './pages/SplashScreen'
 
 function AppShell({ theme, onToggleTheme }) {
   const location = useLocation()
+  const [favorites] = useLocalStorage('crust-favorites', [])
+  const favCount = favorites.length
+
   return (
-    <div className="min-h-svh bg-[var(--bg)] text-[var(--text)] pb-16 md:pb-0">
+    <div className="min-h-svh bg-[var(--bg)] text-[var(--text)] pb-24 md:pb-0">
       <ScrollProgress />
       <Navbar theme={theme} onToggleTheme={onToggleTheme} />
       <PageTransition>
@@ -27,9 +30,12 @@ function AppShell({ theme, onToggleTheme }) {
       <FloatingContactButton />
       <BackToTop />
 
-      {/* Bottom Navbar for Mobile Screen */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--line)] bg-[var(--surface)]/94 py-2 shadow-2xl backdrop-blur-xl md:hidden">
-        <div className="flex justify-around items-center">
+      {/* Bottom Navbar for Mobile Screen with Safe-Area Inset Support */}
+      <nav
+        aria-label="Mobile bottom navigation"
+        className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--line)] bg-[var(--surface)]/95 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-xl md:hidden"
+      >
+        <div className="flex justify-around items-center max-w-md mx-auto">
           <NavLink
             to="/home"
             className={({ isActive }) =>
@@ -57,16 +63,23 @@ function AppShell({ theme, onToggleTheme }) {
           <NavLink
             to="/favorites"
             className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 text-[10px] font-black uppercase transition-colors ${
+              `relative flex flex-col items-center gap-0.5 text-[10px] font-black uppercase transition-colors ${
                 isActive ? 'text-[var(--orange)]' : 'text-[var(--muted)]'
               }`
             }
           >
-            <FiHeart className="text-lg" />
+            <div className="relative">
+              <FiHeart className="text-lg" />
+              {favCount > 0 && (
+                <span className="absolute -top-1 -right-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[var(--orange)] px-1 text-[8px] font-black text-white shadow-xs">
+                  {favCount}
+                </span>
+              )}
+            </div>
             <span>Favorites</span>
           </NavLink>
         </div>
-      </div>
+      </nav>
     </div>
   )
 }

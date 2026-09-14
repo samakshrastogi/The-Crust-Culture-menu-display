@@ -149,7 +149,7 @@ export default function FavoritesPage() {
                 </h3>
               </div>
 
-              <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
                 {popularSuggestions.map((item) => {
                   const minPrice = getMinPrice(item)
                   const isFav = favorites.includes(item.id)
