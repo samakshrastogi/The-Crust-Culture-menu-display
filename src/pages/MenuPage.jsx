@@ -276,7 +276,7 @@ export default function MenuPage() {
           {/* Tablet & Desktop view (2 columns masonry >= 768px) */}
           <div className="hidden md:block">
             {displayedSections.length === 1 ? (
-              <div className="max-w-3xl mx-auto">
+              <div className="max-w-xl mx-auto">
                 <MenuSectionCard
                   key={`${displayedSections[0].id}-${query ? 'search' : activeCategory}`}
                   section={displayedSections[0]}
