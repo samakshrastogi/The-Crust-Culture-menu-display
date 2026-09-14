@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import {
-  FiArrowUp,
   FiClock,
   FiExternalLink,
   FiMapPin,
@@ -12,9 +11,6 @@ import { SiZomato } from 'react-icons/si'
 import BrandLogo from './BrandLogo'
 
 export default function Footer() {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
 
   return (
     <footer className="border-t border-[var(--line)] bg-[var(--surface)] text-[var(--text)] transition-colors">
@@ -183,14 +179,6 @@ export default function Footer() {
           <p className="text-center font-medium text-[var(--muted)]">
             Handcrafted with passion in Noble Enclave, Gurgaon
           </p>
-          <button
-            type="button"
-            onClick={scrollToTop}
-            className="flex items-center gap-1.5 font-bold text-[var(--text)] hover:text-[var(--orange)] transition"
-          >
-            <span>Back to top</span>
-            <FiArrowUp className="text-sm" />
-          </button>
         </div>
       </div>
     </footer>
