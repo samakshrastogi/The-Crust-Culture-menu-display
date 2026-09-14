@@ -114,7 +114,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
             <article
               key={item.id}
               data-menu-row
-              className="group px-3 py-2.5 sm:px-3.5 sm:py-2.5 cursor-pointer transition-colors hover:bg-[var(--bg-soft)]/60 active:bg-[var(--bg-soft)]"
+              className="group px-2.5 py-2 sm:px-3 sm:py-2.5 cursor-pointer transition-colors hover:bg-[var(--bg-soft)]/60 active:bg-[var(--bg-soft)]"
               onClick={(event) => {
                 if (!event.target.closest('[data-fav-btn]')) {
                   onSelectItem({
@@ -136,13 +136,13 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                 gsap.to(event.currentTarget, { scale: 1, duration: 0.16, ease: 'power2.out' })
               }}
             >
-              <div className="flex items-center gap-3 sm:gap-4">
-                {/* 1. Item Pic (Left) */}
+              <div className="flex items-center gap-2.5 sm:gap-3.5">
+                {/* 1. Item Pic (Left - Clean & Unobstructed) */}
                 <div className="relative shrink-0 flex flex-col items-center">
-                  {/* Ambient Warm Underglow Aura */}
-                  <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-amber-500/25 via-orange-500/20 to-amber-600/15 blur-sm opacity-40 transition-all duration-300 group-hover:opacity-95 group-hover:scale-105 pointer-events-none" />
+                  {/* Subtle Ambient Warm Glow */}
+                  <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-tr from-amber-500/20 via-orange-500/15 to-transparent blur-xs opacity-25 transition-all duration-300 group-hover:opacity-85 pointer-events-none" />
 
-                  <div className="relative h-16 w-16 min-[360px]:h-18 min-[360px]:w-18 sm:h-20 sm:w-20 overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] shadow-2xs bg-[var(--surface-strong)] transition-all duration-300 group-hover:border-[var(--gold)]/50 group-hover:shadow-[0_8px_20px_rgba(249,115,22,0.18)]">
+                  <div className="relative h-14 w-14 min-[360px]:h-16 min-[360px]:w-16 sm:h-18 sm:w-18 overflow-hidden rounded-xl border border-[var(--line)] shadow-2xs bg-[var(--surface-strong)] transition-all duration-300 group-hover:border-[var(--gold)]/50">
                     <FoodImage
                       src={item.image || section.image}
                       alt={item.name}
@@ -150,18 +150,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-108"
                     />
 
-                    {/* Docked Micro Flavor Badge (Top Left) */}
-                    {flavorBadge && (
-                      <span
-                        title={flavorBadge.label}
-                        className={`absolute top-1 left-1 z-10 inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[8px] sm:text-[9px] font-black backdrop-blur-md border ${flavorBadge.badgeClass}`}
-                      >
-                        <span className="leading-none text-[9px]">{flavorBadge.emoji}</span>
-                        <span className="hidden min-[420px]:inline tracking-wider uppercase font-black">{flavorBadge.label}</span>
-                      </span>
-                    )}
-
-                    {/* Floating Favorite Heart */}
+                    {/* Floating Favorite Heart (Top Right) */}
                     <button
                       type="button"
                       data-fav-btn
@@ -169,10 +158,10 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                         event.stopPropagation()
                         onToggleFavorite(item.id, event.currentTarget)
                       }}
-                      className={`absolute top-1 right-1 z-10 grid h-6 w-6 place-items-center rounded-full backdrop-blur-md text-[11px] transition active:scale-90 ${
+                      className={`absolute top-1 right-1 z-10 grid h-5 w-5 place-items-center rounded-full backdrop-blur-md text-[10px] transition active:scale-90 ${
                         favorites.includes(item.id)
                           ? 'bg-[var(--orange)] text-white shadow-xs'
-                          : 'bg-black/55 text-white hover:bg-black/75 border border-white/20'
+                          : 'bg-black/50 text-white hover:bg-black/70 border border-white/20'
                       }`}
                       aria-label={
                         favorites.includes(item.id)
@@ -186,15 +175,24 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                 </div>
 
                 {/* 2. Name of Item & Details Below Name (Middle / Fill) */}
-                <div className="min-w-0 flex-1 space-y-1">
+                <div className="min-w-0 flex-1 space-y-0.5">
                   {/* Name & Badges */}
                   <div className="flex flex-wrap items-center gap-1.5">
                     <VegIndicator veg={item.veg} />
-                    <h3 className="text-sm sm:text-base font-extrabold leading-snug text-[var(--text)] group-hover:text-[var(--orange)] transition-colors">
+                    <h3 className="text-xs sm:text-sm font-extrabold leading-snug text-[var(--text)] group-hover:text-[var(--orange)] transition-colors">
                       <Highlight text={item.name} query={query} />
                     </h3>
+                    {flavorBadge && (
+                      <span
+                        title={flavorBadge.label}
+                        className={`inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.2 text-[8px] sm:text-[9px] font-black border ${flavorBadge.badgeClass}`}
+                      >
+                        <span className="leading-none text-[8px]">{flavorBadge.emoji}</span>
+                        <span className="tracking-wider uppercase font-black">{flavorBadge.label}</span>
+                      </span>
+                    )}
                     {item.tag && (
-                      <span className="shrink-0 rounded-full bg-gradient-to-r from-[var(--orange)] to-amber-500 px-1.5 py-0.2 text-[9px] font-black uppercase tracking-wider text-white shadow-2xs">
+                      <span className="shrink-0 rounded-full bg-gradient-to-r from-[var(--orange)] to-amber-500 px-1.5 py-0.2 text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-white shadow-2xs">
                         {item.tag}
                       </span>
                     )}
@@ -202,7 +200,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
 
                   {/* Toppings / Description Below Name */}
                   {toppingsText && (
-                    <p className="line-clamp-1 sm:line-clamp-2 text-[11px] sm:text-xs leading-relaxed text-[var(--muted)]">
+                    <p className="line-clamp-1 text-[11px] leading-relaxed text-[var(--muted)]">
                       <Highlight text={toppingsText} query={query} />
                     </p>
                   )}
@@ -214,10 +212,10 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                         <span
                           key={`${item.id}-${price.label}-${price.value}`}
                           data-price-chip
-                          className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)] px-1.5 py-0.2 text-[10px] sm:text-[11px] font-black text-[var(--text)] border border-[var(--line)] shadow-2xs group-hover:border-[var(--gold)]/40 transition-colors"
+                          className="inline-flex items-center gap-1 rounded bg-[var(--surface-strong)] px-1.5 py-0.2 text-[10px] font-black text-[var(--text)] border border-[var(--line)] shadow-2xs group-hover:border-[var(--gold)]/40 transition-colors"
                         >
                           {price.label && (
-                            <span className="text-[9px] sm:text-[10px] font-bold text-[var(--gold)] uppercase">
+                            <span className="text-[9px] font-bold text-[var(--gold)] uppercase">
                               {price.label}:
                             </span>
                           )}
@@ -229,36 +227,27 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
 
                   {/* Packaging Fee Note Below Name if single item with note */}
                   {priceParts?.note && (
-                    <span className="inline-block text-[10px] sm:text-[11px] font-semibold text-[var(--muted)]">
+                    <span className="inline-block text-[10px] font-medium text-[var(--muted)]">
                       ({priceParts.note})
                     </span>
                   )}
                 </div>
 
-                {/* 3. Price of Item & Action (Right) */}
-                <div className="shrink-0 flex flex-col items-end justify-center text-right space-y-1.5 pl-1">
-                  {item.prices.length === 1 ? (
-                    <span className="text-base sm:text-lg font-black text-[var(--orange)] tracking-tight">
-                      {priceParts?.price || formatPrice(item.prices[0].value)}
-                    </span>
-                  ) : (
-                    <div className="flex flex-col items-end leading-tight">
-                      <span className="text-[9px] sm:text-[10px] font-bold text-[var(--gold)] uppercase tracking-wider">
-                        Starts at
-                      </span>
-                      <span className="text-base sm:text-lg font-black text-[var(--orange)] tracking-tight">
-                        ₹{item.prices[0].value}
-                      </span>
-                    </div>
-                  )}
+                {/* 3. Price of Item & Action (Right - Clean & No 'Starts at') */}
+                <div className="shrink-0 flex flex-col items-end justify-center text-right space-y-1 pl-1">
+                  <span className="text-sm sm:text-base font-black text-[var(--orange)] tracking-tight leading-none">
+                    {item.prices.length === 1
+                      ? (priceParts?.price || formatPrice(item.prices[0].value))
+                      : `₹${item.prices[0].value}`}
+                  </span>
 
-                  {/* Customize Button */}
+                  {/* Compact Customize Button */}
                   <button
                     type="button"
-                    className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
+                    className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-2.5 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
                   >
                     <span>Customize</span>
-                    <span className="text-[11px] font-black leading-none">+</span>
+                    <span className="text-[10px] font-black leading-none">+</span>
                   </button>
                 </div>
               </div>
