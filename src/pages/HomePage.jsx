@@ -518,22 +518,9 @@ export default function HomePage() {
         data-reveal
         className="mx-auto px-3 sm:px-6 lg:px-8 border-t border-[var(--line)] pt-6 sm:pt-8"
       >
-        <div className="grid gap-6 md:grid-cols-2 md:items-center lg:grid-cols-[1fr_1.15fr]">
-          {/* Left Narrative */}
-          <div className="space-y-3">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--gold)]">
-              Our Story & Heritage
-            </span>
-            <h2 className="font-display text-xl sm:text-2xl font-extrabold leading-tight text-[var(--text)]">
-              Fire, fermentation, and tables built for sharing.
-            </h2>
-            <p className="text-xs leading-relaxed text-[var(--muted)] sm:text-sm">
-              At The Crust Culture, great pizza starts with patience. Every sourdough batch is
-              fermented for maximum flavor before meeting high-temperature stone ovens. From freshly
-              crafted paneer to gourmet toppings, we bring artisan culinary passion straight to your table.
-            </p>
-
-            {/* Real Cafe Showcase */}
+        <div className="grid gap-6 md:grid-cols-12 items-center">
+          {/* Left: Authentic Cafe Portrait Showcase (Exact 3:4 Original Aspect Ratio) */}
+          <div className="md:col-span-5 lg:col-span-5 flex justify-center">
             <div
               role="button"
               tabIndex={0}
@@ -553,80 +540,103 @@ export default function HomePage() {
                   })
                 }
               }}
-              className="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] shadow-sm cursor-zoom-in transition-all duration-300 hover:border-[var(--gold)]/60 hover:shadow-md"
+              className="group relative w-full max-w-sm overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)] bg-stone-900 shadow-md cursor-zoom-in transition-all duration-300 hover:border-[var(--gold)]/70 hover:shadow-xl"
               title="Click to view full photo of our cafe"
             >
-              <FoodImage
-                src="/images/cafe-storefront.jpg"
-                alt="The Crust Culture Cafe storefront and dine-in interior"
-                category="Restaurant"
-                className="h-56 sm:h-64 w-full object-cover object-top transition duration-700 group-hover:scale-105"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20 pointer-events-none" />
+              {/* Full Original 3:4 Portrait Window */}
+              <div className="relative aspect-[3/4] w-full overflow-hidden">
+                <FoodImage
+                  src="/images/cafe-storefront.jpg"
+                  alt="The Crust Culture Cafe storefront and dine-in interior"
+                  category="Restaurant"
+                  className="h-full w-full object-cover transition duration-700 group-hover:scale-104"
+                  loading="lazy"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/20" />
 
-              <div className="absolute top-2.5 left-2.5 rounded-md bg-black/60 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-amber-300 backdrop-blur-md border border-white/15">
-                🏡 Dine-In & Takeaway Cafe
-              </div>
+                {/* Top Badge */}
+                <div className="absolute top-3 left-3 rounded-full bg-black/65 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-amber-300 backdrop-blur-md border border-white/20 shadow-md">
+                  🏡 Visit Our Cafe
+                </div>
 
-              <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between text-[10px] font-bold text-white">
-                <span className="truncate drop-shadow-xs">📍 Noble Enclave, Palam Vihar Ext.</span>
-                <span className="shrink-0 inline-flex items-center gap-1 rounded-md bg-black/60 px-2 py-0.5 text-[9px] font-bold text-amber-300 backdrop-blur-md border border-white/15">
-                  <FiMaximize2 className="text-[9px]" />
-                  <span>Tap to Zoom</span>
-                </span>
+                {/* Bottom Cue & Address */}
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-bold text-white">
+                  <span className="truncate drop-shadow-md">📍 Noble Enclave, Gurgaon</span>
+                  <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-black/65 px-2.5 py-1 text-[10px] font-bold text-amber-300 backdrop-blur-md border border-white/20 shadow-md">
+                    <FiMaximize2 className="text-[10px]" />
+                    <span>Tap to Zoom</span>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right: 4 Craft Pillars (Distinct technical facts, stated once) */}
-          <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3">
-            {[
-              {
-                icon: FiLayers,
-                title: '48h Fermentation',
-                desc: 'Slow cold-proofed dough produces an airy, easily digestible artisan crust.',
-                accent: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
-              },
-              {
-                icon: FiZap,
-                title: '450°C Stone Oven',
-                desc: 'Scorching deck heat creates authentic leopard blisters and a crisp base.',
-                accent: 'text-[var(--orange)] bg-orange-500/10 border-orange-500/20',
-              },
-              {
-                icon: FiAward,
-                title: 'Artisan Malai Paneer',
-                desc: 'Fresh gourmet dairy, rich mozzarella, and garden-picked herbs.',
-                accent: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20',
-              },
-              {
-                icon: FiSmartphone,
-                title: 'Smart Table Ordering',
-                desc: 'Scan your table QR code to browse photos and send orders straight to our cafe.',
-                accent: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
-              },
-            ].map((card) => {
-              const Icon = card.icon
-              return (
-                <div
-                  key={card.title}
-                  className="rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 transition-all duration-200 hover:border-[var(--gold)] hover:shadow-sm"
-                >
+          {/* Right: Story Narrative + 4 Craft Pillars */}
+          <div className="md:col-span-7 lg:col-span-7 space-y-4">
+            <div className="space-y-2">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--gold)]">
+                Our Story & Heritage
+              </span>
+              <h2 className="font-display text-xl sm:text-2xl lg:text-3xl font-extrabold leading-tight text-[var(--text)]">
+                Fire, fermentation, and tables built for sharing.
+              </h2>
+              <p className="text-xs sm:text-sm leading-relaxed text-[var(--muted)]">
+                At The Crust Culture, great pizza starts with patience. Every sourdough batch is
+                fermented for 48 hours for maximum flavor and lightness before meeting high-temperature
+                stone ovens. From freshly crafted paneer to authentic gourmet toppings, we bring genuine
+                artisan passion straight to your table.
+              </p>
+            </div>
+
+            {/* 4 Craft Pillars (Distinct technical facts, stated once) */}
+            <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3 pt-1">
+              {[
+                {
+                  icon: FiLayers,
+                  title: '48h Fermentation',
+                  desc: 'Slow cold-proofed dough produces an airy, easily digestible artisan crust.',
+                  accent: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+                },
+                {
+                  icon: FiZap,
+                  title: '450°C Stone Oven',
+                  desc: 'Scorching deck heat creates authentic leopard blisters and a crisp base.',
+                  accent: 'text-[var(--orange)] bg-orange-500/10 border-orange-500/20',
+                },
+                {
+                  icon: FiAward,
+                  title: 'Artisan Malai Paneer',
+                  desc: 'Fresh gourmet dairy, rich mozzarella, and garden-picked herbs.',
+                  accent: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20',
+                },
+                {
+                  icon: FiSmartphone,
+                  title: 'Smart Table Ordering',
+                  desc: 'Scan your table QR code to browse photos and send orders straight to our cafe.',
+                  accent: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
+                },
+              ].map((card) => {
+                const Icon = card.icon
+                return (
                   <div
-                    className={`flex h-8 w-8 items-center justify-center rounded-xl border ${card.accent}`}
+                    key={card.title}
+                    className="rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 transition-all duration-200 hover:border-[var(--gold)] hover:shadow-sm"
                   >
-                    <Icon className="text-sm" />
+                    <div
+                      className={`flex h-8 w-8 items-center justify-center rounded-xl border ${card.accent}`}
+                    >
+                      <Icon className="text-sm" />
+                    </div>
+                    <h3 className="mt-2 text-xs sm:text-sm font-extrabold text-[var(--text)]">
+                      {card.title}
+                    </h3>
+                    <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
+                      {card.desc}
+                    </p>
                   </div>
-                  <h3 className="mt-2 text-xs sm:text-sm font-extrabold text-[var(--text)]">
-                    {card.title}
-                  </h3>
-                  <p className="mt-1 text-[11px] leading-relaxed text-[var(--muted)]">
-                    {card.desc}
-                  </p>
-                </div>
-              )
-            })}
+                )
+              })}
+            </div>
           </div>
         </div>
       </section>
