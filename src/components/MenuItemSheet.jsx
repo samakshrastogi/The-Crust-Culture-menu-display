@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { FiHeart, FiMaximize2, FiPhone, FiX } from 'react-icons/fi'
+import { FiHeart, FiMaximize2, FiPhone, FiShoppingBag, FiX } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
 import ImageLightbox from './ImageLightbox'
+import { useCart } from '../hooks/useCart'
 import { getFlavorBadge } from '../utils/flavorBadge'
 import VegIndicator from './VegIndicator'
 
@@ -26,14 +27,17 @@ function getSizeSubLabel(label, isPizza) {
 export default function MenuItemSheet({ item, favorites, onClose, onToggleFavorite }) {
   const overlayRef = useRef(null)
   const sheetRef = useRef(null)
+  const { addToCart } = useCart()
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [prevItemId, setPrevItemId] = useState(item?.id)
+  const [addedFeedback, setAddedFeedback] = useState(false)
 
   if (item?.id !== prevItemId) {
     setPrevItemId(item?.id)
     setSelectedSizeIndex(0)
     setIsLightboxOpen(false)
+    setAddedFeedback(false)
   }
 
   useEffect(() => {
@@ -324,24 +328,56 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             )
           )}
 
-          {/* Direct Orders: Call & WhatsApp (Zomato removed as requested) */}
-          <div data-sheet-item className="grid grid-cols-2 gap-2 pt-0.5">
-            <a
-              href="tel:+919625261591"
-              className="touch-target inline-flex items-center justify-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--surface-strong)]/60 py-2.5 px-3 text-xs font-bold text-[var(--text)] transition-all duration-200 hover:border-[var(--orange)] hover:text-[var(--orange)] hover:bg-[var(--surface)] active:scale-95 shadow-xs"
+          {/* Primary Action: Add to Tray / Cart */}
+          <div data-sheet-item className="space-y-1.5 pt-0.5">
+            <button
+              type="button"
+              onClick={() => {
+                addToCart(item, selectedSizeIndex, 1)
+                setAddedFeedback(true)
+                setTimeout(() => setAddedFeedback(false), 2000)
+              }}
+              className={`touch-target group flex w-full items-center justify-between rounded-xl px-4 py-2.5 sm:py-3 text-white shadow-md transition-all duration-200 active:scale-98 cursor-pointer ${
+                addedFeedback
+                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 shadow-emerald-600/30'
+                  : 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] shadow-orange-500/25 hover:brightness-110'
+              }`}
             >
-              <FiPhone className="text-xs text-[var(--orange)] shrink-0" />
-              <span className="truncate">Call Cafe</span>
-            </a>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="touch-target inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#075E54] to-[#25D366] py-2.5 px-3 text-xs font-black text-white shadow-xs shadow-emerald-600/20 transition-all duration-200 hover:brightness-105 active:scale-95"
-            >
-              <FaWhatsapp className="text-sm shrink-0" />
-              <span className="truncate">WhatsApp Order</span>
-            </a>
+              <div className="flex items-center gap-2">
+                <FiShoppingBag className="text-sm sm:text-base" />
+                <span className="text-xs sm:text-sm font-black tracking-wide">
+                  {addedFeedback ? 'Added to Tray! 🛒' : 'Add to Order Tray'}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs sm:text-sm font-black">
+                  {formatPrice(selectedPriceObj?.value || 0)}
+                </span>
+                <span className="text-[10px] font-black bg-white/25 px-1.5 py-0.5 rounded">
+                  +
+                </span>
+              </div>
+            </button>
+
+            {/* Direct Orders: Call & WhatsApp */}
+            <div className="grid grid-cols-2 gap-2">
+              <a
+                href="tel:+919625261591"
+                className="touch-target inline-flex items-center justify-center gap-1.5 rounded-xl border border-[var(--line)] bg-[var(--surface-strong)]/60 py-2 px-3 text-xs font-bold text-[var(--text)] transition-all duration-200 hover:border-[var(--orange)] hover:text-[var(--orange)] hover:bg-[var(--surface)] active:scale-95 shadow-xs"
+              >
+                <FiPhone className="text-xs text-[var(--orange)] shrink-0" />
+                <span className="truncate">Call Cafe</span>
+              </a>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="touch-target inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#075E54] to-[#25D366] py-2 px-3 text-xs font-black text-white shadow-xs shadow-emerald-600/20 transition-all duration-200 hover:brightness-105 active:scale-95"
+              >
+                <FaWhatsapp className="text-sm shrink-0" />
+                <span className="truncate">Direct Chat</span>
+              </a>
+            </div>
           </div>
 
           {/* Cafe Quality Footer Accents - Compact Single Line */}

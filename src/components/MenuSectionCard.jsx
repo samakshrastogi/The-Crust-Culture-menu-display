@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
-import { FiHeart } from 'react-icons/fi'
+import { FiHeart, FiMinus, FiPlus } from 'react-icons/fi'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
 import VegIndicator from './VegIndicator'
+import { useCart } from '../hooks/useCart'
 import { getFlavorBadge } from '../utils/flavorBadge'
 
 function parsePriceParts(value) {
@@ -55,6 +56,7 @@ function Highlight({ text, query }) {
 
 export default function MenuSectionCard({ section, favorites, onToggleFavorite, onSelectItem, query }) {
   const sectionRef = useRef(null)
+  const { cart, addToCart, updateQuantity } = useCart()
 
   useEffect(() => {
     if (!sectionRef.current) {
@@ -109,6 +111,9 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
           const toppingsText = item.toppings ? item.toppings.replace(/^\((.*)\)$/, '$1') : null
           const flavorBadge = getFlavorBadge(item, section.title)
           const priceParts = item.prices.length === 1 ? parsePriceParts(item.prices[0].value) : null
+          const isSingle = item.prices.length === 1
+          const cartItem = isSingle ? cart.find((ci) => ci.id === item.id) : null
+          const inCartQty = cartItem ? cartItem.quantity : 0
 
           return (
             <article
@@ -116,7 +121,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
               data-menu-row
               className="group px-2.5 py-2 sm:px-3 sm:py-2.5 cursor-pointer transition-colors hover:bg-[var(--bg-soft)]/60 active:bg-[var(--bg-soft)]"
               onClick={(event) => {
-                if (!event.target.closest('[data-fav-btn]')) {
+                if (!event.target.closest('[data-fav-btn]') && !event.target.closest('[data-action-btn]')) {
                   onSelectItem({
                     ...item,
                     sectionTitle: section.title,
@@ -125,7 +130,7 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                 }
               }}
               onPointerDown={(event) => {
-                if (!event.target.closest('[data-fav-btn]')) {
+                if (!event.target.closest('[data-fav-btn]') && !event.target.closest('[data-action-btn]')) {
                   gsap.to(event.currentTarget, { scale: 0.996, duration: 0.08, ease: 'power2.out' })
                 }
               }}
@@ -238,15 +243,75 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                 </div>
 
                 {/* 3. Action (Right - Clean & Uncluttered) */}
-                <div className="shrink-0 flex items-center justify-center pl-1">
-                  {/* Compact Customize Button */}
-                  <button
-                    type="button"
-                    className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-2.5 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
-                  >
-                    <span>Customize</span>
-                    <span className="text-[10px] font-black leading-none">+</span>
-                  </button>
+                <div data-action-btn className="shrink-0 flex items-center justify-center pl-1">
+                  {item.prices.length > 1 ? (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onSelectItem({
+                          ...item,
+                          sectionTitle: section.title,
+                          sectionImage: section.image,
+                        })
+                      }}
+                      className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-2.5 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
+                    >
+                      <span>Customize</span>
+                      <span className="text-[10px] font-black leading-none">+</span>
+                    </button>
+                  ) : inCartQty > 0 ? (
+                    <div
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex items-center rounded-full border border-[var(--orange)] bg-[var(--surface-strong)] p-0.5 shadow-2xs"
+                    >
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          updateQuantity(cartItem.cartItemId, -1)
+                        }}
+                        className="grid h-6 w-6 place-items-center rounded-full text-xs font-black text-[var(--orange)] hover:bg-[var(--line)] active:scale-90 cursor-pointer"
+                        aria-label={`Decrease ${item.name}`}
+                      >
+                        <FiMinus className="text-[10px]" />
+                      </button>
+                      <span className="w-5 text-center text-xs font-black text-[var(--orange)]">
+                        {inCartQty}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          updateQuantity(cartItem.cartItemId, 1)
+                        }}
+                        className="grid h-6 w-6 place-items-center rounded-full text-xs font-black text-[var(--orange)] hover:bg-[var(--line)] active:scale-90 cursor-pointer"
+                        aria-label={`Increase ${item.name}`}
+                      >
+                        <FiPlus className="text-[10px]" />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        addToCart(
+                          {
+                            ...item,
+                            sectionTitle: section.title,
+                            sectionImage: section.image,
+                          },
+                          0,
+                          1,
+                        )
+                      }}
+                      className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
+                    >
+                      <span>Add</span>
+                      <span className="text-[10px] font-black leading-none">+</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </article>

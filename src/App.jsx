@@ -1,23 +1,24 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Outlet, Route, Routes, NavLink, useLocation } from 'react-router-dom'
-import { FiHome, FiMenu, FiHeart } from 'react-icons/fi'
+import { FiHome, FiMenu, FiShoppingBag } from 'react-icons/fi'
 import BackToTop from './components/BackToTop'
 import FloatingContactButton from './components/FloatingContactButton'
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 import PageTransition from './components/PageTransition'
 import ScrollProgress from './components/ScrollProgress'
+import { CartProvider } from './context/CartContext'
+import { useCart } from './hooks/useCart'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import HomePage from './pages/HomePage'
 import MenuPage from './pages/MenuPage'
-import FavoritesPage from './pages/FavoritesPage'
+import CartPage from './pages/CartPage'
 import NotFoundPage from './pages/NotFoundPage'
 import SplashScreen from './pages/SplashScreen'
 
 function AppShell({ theme, onToggleTheme }) {
   const location = useLocation()
-  const [favorites] = useLocalStorage('crust-favorites', [])
-  const favCount = favorites.length
+  const { cartCount } = useCart()
 
   return (
     <div className="min-h-svh bg-[var(--bg)] text-[var(--text)] pb-24 md:pb-0">
@@ -61,7 +62,7 @@ function AppShell({ theme, onToggleTheme }) {
           </NavLink>
           
           <NavLink
-            to="/favorites"
+            to="/cart"
             className={({ isActive }) =>
               `relative flex flex-col items-center gap-0.5 text-[10px] font-black uppercase transition-colors ${
                 isActive ? 'text-[var(--orange)]' : 'text-[var(--muted)]'
@@ -69,14 +70,14 @@ function AppShell({ theme, onToggleTheme }) {
             }
           >
             <div className="relative">
-              <FiHeart className="text-lg" />
-              {favCount > 0 && (
+              <FiShoppingBag className="text-lg" />
+              {cartCount > 0 && (
                 <span className="absolute -top-1 -right-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[var(--orange)] px-1 text-[8px] font-black text-white shadow-xs">
-                  {favCount}
+                  {cartCount}
                 </span>
               )}
             </div>
-            <span>Favorites</span>
+            <span>Cart</span>
           </NavLink>
         </div>
       </nav>
@@ -93,25 +94,28 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<SplashScreen />} />
-        <Route
-          element={
-            <AppShell
-              theme={theme}
-              onToggleTheme={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
-            />
-          }
-        >
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/menu" element={<MenuPage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/about" element={<Navigate to="/home" replace />} />
-          <Route path="/contact" element={<Navigate to="/home" replace />} />
-          <Route path="/qr" element={<Navigate to="/menu" replace />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Route>
-      </Routes>
+      <CartProvider>
+        <Routes>
+          <Route path="/" element={<SplashScreen />} />
+          <Route
+            element={
+              <AppShell
+                theme={theme}
+                onToggleTheme={() => setTheme((current) => (current === 'dark' ? 'light' : 'dark'))}
+              />
+            }
+          >
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/menu" element={<MenuPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/favorites" element={<Navigate to="/cart" replace />} />
+            <Route path="/about" element={<Navigate to="/home" replace />} />
+            <Route path="/contact" element={<Navigate to="/home" replace />} />
+            <Route path="/qr" element={<Navigate to="/menu" replace />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Route>
+        </Routes>
+      </CartProvider>
     </BrowserRouter>
   )
 }

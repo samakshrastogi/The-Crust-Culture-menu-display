@@ -1,16 +1,16 @@
 import { NavLink } from 'react-router-dom'
-import { FiHeart, FiHome, FiMenu, FiMoon, FiSun } from 'react-icons/fi'
+import { FiHome, FiMenu, FiMoon, FiShoppingBag, FiSun } from 'react-icons/fi'
 import BrandLogo from './BrandLogo'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useCart } from '../hooks/useCart'
 
 const navItems = [
   { label: 'Home', path: '/home', icon: FiHome },
   { label: 'Menu', path: '/menu', icon: FiMenu },
-  { label: 'Favorites', path: '/favorites', icon: FiHeart },
+  { label: 'Cart', path: '/cart', icon: FiShoppingBag },
 ]
 
 export default function Navbar({ theme, onToggleTheme }) {
-  const [favorites] = useLocalStorage('crust-favorites', [])
+  const { cartCount } = useCart()
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--bg)]/90 backdrop-blur-xl transition-colors">
@@ -22,8 +22,8 @@ export default function Navbar({ theme, onToggleTheme }) {
         <div className="hidden items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface)]/80 p-1 backdrop-blur-md shadow-sm md:flex">
           {navItems.map((item) => {
             const Icon = item.icon
-            const isFav = item.path === '/favorites'
-            const favCount = isFav ? favorites.length : 0
+            const isCart = item.path === '/cart'
+            const count = isCart ? cartCount : 0
 
             return (
               <NavLink
@@ -41,7 +41,7 @@ export default function Navbar({ theme, onToggleTheme }) {
                   <>
                     <Icon className={`text-sm ${isActive ? 'text-white' : ''}`} />
                     <span>{item.label}</span>
-                    {favCount > 0 && (
+                    {count > 0 && (
                       <span
                         className={`flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-black ${
                           isActive
@@ -49,7 +49,7 @@ export default function Navbar({ theme, onToggleTheme }) {
                             : 'bg-[var(--orange)]/15 text-[var(--orange)]'
                         }`}
                       >
-                        {favCount}
+                        {count}
                       </span>
                     )}
                   </>

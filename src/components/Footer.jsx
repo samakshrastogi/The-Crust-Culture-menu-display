@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
 import {
   FiClock,
-  FiHeart,
   FiHome,
   FiMapPin,
   FiNavigation,
   FiPhone,
   FiShield,
+  FiShoppingBag,
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import { SiZomato } from 'react-icons/si'
@@ -53,9 +53,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/favorites" className="inline-flex items-center gap-1 transition-colors hover:text-[var(--orange)]">
-                  <FiHeart className="text-xs text-[var(--orange)]" />
-                  <span>Saved Favorites</span>
+                <Link to="/cart" className="inline-flex items-center gap-1 transition-colors hover:text-[var(--orange)]">
+                  <FiShoppingBag className="text-xs text-[var(--orange)]" />
+                  <span>Order Tray / Cart</span>
                 </Link>
               </li>
               <li>
