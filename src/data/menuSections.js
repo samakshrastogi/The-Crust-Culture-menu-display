@@ -296,7 +296,7 @@ const rawMenuSections = [
 ];
 
 const sectionImages = {
-  "extra-toppings": "/images/pizza-veggie.jpg",
+  "extra-toppings": "/images/extra-toppings.svg",
   "everyday-classics": "/images/pizza-margherita.jpg",
   "classic-veg-combos": "/images/pizza-veggie.jpg",
   "veggie-cheese-loaded-pizzas": "/images/pizza-veggie.jpg",
@@ -317,7 +317,7 @@ const sectionImages = {
   "sweet-corn-specials": "/images/pizza-veggie.jpg",
   "wok-rice-bowls": "/images/fried-rice.jpg",
   wraps: "/images/kathi-wrap.jpg",
-  "drinks-corner": "/images/french-fries.jpg",
+  "drinks-corner": "/images/drinks-corner.svg",
   "poha-corner": "/images/vada-pav.jpg",
   "crispy-starters": "/images/garlic-bread.jpg",
   "indo-chinese-specials": "/images/fried-rice.jpg",
@@ -327,8 +327,8 @@ const sectionImages = {
 
 const imageCollections = {
   toppings: [
-    "/images/pizza-veggie.jpg",
-    "/images/pizza-margherita.jpg",
+    "/images/extra-toppings.svg",
+    "/images/garlic-bread.jpg",
   ],
   pizza: [
     "/images/pizza-margherita.jpg",
@@ -370,8 +370,7 @@ const imageCollections = {
     "/images/kathi-wrap.jpg",
   ],
   drinks: [
-    "/images/french-fries.jpg",
-    "/images/pizza-margherita.jpg",
+    "/images/drinks-corner.svg",
   ],
   poha: [
     "/images/vada-pav.jpg",

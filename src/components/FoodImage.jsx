@@ -42,14 +42,21 @@ export default function FoodImage({ src, alt, category = 'Restaurant', className
   const [failed, setFailed] = useState(false)
   const style = categoryStyles[category] || categoryStyles.Restaurant
 
+  const handleRef = (node) => {
+    imageRef.current = node
+    if (node && node.complete && node.naturalWidth > 0 && !loaded) {
+      setLoaded(true)
+    }
+  }
+
   return (
     <div className={`relative overflow-hidden bg-gradient-to-br ${style.gradient} ${className}`} {...props}>
-      <div className="absolute inset-0 opacity-40">
+      <div className="absolute inset-0 opacity-40 pointer-events-none">
         <div className="absolute -left-10 -top-12 h-40 w-40 rounded-full border border-white/30" />
         <div className="absolute bottom-6 right-6 h-28 w-28 rounded-full border-[18px] border-white/15" />
         <div className="absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black/20 shadow-2xl" />
       </div>
-      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-2 text-white sm:p-4">
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent p-2 text-white sm:p-4 pointer-events-none">
         <p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/75 sm:text-xs sm:tracking-[0.22em]">
           {style.accent}
         </p>
@@ -60,17 +67,19 @@ export default function FoodImage({ src, alt, category = 'Restaurant', className
           src={src}
           alt={alt}
           loading={loading}
+          ref={handleRef}
           onLoad={() => {
             setLoaded(true)
-            gsap.fromTo(
-              imageRef.current,
-              { scale: 1.06 },
-              { scale: 1, duration: 0.65, ease: 'power2.out', clearProps: 'transform' },
-            )
+            if (imageRef.current) {
+              gsap.fromTo(
+                imageRef.current,
+                { scale: 1.04 },
+                { scale: 1, duration: 0.5, ease: 'power2.out', clearProps: 'transform' },
+              )
+            }
           }}
           onError={() => setFailed(true)}
-          ref={imageRef}
-          className={`absolute inset-0 h-full w-full object-cover transition duration-500 ${
+          className={`absolute inset-0 h-full w-full object-cover transition duration-300 ${
             loaded ? 'opacity-100' : 'opacity-0'
           }`}
         />

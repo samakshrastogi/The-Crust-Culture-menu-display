@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="topBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e130c"/>
+      <stop offset="60%" stop-color="#2a180e"/>
+      <stop offset="100%" stop-color="#140b06"/>
+    </linearGradient>
+
+    <!-- Warm Amber Glow -->
+    <radialGradient id="topGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ea580c" stop-opacity="0.3"/>
+      <stop offset="70%" stop-color="#d97706" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Melted Cheese Dip Gradient -->
+    <radialGradient id="cheeseDip" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </radialGradient>
+
+    <!-- Rustic Bowl Gradient -->
+    <linearGradient id="bowlGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#451a03"/>
+      <stop offset="100%" stop-color="#240c02"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="600" fill="url(#topBg)"/>
+  <rect width="800" height="600" fill="url(#topGlow)"/>
+
+  <!-- Rustic Slate Board -->
+  <rect x="80" y="80" width="640" height="440" rx="36" fill="#181310" stroke="#3d2719" stroke-width="5"/>
+
+  <!-- CENTRAL BOWL: Molten Artisan Cheese Dip -->
+  <g transform="translate(400, 300)">
+    <!-- Bowl Outer Cast -->
+    <ellipse cx="0" cy="0" rx="140" ry="90" fill="url(#bowlGrad)" stroke="#78350f" stroke-width="8"/>
+    <!-- Melted Cheese Pool -->
+    <ellipse cx="0" cy="-6" rx="122" ry="72" fill="url(#cheeseDip)"/>
+    <!-- Cheese Specular Highlight -->
+    <ellipse cx="-35" cy="-25" rx="55" ry="25" fill="#ffffff" opacity="0.3" transform="rotate(-15 -35 -25)"/>
+    <!-- Swirl of Paprika / Herbs in Dip -->
+    <path d="M-60 -5 Q0 -35 50 -10 Q30 20 -20 15 Z" fill="#b91c1c" opacity="0.6"/>
+    <circle cx="-10" cy="-5" r="4" fill="#15803d"/>
+    <circle cx="25" cy="5" r="3.5" fill="#15803d"/>
+    <circle cx="15" cy="-22" r="3" fill="#dc2626"/>
+    <circle cx="-35" cy="12" r="3" fill="#dc2626"/>
+  </g>
+
+  <!-- TOPPING 1: Fresh Basil Leaves (Top Left) -->
+  <g transform="translate(180, 190) rotate(-25)">
+    <path d="M0 0 C40 -60 100 -40 100 0 C100 40 40 60 0 0 Z" fill="#16a34a"/>
+    <path d="M5 0 Q50 -10 95 0" stroke="#86efac" stroke-width="3" fill="none"/>
+    <path d="M30 -5 Q50 -30 70 -20" stroke="#86efac" stroke-width="2" fill="none"/>
+    <path d="M30 5 Q50 30 70 20" stroke="#86efac" stroke-width="2" fill="none"/>
+  </g>
+  <g transform="translate(230, 150) rotate(15)">
+    <path d="M0 0 C30 -45 75 -30 75 0 C75 30 30 45 0 0 Z" fill="#15803d"/>
+    <path d="M5 0 Q40 -5 70 0" stroke="#86efac" stroke-width="2" fill="none"/>
+  </g>
+
+  <!-- TOPPING 2: Grilled Paneer Cubes (Bottom Left) -->
+  <g transform="translate(190, 370)">
+    <!-- Paneer Cube 1 -->
+    <rect x="0" y="0" width="55" height="50" rx="8" fill="#fef3c7" stroke="#b45309" stroke-width="3"/>
+    <!-- Grill Char Marks -->
+    <line x1="8" y1="12" x2="48" y2="12" stroke="#78350f" stroke-width="4" stroke-linecap="round"/>
+    <line x1="8" y1="26" x2="48" y2="26" stroke="#78350f" stroke-width="4" stroke-linecap="round"/>
+    <line x1="8" y1="40" x2="48" y2="40" stroke="#78350f" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Paneer Cube 2 (Slightly behind) -->
+    <rect x="45" y="-25" width="50" height="46" rx="8" fill="#fde68a" stroke="#b45309" stroke-width="3" transform="rotate(18 70 -2)"/>
+    <line x1="55" y1="-14" x2="88" y2="-4" stroke="#78350f" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="58" y1="0" x2="91" y2="10" stroke="#78350f" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- TOPPING 3: Sliced Black Olives (Top Right) -->
+  <g transform="translate(600, 190)">
+    <circle cx="0" cy="0" r="38" fill="#18181b" stroke="#3f3f46" stroke-width="4"/>
+    <circle cx="0" cy="0" r="16" fill="#1e130c"/>
+    <ellipse cx="-12" cy="-12" rx="14" ry="7" fill="#ffffff" opacity="0.3" transform="rotate(-30 -12 -12)"/>
+  </g>
+  <g transform="translate(640, 260)">
+    <circle cx="0" cy="0" r="32" fill="#18181b" stroke="#3f3f46" stroke-width="3.5"/>
+    <circle cx="0" cy="0" r="14" fill="#1e130c"/>
+    <ellipse cx="-10" cy="-10" rx="10" ry="5" fill="#ffffff" opacity="0.3" transform="rotate(-30 -10 -10)"/>
+  </g>
+
+  <!-- TOPPING 4: Jalapeno Slices & Red Paprika (Bottom Right) -->
+  <g transform="translate(580, 390)">
+    <!-- Jalapeno Ring -->
+    <circle cx="0" cy="0" r="36" fill="#15803d" stroke="#166534" stroke-width="4"/>
+    <circle cx="0" cy="0" r="15" fill="#1e130c"/>
+    <!-- Seeds -->
+    <circle cx="-7" cy="0" r="3.5" fill="#fef08a"/>
+    <circle cx="6" cy="-4" r="3.5" fill="#fef08a"/>
+    <circle cx="2" cy="7" r="3.5" fill="#fef08a"/>
+  </g>
+  <g transform="translate(640, 360)">
+    <!-- Red Chilli / Paprika slice -->
+    <path d="M-20 -20 Q15 -35 25 5 Q5 35 -15 25 Q-30 0 -20 -20 Z" fill="#dc2626" stroke="#991b1b" stroke-width="3"/>
+    <circle cx="0" cy="2" r="3.5" fill="#fef08a"/>
+    <circle cx="-8" cy="-6" r="3" fill="#fef08a"/>
+  </g>
+
+  <!-- Scattered Seasoning & Chilli Flakes -->
+  <circle cx="310" cy="210" r="2.5" fill="#ef4444"/>
+  <circle cx="330" cy="205" r="2" fill="#16a34a"/>
+  <circle cx="340" cy="400" r="3" fill="#ef4444"/>
+  <circle cx="480" cy="200" r="2" fill="#ef4444"/>
+  <circle cx="490" cy="410" r="2.5" fill="#16a34a"/>
+  <circle cx="460" cy="425" r="3" fill="#ef4444"/>
+
+  <!-- Centered Label Pill -->
+  <g transform="translate(270, 485)">
+    <rect width="260" height="46" rx="23" fill="#1c1109" stroke="#f59e0b" stroke-width="2" opacity="0.95"/>
+    <text x="130" y="28" font-family="sans-serif" font-size="14" font-weight="900" fill="#fde68a" text-anchor="middle" letter-spacing="2">
+      ★ GOURMET TOPPINGS &amp; DIPS ★
+    </text>
+  </g>
+</svg>
