@@ -205,8 +205,8 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                     </p>
                   )}
 
-                  {/* Multi-Size Chips Below Name if multi-sized */}
-                  {item.prices.length > 1 && (
+                  {/* Multi-Size Chips or Single Price Below Name */}
+                  {item.prices.length > 1 ? (
                     <div className="flex flex-wrap items-center gap-1 pt-0.5">
                       {item.prices.map((price) => (
                         <span
@@ -223,28 +223,26 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                         </span>
                       ))}
                     </div>
-                  )}
-
-                  {/* Packaging Fee Note Below Name if single item with note */}
-                  {priceParts?.note && (
-                    <span className="inline-block text-[10px] font-medium text-[var(--muted)]">
-                      ({priceParts.note})
-                    </span>
+                  ) : (
+                    <div className="flex items-center gap-1.5 pt-0.5">
+                      <span className="inline-flex items-center rounded bg-[var(--surface-strong)] px-1.5 py-0.2 text-[10px] font-black text-[var(--orange)] border border-[var(--line)] shadow-2xs">
+                        {priceParts?.price || formatPrice(item.prices[0]?.value)}
+                      </span>
+                      {priceParts?.note && (
+                        <span className="text-[10px] font-medium text-[var(--muted)]">
+                          ({priceParts.note})
+                        </span>
+                      )}
+                    </div>
                   )}
                 </div>
 
-                {/* 3. Price of Item & Action (Right - Clean & No 'Starts at') */}
-                <div className="shrink-0 flex flex-col items-end justify-center text-right space-y-1 pl-1">
-                  <span className="text-sm sm:text-base font-black text-[var(--orange)] tracking-tight leading-none">
-                    {item.prices.length === 1
-                      ? (priceParts?.price || formatPrice(item.prices[0].value))
-                      : `₹${item.prices[0].value}`}
-                  </span>
-
+                {/* 3. Action (Right - Clean & Uncluttered) */}
+                <div className="shrink-0 flex items-center justify-center pl-1">
                   {/* Compact Customize Button */}
                   <button
                     type="button"
-                    className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-2.5 py-0.5 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
+                    className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-2.5 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
                   >
                     <span>Customize</span>
                     <span className="text-[10px] font-black leading-none">+</span>
