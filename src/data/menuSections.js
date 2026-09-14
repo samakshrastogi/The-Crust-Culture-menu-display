@@ -3,7 +3,7 @@ const rawMenuSections = [
     title: "Extra Toppings",
     labels: ["S", "M", "L"],
     items: [
-      { name: "Veggies", prices: ["20", "40", "60"] },
+      { name: "Veggies", prices: ["20", "40", "50"] },
       { name: "Cheese", prices: ["30", "60", "90"] },
       { name: "Paneer", prices: ["30", "50", "80"] },
       { name: "Cheese Burst", prices: ["60", "90", "120"] },
@@ -22,131 +22,129 @@ const rawMenuSections = [
       { name: "Tomato", prices: ["89", "189", "269"] },
       { name: "Capsicum", prices: ["89", "189", "269"] },
       { name: "Golden Corn", prices: ["99", "189", "299"] },
-      { name: "Margherita", prices: ["119", "249", "329"] },
-      { name: "Golden Corn & Cheese", prices: ["129", "249", "329"] },
-      { name: "Double Cheese Margherita", prices: ["149", "269", "349"] },
-    ],
-  },
-  {
-    title: "Classic Veg Combos",
-    labels: ["S", "M", "L"],
-    items: [
       { name: "Golden Corn + Onion", prices: ["99", "199", "299"] },
       { name: "Onion + Capsicum", prices: ["99", "199", "299"] },
       { name: "Tomato + Golden Corn", prices: ["99", "199", "299"] },
       { name: "Golden Corn + Jalapeno", prices: ["99", "199", "299"] },
-      { name: "Capsicum + Red Peperika", prices: ["99", "199", "299"] },
+      { name: "Capsicum + Red Paprika", prices: ["99", "199", "299"] },
     ],
   },
   {
-    title: "Signature Veg Pizzas",
+    title: "Veggie & Cheese Loaded Pizzas",
     labels: ["S", "M", "L"],
     items: [
+      { name: "Margherita", prices: ["119", "229", "329"] },
+      { name: "Double Cheese Margherita", prices: ["149", "289", "349"] },
+      {
+        name: "Corn & Cheese",
+        toppings: "(Golden Corn, Mozzarella Cheese)",
+        prices: ["129", "239", "349"],
+      },
       {
         name: "Fiesta Popper",
-        toppings: "(Capsicum, Jalapeno, Red Pepper)",
+        toppings: "(Capsicum, Jalapeno, Red Pepper, Mozzarella Cheese)",
         prices: ["139", "239", "329"],
       },
       {
-        name: "Four Seasons Veg Pizza",
-        toppings: "(Golden Corn, Onion, Capsicum, Tomato, Cheese)",
+        name: "Four Seasons Veg",
+        toppings: "(Corn, Capsicum, Tomato, Mozzarella Cheese)",
         prices: ["139", "249", "349"],
       },
       {
         name: "Sweet Fiesta",
-        toppings: "(Sweet Corn, Jalapeno, Cheese)",
+        toppings: "(Sweet Corn, Jalapeno, Mozzarella Cheese)",
         prices: ["149", "249", "349"],
       },
       {
-        name: "Maxican Pizza",
-        toppings: "(Onion, Capsicum, Jalapeno, Tomato, Cheese)",
-        prices: ["149", "269", "349"],
+        name: "Mexican Pizza",
+        toppings: "(Onion, Capsicum, Jalapeno, Tomato, Mozzarella Cheese)",
+        prices: ["149", "249", "349"],
       },
       {
         name: "Fresh Veggie",
-        toppings: "(Onion, Capsicum, Extra Cheese)",
-        prices: ["149", "269", "349"],
+        toppings: "(Onion, Capsicum, Mozzarella Cheese)",
+        prices: ["149", "249", "349"],
       },
       {
         name: "Black Gold Pizza",
-        toppings: "(Black Olive, Golden Corn, Capsicum, Cheese)",
-        prices: ["149", "269", "349"],
+        toppings: "(Black Olive, Corn, Capsicum, Mozzarella Cheese)",
+        prices: ["149", "249", "349"],
       },
       {
         name: "Veg Loaded Pizza",
-        toppings: "(Golden Corn, Tomato, Jalapeno, Mushroom, Cheese)",
+        toppings: "(Corn, Tomato, Jalapeno, Mushroom, Mozzarella Cheese)",
         prices: ["169", "289", "369"],
       },
       {
         name: "Classic Indian Pizza",
-        toppings: "(Onion, Tomato, Golden Corn, Capsicum, Jalapeno, Cheese)",
+        toppings: "(Onion, Tomato, Corn, Capsicum, Jalapeno, Mozzarella Cheese)",
         prices: ["169", "289", "369"],
       },
       {
         name: "Farmhouse Pizza",
-        toppings: "(Onion, Capsicum, Tomato, Mushroom, Cheese)",
-        prices: ["199", "329", "399"],
+        toppings: "(Onion, Capsicum, Tomato, Mushroom, Mozzarella Cheese)",
+        prices: ["199", "299", "399"],
       },
       {
         name: "Extravaganza Pizza",
         toppings:
-          "(Onion, Capsicum, Tomato, Mushroom, Golden Corn, Black Olive, Extra Cheese)",
+          "(Onion, Capsicum, Tomato, Mushroom, Sweet Corn, Black Olives, Extra Cheese)",
         prices: ["229", "329", "419"],
       },
       {
         name: "Paradise Pizza",
         toppings:
-          "(Golden Corn, Black Olive, Capsicum, Red Pepper, Extra Cheese)",
+          "(Corn, Olives, Capsicum, Red Pepper, Extra Cheese)",
         prices: ["229", "329", "419"],
       },
     ],
   },
   {
-    title: "Royal Paneer Collection",
+    title: "Royal Paneer Pizza",
     labels: ["S", "M", "L"],
     items: [
-      { name: "Paneer Capsicum", prices: ["149", "249", "349"] },
-      { name: "Paneer Onion", prices: ["149", "249", "349"] },
+      { name: "Paneer Capsicum", prices: ["149", "269", "349"] },
+      { name: "Paneer Onion", prices: ["149", "269", "349"] },
       { name: "Paneer Onion Capsicum", prices: ["159", "269", "349"] },
       {
         name: "Cheesy Corn Paneer",
-        toppings: "(Golden Corn, Paneer, Cheese)",
+        toppings: "(Golden Corn, Paneer, Mozzarella Cheese)",
         prices: ["159", "269", "349"],
       },
       {
         name: "Hot Peri Paneer",
-        toppings: "(Peri Peri, Paneer, Hot Sauce, Red Peprika, Cheese)",
+        toppings: "(Peri Peri, Paneer, Hot Sauce, Red Paprika, Mozzarella Cheese)",
         prices: ["169", "269", "349"],
       },
       {
         name: "Paneer Special",
-        toppings: "(Red Pepper, Onion, Capsicum, Paneer, Cheese)",
-        prices: ["189", "299", "369"],
+        toppings: "(Red Pepper, Onion, Capsicum, Paneer, Mozzarella Cheese)",
+        prices: ["179", "279", "349"],
       },
       {
-        name: "Veg + Paneer Loaded",
-        toppings: "(Onion, Capsicum, Golden Corn, Paneer, Cheese)",
-        prices: ["189", "299", "369"],
+        name: "Veg Paneer Loaded",
+        toppings: "(Onion, Capsicum, Corn, Paneer, Mozzarella Cheese)",
+        prices: ["179", "279", "349"],
       },
       {
-        name: "Pappy Paneer",
-        toppings: "(Capsicum, Red Pepper, Paneer, Cheese)",
-        prices: ["199", "299", "369"],
+        name: "Peppy Paneer",
+        toppings: "(Capsicum, Red Pepper, Paneer, Mozzarella Cheese)",
+        prices: ["179", "289", "349"],
+      },
+      {
+        name: "Paneer Makhani",
+        toppings: "(Capsicum, Onion, Red Pepper, Paneer Tikka, Mozzarella Cheese)",
+        prices: ["199", "299", "379"],
       },
       {
         name: "Loaded Indi Tandoori",
-        toppings: "(Capsicum, Red Pepper, Paneer Tikka, Cheese)",
-        prices: ["199", "299", "369"],
-      },
-      {
-        name: "Paneer Makhni",
-        toppings: "(Cheese, Capsicum, Onion, Red Pepper, Paneer Tikka)",
-        prices: ["199", "299", "369"],
+        toppings: "(Capsicum, Red Pepper, Paneer Tikka, Mozzarella Cheese)",
+        prices: ["229", "329", "419"],
       },
       {
         name: "Double Paneer Premium",
-        toppings: "(Onion, Capsicum, Red Pepper, Double Paneer, Extra Cheese)",
-        prices: ["229", "349", "469"],
+        toppings: "(Onion, Capsicum, Red Pepper, Double Paneer, Mozzarella Cheese)",
+        prices: ["229", "329", "419"],
       },
     ],
   },
@@ -155,22 +153,12 @@ const rawMenuSections = [
     labels: [""],
     items: [
       { name: "Veg Parcel", prices: ["49"] },
-      { name: "Indi Tandoori", prices: ["69"] },
+      { name: "Indi Tandoori Parcel", prices: ["69"] },
       { name: "Garlic Bread", prices: ["99"] },
+      { name: "Veggie Garlic Bread", prices: ["149"] },
       { name: "Garlic Bread Stuffed", prices: ["149"] },
       { name: "Paneer Tikka Stuffed", prices: ["169"] },
-    ],
-  },
-  {
-    title: "Grilled Sandwiches",
-    labels: [""],
-    items: [
-      { name: "Veg Grill Sandwich", prices: ["89"] },
-      { name: "Veg, Golden Corn", prices: ["99"] },
-      { name: "Paneer Special", prices: ["119"] },
-      { name: "Cheese Special", prices: ["119"] },
-      { name: "Cheese & Paneer Special", prices: ["139"] },
-      { name: "Golden Corn & Cheese", prices: ["139"] },
+      { name: "Veg Nuggets", labels: ["H", "F"], prices: ["49", "89"] },
     ],
   },
   {
@@ -181,8 +169,60 @@ const rawMenuSections = [
       { name: "Veg Burger", prices: ["59"] },
       { name: "Cheese Burger", prices: ["79"] },
       { name: "Paneer Burger", prices: ["79"] },
-      { name: "Double Cheese", prices: ["99"] },
-      { name: "Cheese & Paneer", prices: ["119"] },
+      { name: "Double Cheese Burger", prices: ["99"] },
+      { name: "Cheese & Paneer Burger", prices: ["119"] },
+    ],
+  },
+  {
+    title: "Momos",
+    labels: ["H", "F"],
+    items: [
+      { name: "Veg Fried Momos", prices: ["49", "89"] },
+      { name: "Paneer Fried Momos", prices: ["69", "119"] },
+    ],
+  },
+  {
+    title: "Taco",
+    labels: [""],
+    items: [
+      { name: "Veg Taco", prices: ["69"] },
+      { name: "Indi Tandoori", prices: ["89"] },
+    ],
+  },
+  {
+    title: "Grilled Sandwiches",
+    labels: [""],
+    items: [
+      { name: "Veg Grill Sandwich", prices: ["79"] },
+      { name: "Veg Sweet Corn Sandwich", prices: ["89"] },
+      { name: "Paneer Special Sandwich", prices: ["99"] },
+      { name: "Cheese Special Sandwich", prices: ["99"] },
+      { name: "Cheese & Paneer Special", prices: ["119"] },
+      { name: "Corn & Cheese Sandwich", prices: ["119"] },
+    ],
+  },
+  {
+    title: "French Fries",
+    labels: ["H", "F"],
+    items: [
+      { name: "Salted Fries", prices: ["69", "129"] },
+      { name: "Peri Peri Fries", prices: ["79", "129"] },
+      { name: "Butter Masala Fries", prices: ["99", "149"] },
+      { name: "Cheese Loaded Fries", prices: ["119", "169"] },
+      { name: "Chilli Potato", prices: ["119", "199"] },
+      { name: "Honey Chilli Potato", prices: ["129", "199"] },
+    ],
+  },
+  {
+    title: "Maggie Special",
+    labels: ["H", "F"],
+    items: [
+      { name: "Plain Maggie", prices: ["49", "89"] },
+      { name: "Veggie Maggie", prices: ["59", "99"] },
+      { name: "Cheese Maggie", prices: ["79", "129"] },
+      { name: "Paneer Maggie", prices: ["79", "129"] },
+      { name: "Schezwan Maggie", prices: ["79", "129"] },
+      { name: "Spicy Dry Maggie", prices: ["79", "129"] },
     ],
   },
   {
@@ -212,26 +252,6 @@ const rawMenuSections = [
     ],
   },
   {
-    title: "Maggi Mania",
-    labels: ["H", "F"],
-    items: [
-      { name: "Plain Maggie", prices: ["49", "89"] },
-      { name: "Veggie Maggie", prices: ["59", "99"] },
-      { name: "Cheese Maggie", prices: ["79", "149"] },
-      { name: "Paneer Maggie", prices: ["79", "149"] },
-      { name: "Spicy Dry Maggie", prices: ["79", "149"] },
-      { name: "Schezwan Maggie", prices: ["79", "149"] },
-    ],
-  },
-  {
-    title: "Momo Specials",
-    labels: ["H", "F"],
-    items: [
-      { name: "Veg Fried Momo", prices: ["49", "99"] },
-      { name: "Paneer Fried Momo", prices: ["69", "129"] },
-    ],
-  },
-  {
     title: "Wok Rice Bowls",
     labels: ["H", "F"],
     items: [
@@ -240,18 +260,6 @@ const rawMenuSections = [
       { name: "Paneer Fried Rice", prices: ["129", "199"] },
       { name: "Chinese Rice", prices: ["129", "199"] },
       { name: "Manchurian Rice", prices: ["149", "229"] },
-    ],
-  },
-  {
-    title: "Fry Fiesta",
-    labels: ["H", "F"],
-    items: [
-      { name: "Classic Salted", prices: ["69", "129"] },
-      { name: "Peri Peri Fries", prices: ["79", "129"] },
-      { name: "Butter Masala", prices: ["89", "169"] },
-      { name: "Cheese Fries", prices: ["99", "179"] },
-      { name: "Chilli Potato", prices: ["119", "199"] },
-      { name: "Honey Chilli Potato", prices: ["129", "199"] },
     ],
   },
   {
@@ -285,19 +293,6 @@ const rawMenuSections = [
     labels: ["", ""],
     items: [{ name: "Classic Veg Poha", prices: ["79", "119"] }],
   },
-  {
-    title: "Egg Specials",
-    labels: [""],
-    items: [
-      { name: "Veg Omelette", prices: ["79"] },
-      { name: "Bread Omelette", prices: ["99"] },
-      { name: "Egg Burger", prices: ["99"] },
-      { name: "Half Fry with Bread", prices: ["99"] },
-      { name: "Egg Bhurji Pav", prices: ["129"] },
-      { name: "Egg Sandwich", prices: ["129"] },
-      { name: "Egg Fried Rice", prices: ["149"] },
-    ],
-  },
 ];
 
 const sectionImages = {
@@ -307,8 +302,12 @@ const sectionImages = {
     "https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?auto=format&fit=crop&w=600&q=75",
   "classic-veg-combos":
     "https://images.unsplash.com/photo-1594007654729-407eedc4be65?auto=format&fit=crop&w=600&q=75",
+  "veggie-cheese-loaded-pizzas":
+    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=75",
   "signature-veg-pizzas":
     "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=75",
+  "royal-paneer-pizza":
+    "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=75",
   "royal-paneer-collection":
     "https://images.unsplash.com/photo-1588315029754-2dd089d39a1a?auto=format&fit=crop&w=600&q=75",
   "garlic-breads-sides":
@@ -317,24 +316,32 @@ const sectionImages = {
     "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=75",
   "burgers-street-bites":
     "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=75",
+  momos:
+    new URL("../assets/item-images/momo/fried-momo.jpg", import.meta.url).href,
+  "momo-specials":
+    new URL("../assets/item-images/momo/fried-momo.jpg", import.meta.url).href,
+  taco:
+    "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=75",
+  "french-fries":
+    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75",
+  "fry-fiesta":
+    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75",
+  "maggie-special":
+    "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=75",
+  "maggi-mania":
+    "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=75",
   "mumbai-street-special":
     "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=75",
   "sweet-corn-specials":
     "https://images.unsplash.com/photo-1551754655-cd27e38d2076?auto=format&fit=crop&w=600&q=75",
-  "maggi-mania":
-    "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=75",
-  "momo-specials":
-    "https://images.unsplash.com/photo-1625220194771-7ebdea0b70b9?auto=format&fit=crop&w=600&q=75",
-  "fry-fiesta":
-    "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=75",
+  "wok-rice-bowls":
+    "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=75",
   wraps:
     "https://images.unsplash.com/photo-1626700051175-6818013e1d4f?auto=format&fit=crop&w=600&q=75",
   "drinks-corner":
     "https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=600&q=75",
   "poha-corner":
     "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=75",
-  "egg-specials":
-    "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=75",
   "crispy-starters":
     "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=75",
   "indo-chinese-specials":
@@ -463,15 +470,6 @@ const imageCollections = {
     "https://images.unsplash.com/photo-1627308595229-7830a5c91f9f?auto=format&fit=crop&w=600&q=75",
     "https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?auto=format&fit=crop&w=600&q=75",
   ],
-  eggs: [
-    "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1510693206972-df098062cb71?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1608039829572-78524f79c4c7?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1481070555726-e2fe8357725c?auto=format&fit=crop&w=600&q=75",
-    "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=600&q=75",
-  ],
   crispy: [
     "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=600&q=75",
     "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=75",
@@ -489,6 +487,11 @@ const imageCollections = {
     "https://images.unsplash.com/photo-1630383249896-424e482df921?auto=format&fit=crop&w=600&q=75",
     "https://images.unsplash.com/photo-1617692855027-33b14f061079?auto=format&fit=crop&w=600&q=75",
   ],
+  tacos: [
+    "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=75",
+    "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=75",
+    "https://images.unsplash.com/photo-1615870216519-2f9fa575fa5c?auto=format&fit=crop&w=600&q=75",
+  ],
   protein: [
     "https://images.unsplash.com/photo-1622484211148-a645df14f0ed?auto=format&fit=crop&w=600&q=75",
     "https://images.unsplash.com/photo-1577805947697-89e18249d767?auto=format&fit=crop&w=600&q=75",
@@ -501,20 +504,26 @@ const sectionImageCollections = {
   "extra-toppings": imageCollections.toppings,
   "everyday-classics": imageCollections.pizza,
   "classic-veg-combos": imageCollections.pizza,
+  "veggie-cheese-loaded-pizzas": imageCollections.pizza,
   "signature-veg-pizzas": imageCollections.pizza,
+  "royal-paneer-pizza": imageCollections.paneerPizza,
   "royal-paneer-collection": imageCollections.paneerPizza,
   "garlic-breads-sides": imageCollections.sides,
   "grilled-sandwiches": imageCollections.sandwiches,
   "burgers-street-bites": imageCollections.burgers,
+  momos: imageCollections.momo,
+  "momo-specials": imageCollections.momo,
+  taco: imageCollections.tacos,
+  "french-fries": imageCollections.fries,
+  "fry-fiesta": imageCollections.fries,
+  "maggie-special": imageCollections.maggi,
+  "maggi-mania": imageCollections.maggi,
   "mumbai-street-special": imageCollections.street,
   "sweet-corn-specials": imageCollections.corn,
-  "maggi-mania": imageCollections.maggi,
-  "momo-specials": imageCollections.momo,
-  "fry-fiesta": imageCollections.fries,
+  "wok-rice-bowls": imageCollections.chinese,
   wraps: imageCollections.wraps,
   "drinks-corner": imageCollections.drinks,
   "poha-corner": imageCollections.poha,
-  "egg-specials": imageCollections.eggs,
   "crispy-starters": imageCollections.crispy,
   "indo-chinese-specials": imageCollections.chinese,
   "south-indian-specials": imageCollections.southIndian,
@@ -602,6 +611,44 @@ const itemMetadata = {
     image:
       "https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=600&q=75",
   },
+  "veggie-garlic-bread": {
+    tag: "Must Try",
+    image:
+      "https://images.unsplash.com/photo-1573140401552-3fab0b24306f?auto=format&fit=crop&w=600&q=75",
+  },
+  "veg-nuggets": {
+    tag: "Crispy",
+    image:
+      "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=600&q=75",
+  },
+  "double-cheese-burger": {
+    tag: "Popular",
+    image:
+      "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=75",
+  },
+  "cheese-paneer-burger": {
+    tag: "Popular",
+    image:
+      "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?auto=format&fit=crop&w=600&q=75",
+  },
+  "veg-fried-momos": {
+    tag: "Must Try",
+    image: new URL("../assets/item-images/momo/fried-momo.jpg", import.meta.url).href,
+  },
+  "paneer-fried-momos": {
+    tag: "Must Try",
+    image: new URL("../assets/item-images/momo/fried-momo.jpg", import.meta.url).href,
+  },
+  "veg-taco": {
+    tag: "Popular",
+    image:
+      "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=600&q=75",
+  },
+  "cheese-loaded-fries": {
+    tag: "Best Seller",
+    image:
+      "https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=600&q=75",
+  },
 };
 
 function hasValidPrice(price) {
@@ -633,7 +680,7 @@ function cleanSection(section) {
       const metadata = itemMetadata[slugify(item.name)] || {};
       const prices = item.prices
         .map((price, index) => ({
-          label: section.labels[index] || "",
+          label: (item.labels && item.labels[index]) ?? section.labels[index] ?? "",
           value: String(price || "").trim(),
         }))
         .filter((price) => hasValidPrice(price.value));
@@ -662,18 +709,14 @@ const baseProcessedSections = rawMenuSections
   .filter((section) => section.items.length > 0);
 
 export const menuSections = (() => {
-  const eggSpecials = baseProcessedSections.find(
-    (s) => s.title === "Egg Specials",
-  );
   const drinksCorner = baseProcessedSections.find(
     (s) => s.title === "Drinks Corner",
   );
   const rest = baseProcessedSections.filter(
-    (s) => s.title !== "Egg Specials" && s.title !== "Drinks Corner",
+    (s) => s.title !== "Drinks Corner",
   );
 
   const result = [...rest];
-  if (eggSpecials) result.push(eggSpecials);
   if (drinksCorner) result.push(drinksCorner);
   return result;
 })();

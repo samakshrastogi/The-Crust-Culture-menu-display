@@ -8,7 +8,7 @@ import MenuItemSheet from '../components/MenuItemSheet'
 import MenuSectionCard from '../components/MenuSectionCard'
 import SearchBar from '../components/SearchBar'
 import SkeletonLoader from '../components/SkeletonLoader'
-import { allMenuItems, menuCategories, menuSections } from '../data/menuSections'
+import { menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
 const isRestrictedTime = () => {

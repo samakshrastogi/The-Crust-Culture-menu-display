@@ -52,7 +52,7 @@ export default function AboutPage() {
           <h2 className="text-2xl font-black text-[var(--text)]">Contact</h2>
           <div className="mt-4 space-y-2 text-sm text-[var(--muted)]">
             <p>
-              <a href="tel:+918368151650" className="hover:text-[var(--orange)] transition">+91 83681 51650</a>
+              <a href="tel:+919625261591" className="hover:text-[var(--orange)] transition">+91 96252 61591</a>
             </p>
           </div>
         </div>

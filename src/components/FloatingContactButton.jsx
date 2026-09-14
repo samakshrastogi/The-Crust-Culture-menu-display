@@ -1,13 +1,11 @@
 import { useEffect, useRef } from 'react'
 import { FiPhone } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
-import { useLocation } from 'react-router-dom'
 import { animateFloating } from '../animations/gsapAnimations'
 
 export default function FloatingContactButton() {
   const callBtnRef = useRef(null)
   const waBtnRef = useRef(null)
-  const { pathname } = useLocation()
   const hideOnMobileMenu = false
 
   useEffect(() => {
@@ -24,7 +22,7 @@ export default function FloatingContactButton() {
       {/* Call Button */}
       <a
         ref={callBtnRef}
-        href="tel:+918368151650"
+        href="tel:+919625261591"
         className={`fixed bottom-36 right-4 z-40 h-11 w-11 place-items-center rounded-full bg-[var(--orange)] text-base text-white shadow-2xl ring-4 ring-[var(--bg)] sm:bottom-28 sm:right-7 sm:h-14 sm:w-14 sm:text-xl transition hover:opacity-90 ${
           hideOnMobileMenu ? 'hidden sm:grid' : 'grid'
         }`}
@@ -36,7 +34,7 @@ export default function FloatingContactButton() {
       {/* WhatsApp Button */}
       <a
         ref={waBtnRef}
-        href="https://wa.me/918368151650"
+        href="https://wa.me/919625261591"
         target="_blank"
         rel="noopener noreferrer"
         className={`fixed bottom-20 right-4 z-40 h-11 w-11 place-items-center rounded-full bg-[#25D366] text-base text-white shadow-2xl ring-4 ring-[var(--bg)] sm:bottom-7 sm:right-7 sm:h-14 sm:w-14 sm:text-xl transition hover:opacity-90 ${

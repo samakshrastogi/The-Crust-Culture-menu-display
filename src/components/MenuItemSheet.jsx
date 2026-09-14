@@ -166,13 +166,13 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
 
           <div data-sheet-item className="flex gap-2 sm:gap-3">
             <a
-              href="tel:+918368151650"
+              href="tel:+919625261591"
               className="touch-target inline-flex flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-[var(--orange)] px-3 py-2.5 text-xs font-black text-white sm:text-sm"
             >
               <FiPhone /> Call us
             </a>
             <a
-              href="https://wa.me/918368151650"
+              href="https://wa.me/919625261591"
               target="_blank"
               rel="noopener noreferrer"
               className="touch-target inline-flex flex-1 items-center justify-center gap-1.5 sm:gap-2 rounded-full bg-[#25D366] px-3 py-2.5 text-xs font-black text-white sm:text-sm"

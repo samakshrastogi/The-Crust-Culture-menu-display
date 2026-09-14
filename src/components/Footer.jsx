@@ -23,7 +23,7 @@ export default function Footer() {
             </p>
             <p className="flex gap-3">
               <FiPhone className="mt-1 shrink-0 text-[var(--orange)]" />
-              <a href="tel:+918368151650" className="hover:text-[var(--orange)] transition">+91 83681 51650</a>
+              <a href="tel:+919625261591" className="hover:text-[var(--orange)] transition">+91 96252 61591</a>
             </p>
           </div>
         </div>

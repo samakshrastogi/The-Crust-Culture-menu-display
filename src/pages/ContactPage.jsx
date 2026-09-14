@@ -12,7 +12,7 @@ export default function ContactPage() {
 
         <div className="grid gap-4">
           {[
-            { icon: FiPhone, label: 'Phone', value: '+91 83681 51650', href: 'tel:+918368151650' },
+            { icon: FiPhone, label: 'Phone', value: '+91 96252 61591', href: 'tel:+919625261591' },
             { icon: FiMapPin, label: 'Address', value: 'The Crust Culture infront of royal pg and sheetal pg and adjacent of panchayat cafe gali no. 6 noble enclave palam vihar extension gurgaon haryana pincode 122015' },
           ].map((item) => {
             const Tag = item.href ? 'a' : 'div'
