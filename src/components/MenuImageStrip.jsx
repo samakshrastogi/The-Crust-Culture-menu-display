@@ -49,12 +49,43 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
     }
   }, [activeCategory])
 
+  const totalItems = sections.reduce((acc, s) => acc + s.items.length, 0)
+
   return (
     <section
       ref={stripRef}
-      className="mb-3 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:mb-4 sm:p-3"
+      className="mb-4 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:mb-6 sm:p-3 shadow-sm"
     >
-      <div className="no-scrollbar relative flex gap-2 overflow-x-auto">
+      <div className="no-scrollbar relative flex gap-2.5 overflow-x-auto py-0.5">
+        {/* 'All Dishes' Tile */}
+        <button
+          ref={(element) => {
+            tileRefs.current['All'] = element
+          }}
+          data-menu-tile
+          type="button"
+          onClick={() => onSelect('All')}
+          className={`relative h-24 w-32 shrink-0 overflow-hidden rounded-2xl border text-left transition-all duration-200 sm:h-28 sm:w-40 ${
+            activeCategory === 'All'
+              ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/35 shadow-lg shadow-orange-500/20'
+              : 'border-[var(--line)] hover:border-[var(--gold)] opacity-85 hover:opacity-100'
+          }`}
+        >
+          <FoodImage
+            src="/images/pizza-margherita.jpg"
+            alt="All dishes"
+            category="Pizza"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-2.5 text-white">
+            <h3 className="text-xs font-extrabold leading-tight sm:text-sm">All Dishes</h3>
+            <p className="mt-0.5 text-[10px] font-bold text-amber-300">
+              {totalItems} items
+            </p>
+          </div>
+        </button>
+
         {sections.map((section) => {
           const lowestPrice = getLowestPrice(section)
           const isActive = activeCategory === section.title
@@ -68,20 +99,22 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
               data-menu-tile
               type="button"
               onClick={() => onSelect(section.title)}
-              className={`relative h-24 w-36 shrink-0 overflow-hidden rounded-2xl border text-left transition sm:h-32 sm:w-48 ${
-                isActive ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/25' : 'border-[var(--line)]'
+              className={`relative h-24 w-36 shrink-0 overflow-hidden rounded-2xl border text-left transition-all duration-200 sm:h-28 sm:w-44 ${
+                isActive
+                  ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/35 shadow-lg shadow-orange-500/20'
+                  : 'border-[var(--line)] hover:border-[var(--gold)] opacity-90 hover:opacity-100'
               }`}
             >
               <FoodImage
                 src={section.image}
                 alt={section.title}
                 category={section.title.includes('Pizza') ? 'Pizza' : 'Restaurant'}
-                className="h-full w-full"
+                className="h-full w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/18 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-2.5 text-white">
-                <h3 className="line-clamp-2 text-xs font-black leading-tight sm:text-sm">{section.title}</h3>
-                <p className="mt-1 text-[10px] font-bold text-white/85 sm:text-xs">
+                <h3 className="line-clamp-1 text-xs font-extrabold leading-tight sm:text-sm">{section.title}</h3>
+                <p className="mt-0.5 text-[10px] font-bold text-amber-300">
                   {section.items.length} items{lowestPrice ? ` · From ₹${lowestPrice}` : ''}
                 </p>
               </div>
