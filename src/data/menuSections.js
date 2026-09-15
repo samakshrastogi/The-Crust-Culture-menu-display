@@ -321,7 +321,7 @@ const rawMenuSections = [
 
 const sectionImages = {
   "extra-toppings": "/images/extra-toppings.jpg",
-  "everyday-classics": "/images/pizza-margherita.jpg",
+  "everyday-classics": "/images/pizza-classic.jpg",
   "classic-veg-combos": "/images/pizza-veggie.jpg",
   "veggie-cheese-loaded-pizzas": "/images/pizza-veggie.jpg",
   "signature-veg-pizzas": "/images/pizza-margherita.jpg",
@@ -359,6 +359,13 @@ const imageCollections = {
     "/images/topping-oregano.jpg",
     "/images/topping-chilli-flakes.jpg",
     "/images/topping-ketchup.jpg",
+  ],
+  everydayClassics: [
+    "/images/pizza-classic.jpg",
+    "/images/pizza-onion.jpg",
+    "/images/pizza-tomato.jpg",
+    "/images/pizza-capsicum.jpg",
+    "/images/cheesy-corn-pizza.jpg",
   ],
   pizza: [
     "/images/pizza-margherita.jpg",
@@ -433,7 +440,7 @@ const imageCollections = {
 
 const sectionImageCollections = {
   "extra-toppings": imageCollections.toppings,
-  "everyday-classics": imageCollections.pizza,
+  "everyday-classics": imageCollections.everydayClassics,
   "classic-veg-combos": imageCollections.pizza,
   "veggie-cheese-loaded-pizzas": imageCollections.pizza,
   "signature-veg-pizzas": imageCollections.pizza,
@@ -493,6 +500,38 @@ const itemMetadata = {
   ketchup: {
     tag: "Sauce",
     image: "/images/topping-ketchup.jpg",
+  },
+  classic: {
+    tag: "Artisan Mini",
+    image: "/images/pizza-classic.jpg",
+  },
+  onion: {
+    tag: "Crispy",
+    image: "/images/pizza-onion.jpg",
+  },
+  tomato: {
+    tag: "Fresh",
+    image: "/images/pizza-tomato.jpg",
+  },
+  capsicum: {
+    tag: "Crunchy",
+    image: "/images/pizza-capsicum.jpg",
+  },
+  "onion-capsicum": {
+    tag: "Best Seller",
+    image: "/images/pizza-veggie.jpg",
+  },
+  "tomato-golden-corn": {
+    tag: "Fresh Duo",
+    image: "/images/pizza-tomato.jpg",
+  },
+  "golden-corn-jalapeno": {
+    tag: "Sweet & Spicy",
+    image: "/images/cheesy-corn-pizza.jpg",
+  },
+  "capsicum-red-paprika": {
+    tag: "Spicy",
+    image: "/images/pizza-capsicum.jpg",
   },
   margherita: {
     tag: "Best Seller",
