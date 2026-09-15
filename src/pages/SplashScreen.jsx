@@ -188,7 +188,7 @@ export default function SplashScreen() {
           className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold text-[var(--muted)] pt-0.5"
         >
           <span className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)]/80 px-2 py-0.5 border border-[var(--line)]">
-            🍕 48h Fermented Pizzas
+            🍕 Artisan Pizzas
           </span>
           <span className="opacity-40">•</span>
           <span className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)]/80 px-2 py-0.5 border border-[var(--line)]">

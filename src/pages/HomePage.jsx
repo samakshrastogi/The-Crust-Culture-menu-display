@@ -7,7 +7,6 @@ import {
   FiChevronRight,
   FiClock,
   FiHeart,
-  FiLayers,
   FiMaximize2,
   FiSmartphone,
   FiZap,
@@ -578,31 +577,18 @@ export default function HomePage() {
                 Our Story & Heritage
               </span>
               <h2 className="font-display text-xl sm:text-2xl lg:text-3xl font-extrabold leading-tight text-[var(--text)]">
-                Fire, fermentation, and tables built for sharing.
+                Crafted with passion, tables built for sharing.
               </h2>
               <p className="text-xs sm:text-sm leading-relaxed text-[var(--muted)]">
-                At The Crust Culture, great pizza starts with patience. Every sourdough batch is
-                fermented for 48 hours for maximum flavor and lightness before meeting high-temperature
-                stone ovens. From freshly crafted paneer to authentic gourmet toppings, we bring genuine
-                artisan passion straight to your table.
+                At The Crust Culture, great food starts with genuine passion and fresh ingredients.
+                From hand-stretched artisan pizzas and fresh malai paneer to gourmet burgers and
+                handcrafted sides, we bring pure vegetarian culinary joy straight to your table.
               </p>
             </div>
 
-            {/* 4 Craft Pillars (Distinct technical facts, stated once) */}
+            {/* Craft Pillars */}
             <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3 pt-1">
               {[
-                {
-                  icon: FiLayers,
-                  title: '48h Fermentation',
-                  desc: 'Slow cold-proofed dough produces an airy, easily digestible artisan crust.',
-                  accent: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
-                },
-                {
-                  icon: FiZap,
-                  title: '450°C Stone Oven',
-                  desc: 'Scorching deck heat creates authentic leopard blisters and a crisp base.',
-                  accent: 'text-[var(--orange)] bg-orange-500/10 border-orange-500/20',
-                },
                 {
                   icon: FiAward,
                   title: 'Artisan Malai Paneer',
