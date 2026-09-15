@@ -368,9 +368,11 @@ const imageCollections = {
     "/images/cheesy-corn-pizza.jpg",
   ],
   pizza: [
-    "/images/pizza-margherita.jpg",
     "/images/pizza-veggie.jpg",
-    "/images/pizza-paneer.jpg",
+    "/images/pizza-margherita.jpg",
+    "/images/pizza-classic.jpg",
+    "/images/pizza-capsicum.jpg",
+    "/images/cheesy-corn-pizza.jpg",
   ],
   paneerPizza: [
     "/images/tandoori-paneer-pizza.jpg",
@@ -538,20 +540,56 @@ const itemMetadata = {
     image: "/images/pizza-margherita.jpg",
   },
   "double-cheese-margherita": {
-    tag: "Must Try",
-    image: "/images/pizza-margherita.jpg",
+    tag: "Double Cheese",
+    image: "/images/pizza-classic.jpg",
+  },
+  "corn-cheese": {
+    tag: "Popular",
+    image: "/images/cheesy-corn-pizza.jpg",
   },
   "fiesta-popper": {
-    tag: "Spicy",
+    tag: "Spicy & Tangy",
+    image: "/images/pizza-capsicum.jpg",
+  },
+  "four-seasons-veg": {
+    tag: "Must Try",
+    image: "/images/pizza-veggie.jpg",
+  },
+  "sweet-fiesta": {
+    tag: "Sweet & Cheesy",
+    image: "/images/cheesy-corn-pizza.jpg",
+  },
+  "mexican-pizza": {
+    tag: "Spicy Mexican",
+    image: "/images/pizza-veggie.jpg",
+  },
+  "fresh-veggie": {
+    tag: "Fresh Crunch",
+    image: "/images/pizza-onion.jpg",
+  },
+  "black-gold-pizza": {
+    tag: "Chef Special",
+    image: "/images/pizza-veggie.jpg",
+  },
+  "veg-loaded-pizza": {
+    tag: "Loaded Veggies",
+    image: "/images/pizza-veggie.jpg",
+  },
+  "classic-indian-pizza": {
+    tag: "Best Seller",
     image: "/images/pizza-veggie.jpg",
   },
   "farmhouse-pizza": {
     tag: "Popular",
     image: "/images/pizza-veggie.jpg",
   },
-  "corn-cheese": {
-    tag: "Popular",
-    image: "/images/cheesy-corn-pizza.jpg",
+  "extravaganza-pizza": {
+    tag: "Supreme",
+    image: "/images/pizza-veggie.jpg",
+  },
+  "paradise-pizza": {
+    tag: "Must Try",
+    image: "/images/pizza-veggie.jpg",
   },
   "golden-corn": {
     tag: "Popular",
