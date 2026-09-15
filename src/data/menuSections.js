@@ -329,7 +329,7 @@ const sectionImages = {
   "royal-paneer-collection": "/images/tandoori-paneer-pizza.jpg",
   "garlic-breads-sides": "/images/garlic-bread.jpg",
   "grilled-sandwiches": "/images/grilled-sandwich.jpg",
-  "burgers-street-bites": "/images/veg-burger.jpg",
+  "burgers-street-bites": "/images/burgers-street-bites.jpg",
   momos: "/images/veg-momos.jpg",
   "momo-specials": "/images/veg-momos.jpg",
   taco: "/images/veg-tacos.jpg",
@@ -388,7 +388,12 @@ const imageCollections = {
     "/images/grilled-sandwich.jpg",
   ],
   burgers: [
-    "/images/veg-burger.jpg",
+    "/images/burger-aloo-tikki.jpg",
+    "/images/burger-veg.jpg",
+    "/images/burger-cheese.jpg",
+    "/images/burger-paneer.jpg",
+    "/images/burger-double-cheese.jpg",
+    "/images/burger-cheese-paneer.jpg",
   ],
   street: [
     "/images/vada-pav.jpg",
@@ -668,12 +673,32 @@ const itemMetadata = {
     image: "/images/veg-parcel.jpg",
   },
   "aloo-tikki-burger": {
-    tag: "Value Pick",
-    image: "/images/veg-burger.jpg",
+    tag: "Street Classic",
+    image: "/images/burger-aloo-tikki.jpg",
+  },
+  "veg-burger": {
+    tag: "Crispy Veg",
+    image: "/images/burger-veg.jpg",
+  },
+  "cheese-burger": {
+    tag: "Cheddar Melt",
+    image: "/images/burger-cheese.jpg",
+  },
+  "paneer-burger": {
+    tag: "Tandoori Paneer",
+    image: "/images/burger-paneer.jpg",
+  },
+  "double-cheese-burger": {
+    tag: "Double Melt",
+    image: "/images/burger-double-cheese.jpg",
   },
   "cheese-paneer": {
-    tag: "Popular",
-    image: "/images/veg-burger.jpg",
+    tag: "Chef Supreme",
+    image: "/images/burger-cheese-paneer.jpg",
+  },
+  "cheese-paneer-burger": {
+    tag: "Chef Supreme",
+    image: "/images/burger-cheese-paneer.jpg",
   },
   "vada-pav": {
     tag: "Value Pick",
@@ -734,14 +759,6 @@ const itemMetadata = {
   "veg-nuggets": {
     tag: "Crispy",
     image: "/images/garlic-bread.jpg",
-  },
-  "double-cheese-burger": {
-    tag: "Popular",
-    image: "/images/veg-burger.jpg",
-  },
-  "cheese-paneer-burger": {
-    tag: "Popular",
-    image: "/images/veg-burger.jpg",
   },
   "veg-fried-momos": {
     tag: "Must Try",
