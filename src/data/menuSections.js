@@ -327,7 +327,7 @@ const sectionImages = {
   "signature-veg-pizzas": "/images/pizza-margherita.jpg",
   "royal-paneer-pizza": "/images/tandoori-paneer-pizza.jpg",
   "royal-paneer-collection": "/images/tandoori-paneer-pizza.jpg",
-  "garlic-breads-sides": "/images/garlic-bread.jpg",
+  "garlic-breads-sides": "/images/garlic-breads-sides.jpg",
   "grilled-sandwiches": "/images/grilled-sandwich.jpg",
   "burgers-street-bites": "/images/burgers-street-bites.jpg",
   momos: "/images/veg-momos.jpg",
@@ -343,7 +343,7 @@ const sectionImages = {
   wraps: "/images/kathi-wrap.jpg",
   "drinks-corner": "/images/cold-coffee.jpg",
   "poha-corner": "/images/vada-pav.jpg",
-  "crispy-starters": "/images/garlic-bread.jpg",
+  "crispy-starters": "/images/garlic-breads-sides.jpg",
   "indo-chinese-specials": "/images/fried-rice.jpg",
   "south-indian-specials": "/images/vada-pav.jpg",
   "protein-shakes-salads": "/images/kathi-wrap.jpg",
@@ -380,9 +380,13 @@ const imageCollections = {
     "/images/cheesy-corn-pizza.jpg",
   ],
   sides: [
-    "/images/garlic-bread-stuffed.jpg",
-    "/images/veg-parcel.jpg",
     "/images/garlic-bread.jpg",
+    "/images/veggie-garlic-bread.jpg",
+    "/images/garlic-bread-stuffed.jpg",
+    "/images/paneer-tikka-stuffed.jpg",
+    "/images/veg-parcel.jpg",
+    "/images/indi-tandoori-parcel.jpg",
+    "/images/veg-nuggets.jpg",
   ],
   sandwiches: [
     "/images/grilled-sandwich.jpg",
@@ -658,7 +662,7 @@ const itemMetadata = {
   },
   "veggie-garlic-bread": {
     tag: "Must Try",
-    image: "/images/garlic-bread-stuffed.jpg",
+    image: "/images/veggie-garlic-bread.jpg",
   },
   "paneer-tikka-stuffed": {
     tag: "Must Try",
@@ -670,7 +674,11 @@ const itemMetadata = {
   },
   "indi-tandoori-parcel": {
     tag: "Must Try",
-    image: "/images/veg-parcel.jpg",
+    image: "/images/indi-tandoori-parcel.jpg",
+  },
+  "veg-nuggets": {
+    tag: "Crispy",
+    image: "/images/veg-nuggets.jpg",
   },
   "aloo-tikki-burger": {
     tag: "Street Classic",
@@ -755,10 +763,6 @@ const itemMetadata = {
   "ginger-tea": {
     tag: "Popular",
     image: "/images/masala-chai.jpg",
-  },
-  "veg-nuggets": {
-    tag: "Crispy",
-    image: "/images/garlic-bread.jpg",
   },
   "veg-fried-momos": {
     tag: "Must Try",
