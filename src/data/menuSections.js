@@ -325,8 +325,8 @@ const sectionImages = {
   "classic-veg-combos": "/images/pizza-veggie.jpg",
   "veggie-cheese-loaded-pizzas": "/images/pizza-veggie.jpg",
   "signature-veg-pizzas": "/images/pizza-margherita.jpg",
-  "royal-paneer-pizza": "/images/pizza-paneer.jpg",
-  "royal-paneer-collection": "/images/pizza-paneer.jpg",
+  "royal-paneer-pizza": "/images/tandoori-paneer-pizza.jpg",
+  "royal-paneer-collection": "/images/tandoori-paneer-pizza.jpg",
   "garlic-breads-sides": "/images/garlic-bread.jpg",
   "grilled-sandwiches": "/images/grilled-sandwich.jpg",
   "burgers-street-bites": "/images/veg-burger.jpg",
@@ -599,33 +599,49 @@ const itemMetadata = {
     tag: "Popular",
     image: "/images/cheesy-corn-pizza.jpg",
   },
-  "cheesy-corn-paneer": {
+  "paneer-capsicum": {
+    tag: "Royal Classic",
+    image: "/images/pizza-paneer.jpg",
+  },
+  "paneer-onion": {
     tag: "Popular",
+    image: "/images/pizza-paneer.jpg",
+  },
+  "paneer-onion-capsicum": {
+    tag: "Best Seller",
+    image: "/images/pizza-paneer.jpg",
+  },
+  "cheesy-corn-paneer": {
+    tag: "Sweet & Savory",
     image: "/images/cheesy-corn-pizza.jpg",
   },
   "hot-peri-paneer": {
-    tag: "Spicy",
+    tag: "Spicy Peri",
     image: "/images/tandoori-paneer-pizza.jpg",
   },
   "paneer-special": {
     tag: "Chef Special",
     image: "/images/pizza-paneer.jpg",
   },
-  "loaded-indi-tandoori": {
-    tag: "Must Try",
-    image: "/images/tandoori-paneer-pizza.jpg",
-  },
-  "double-paneer-premium": {
-    tag: "Best Seller",
-    image: "/images/tandoori-paneer-pizza.jpg",
-  },
-  "paneer-makhani": {
-    tag: "Rich & Creamy",
+  "veg-paneer-loaded": {
+    tag: "Loaded Paneer",
     image: "/images/tandoori-paneer-pizza.jpg",
   },
   "peppy-paneer": {
-    tag: "Popular",
+    tag: "Peppy Herb",
     image: "/images/pizza-paneer.jpg",
+  },
+  "paneer-makhani": {
+    tag: "Rich Makhani",
+    image: "/images/tandoori-paneer-pizza.jpg",
+  },
+  "loaded-indi-tandoori": {
+    tag: "Tandoori Flame",
+    image: "/images/tandoori-paneer-pizza.jpg",
+  },
+  "double-paneer-premium": {
+    tag: "Double Paneer",
+    image: "/images/tandoori-paneer-pizza.jpg",
   },
   "garlic-bread": {
     tag: "Classic",
