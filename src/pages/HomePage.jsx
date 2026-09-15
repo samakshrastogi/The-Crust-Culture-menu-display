@@ -341,7 +341,7 @@ export default function HomePage() {
                     ))}
                   </div>
                   <span className="inline-flex items-center gap-1 font-bold text-white group-hover:text-amber-300 transition-colors">
-                    Customize <FiArrowRight className="text-[10px]" />
+                    Add <FiArrowRight className="text-[10px]" />
                   </span>
                 </div>
               </div>

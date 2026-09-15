@@ -114,6 +114,8 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
           const isSingle = item.prices.length === 1
           const cartItem = isSingle ? cart.find((ci) => ci.id === item.id) : null
           const inCartQty = cartItem ? cartItem.quantity : 0
+          const multiCartItems = !isSingle ? cart.filter((ci) => ci.id === item.id) : []
+          const multiTotalQty = multiCartItems.reduce((sum, ci) => sum + ci.quantity, 0)
 
           return (
             <article
@@ -255,10 +257,15 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
                           sectionImage: section.image,
                         })
                       }}
-                      className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-2.5 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
+                      className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
                     >
-                      <span>Customize</span>
+                      <span>Add</span>
                       <span className="text-[10px] font-black leading-none">+</span>
+                      {multiTotalQty > 0 && (
+                        <span className="ml-0.5 rounded-full bg-white/25 px-1 py-0.2 text-[8px] font-black">
+                          {multiTotalQty}
+                        </span>
+                      )}
                     </button>
                   ) : inCartQty > 0 ? (
                     <div
