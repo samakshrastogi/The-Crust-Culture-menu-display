@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { FiArrowRight } from 'react-icons/fi'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { gsap } from '../animations/gsapAnimations'
 
 const LOADING_STAGES = [
@@ -14,11 +13,17 @@ export default function SplashScreen() {
   const progressFillRef = useRef(null)
   const hasExitedRef = useRef(false)
   const navigate = useNavigate()
+  const location = useLocation()
   const [stageIndex, setStageIndex] = useState(0)
 
   const handleEnter = useCallback(() => {
     if (hasExitedRef.current) return
     hasExitedRef.current = true
+
+    const target = {
+      pathname: '/menu',
+      search: location.search,
+    }
 
     if (splashRef.current) {
       gsap.to(splashRef.current, {
@@ -26,12 +31,12 @@ export default function SplashScreen() {
         scale: 1.02,
         duration: 0.35,
         ease: 'power2.inOut',
-        onComplete: () => navigate('/menu', { replace: true }),
+        onComplete: () => navigate(target, { replace: true }),
       })
     } else {
-      navigate('/menu', { replace: true })
+      navigate(target, { replace: true })
     }
-  }, [navigate])
+  }, [navigate, location.search])
 
   useEffect(() => {
     // Stage transition timers
@@ -63,7 +68,7 @@ export default function SplashScreen() {
         .from('[data-splash-title]', { opacity: 0, y: 20, duration: 0.5 }, '-=0.3')
         .from('[data-splash-badges]', { opacity: 0, y: 12, duration: 0.4 }, '-=0.25')
         .from('[data-splash-loader]', { opacity: 0, y: 16, duration: 0.4 }, '-=0.2')
-        .from('[data-skip-btn]', { opacity: 0, y: 12, duration: 0.4 }, '-=0.15')
+        .from('[data-skip-hint]', { opacity: 0, y: 12, duration: 0.4 }, '-=0.15')
 
       // Continuous subtle breathing on logo aura
       gsap.to('[data-hearth-ring]', {
@@ -179,22 +184,10 @@ export default function SplashScreen() {
         </div>
       </div>
 
-      {/* Bottom Action: Instant Skip Button */}
-      <footer data-skip-btn className="relative z-10 flex flex-col items-center gap-2">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation()
-            handleEnter()
-          }}
-          className="touch-target group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-6 py-2.5 text-xs sm:text-sm font-black uppercase tracking-wider text-white shadow-lg shadow-orange-500/30 transition-all duration-200 hover:scale-105 active:scale-95 border border-white/30 cursor-pointer"
-        >
-          <span>Enter Digital Menu</span>
-          <FiArrowRight className="text-sm transition-transform duration-200 group-hover:translate-x-1" />
-        </button>
-
-        <p className="text-[11px] font-medium text-[var(--muted)]">
-          Tap anywhere to enter immediately
+      {/* Bottom Action: Minimalist Skip Indicator */}
+      <footer data-skip-hint className="relative z-10 flex flex-col items-center">
+        <p className="text-[11px] font-medium tracking-wide text-[var(--muted)] opacity-80 hover:opacity-100 transition-opacity">
+          Tap anywhere to skip
         </p>
       </footer>
     </main>
