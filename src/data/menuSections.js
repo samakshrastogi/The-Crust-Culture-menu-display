@@ -320,7 +320,7 @@ const rawMenuSections = [
 ];
 
 const sectionImages = {
-  "extra-toppings": "/images/extra-toppings.svg",
+  "extra-toppings": "/images/extra-toppings.jpg",
   "everyday-classics": "/images/pizza-margherita.jpg",
   "classic-veg-combos": "/images/pizza-veggie.jpg",
   "veggie-cheese-loaded-pizzas": "/images/pizza-veggie.jpg",
@@ -351,8 +351,14 @@ const sectionImages = {
 
 const imageCollections = {
   toppings: [
-    "/images/extra-toppings.svg",
-    "/images/garlic-bread.jpg",
+    "/images/topping-veggies.jpg",
+    "/images/topping-cheese.jpg",
+    "/images/topping-paneer.jpg",
+    "/images/topping-cheese-burst.jpg",
+    "/images/topping-extra-dip.jpg",
+    "/images/topping-oregano.jpg",
+    "/images/topping-chilli-flakes.jpg",
+    "/images/topping-ketchup.jpg",
   ],
   pizza: [
     "/images/pizza-margherita.jpg",
@@ -456,6 +462,38 @@ const sectionImageCollections = {
 };
 
 const itemMetadata = {
+  veggies: {
+    tag: "Fresh Cut",
+    image: "/images/topping-veggies.jpg",
+  },
+  cheese: {
+    tag: "Mozzarella",
+    image: "/images/topping-cheese.jpg",
+  },
+  paneer: {
+    tag: "Fresh Malai",
+    image: "/images/topping-paneer.jpg",
+  },
+  "cheese-burst": {
+    tag: "Molten Lava",
+    image: "/images/topping-cheese-burst.jpg",
+  },
+  "extra-dip": {
+    tag: "Garlic Mayo",
+    image: "/images/topping-extra-dip.jpg",
+  },
+  oregano: {
+    tag: "Herbs",
+    image: "/images/topping-oregano.jpg",
+  },
+  "chilli-flakes": {
+    tag: "Spicy",
+    image: "/images/topping-chilli-flakes.jpg",
+  },
+  ketchup: {
+    tag: "Sauce",
+    image: "/images/topping-ketchup.jpg",
+  },
   margherita: {
     tag: "Best Seller",
     image: "/images/pizza-margherita.jpg",
