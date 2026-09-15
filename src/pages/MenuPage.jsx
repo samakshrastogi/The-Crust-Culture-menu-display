@@ -135,21 +135,39 @@ export default function MenuPage() {
 
   // ScrollSpy & Sticky Sub-Header Controller
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY
-      setShowStickyBar(scrollY > 160)
+    let ticking = false
 
-      // Find section in view
-      const offset = 140
-      for (const section of initialSections) {
-        const el = document.getElementById(section.id)
-        if (el) {
-          const rect = el.getBoundingClientRect()
-          if (rect.top <= offset && rect.bottom > offset) {
-            setActiveScrollSection(section.id)
-            break
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY
+          setShowStickyBar(scrollY > 160)
+
+          // Check if user is scrolled near bottom of page
+          const isAtBottom =
+            window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60
+
+          if (isAtBottom && initialSections.length > 0) {
+            setActiveScrollSection(initialSections[initialSections.length - 1].id)
+            ticking = false
+            return
           }
-        }
+
+          // Find section in view
+          const offset = window.innerWidth >= 640 ? 150 : 135
+          for (const section of initialSections) {
+            const el = document.getElementById(section.id)
+            if (el) {
+              const rect = el.getBoundingClientRect()
+              if (rect.top <= offset && rect.bottom > offset) {
+                setActiveScrollSection(section.id)
+                break
+              }
+            }
+          }
+          ticking = false
+        })
+        ticking = true
       }
     }
 
@@ -228,18 +246,35 @@ export default function MenuPage() {
   }, [])
 
   const handleScrollToSection = useCallback((sectionId) => {
-    if (activeCategory !== 'All' || activeVibeFilter !== 'all' || query) {
+    setActiveScrollSection(sectionId)
+
+    const needsReset = activeCategory !== 'All' || activeVibeFilter !== 'all' || query
+    if (needsReset) {
       setActiveCategory('All')
       setActiveVibeFilter('all')
       setQuery('')
     }
 
-    window.setTimeout(() => {
+    const scrollToTarget = () => {
       const target = document.getElementById(sectionId)
       if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        const headerOffset = window.innerWidth >= 640 ? 115 : 105
+        const targetY = target.getBoundingClientRect().top + window.scrollY - headerOffset
+        window.scrollTo({
+          top: Math.max(0, targetY),
+          behavior: 'smooth',
+        })
+        return true
       }
-    }, 60)
+      return false
+    }
+
+    if (!needsReset) {
+      scrollToTarget()
+    } else {
+      setTimeout(scrollToTarget, 60)
+      setTimeout(scrollToTarget, 180)
+    }
   }, [activeCategory, activeVibeFilter, query])
 
   const handleResetFilters = useCallback(() => {
@@ -390,66 +425,31 @@ export default function MenuPage() {
         <SkeletonLoader count={8} />
       ) : (
         <div ref={sectionsRef}>
-          {/* Mobile view (single column < 768px) */}
-          <div className="flex flex-col gap-2.5 sm:gap-3 md:hidden">
-            {filteredSections.map((section) => (
+          {filteredSections.length === 1 ? (
+            <div className="max-w-xl mx-auto">
               <MenuSectionCard
-                key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
-                section={section}
+                key={`${filteredSections[0].id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
+                section={filteredSections[0]}
                 favorites={favorites}
                 onToggleFavorite={toggleFavorite}
                 onSelectItem={setSelectedItem}
                 query={query}
               />
-            ))}
-          </div>
-
-          {/* Tablet & Desktop view (2 columns masonry >= 768px) */}
-          <div className="hidden md:block">
-            {filteredSections.length === 1 ? (
-              <div className="max-w-xl mx-auto">
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3 md:gap-3.5 items-start">
+              {filteredSections.map((section) => (
                 <MenuSectionCard
-                  key={`${filteredSections[0].id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
-                  section={filteredSections[0]}
+                  key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
+                  section={section}
                   favorites={favorites}
                   onToggleFavorite={toggleFavorite}
                   onSelectItem={setSelectedItem}
                   query={query}
                 />
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-3.5 items-start">
-                <div className="flex flex-col gap-3.5">
-                  {filteredSections
-                    .filter((_, idx) => idx % 2 === 0)
-                    .map((section) => (
-                      <MenuSectionCard
-                        key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
-                        section={section}
-                        favorites={favorites}
-                        onToggleFavorite={toggleFavorite}
-                        onSelectItem={setSelectedItem}
-                        query={query}
-                      />
-                    ))}
-                </div>
-                <div className="flex flex-col gap-3.5">
-                  {filteredSections
-                    .filter((_, idx) => idx % 2 !== 0)
-                    .map((section) => (
-                      <MenuSectionCard
-                        key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
-                        section={section}
-                        favorites={favorites}
-                        onToggleFavorite={toggleFavorite}
-                        onSelectItem={setSelectedItem}
-                        query={query}
-                      />
-                    ))}
-                </div>
-              </div>
-            )}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -538,9 +538,13 @@ export default function MenuPage() {
             <div className="grid grid-cols-1 gap-1.5">
               <button
                 type="button"
-                onClick={() => handleCategoryChange('All')}
+                onClick={() => {
+                  setIsDrawerOpen(false)
+                  handleResetFilters()
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
+                }}
                 className={`flex items-center justify-between rounded-xl p-2.5 text-left font-extrabold text-xs transition cursor-pointer ${
-                  activeCategory === 'All'
+                  activeCategory === 'All' && activeScrollSection === initialSections[0]?.id
                     ? 'bg-[var(--orange)] text-white'
                     : 'bg-[var(--bg-soft)] text-[var(--text)] hover:bg-[var(--line)]/40'
                 }`}
@@ -558,9 +562,12 @@ export default function MenuPage() {
                 <button
                   key={section.id}
                   type="button"
-                  onClick={() => handleCategoryChange(section.title)}
+                  onClick={() => {
+                    setIsDrawerOpen(false)
+                    handleScrollToSection(section.id)
+                  }}
                   className={`flex items-center justify-between rounded-xl p-2 text-left font-extrabold text-xs transition cursor-pointer ${
-                    activeCategory === section.title
+                    activeScrollSection === section.id
                       ? 'bg-[var(--orange)] text-white'
                       : 'bg-[var(--bg-soft)] text-[var(--text)] hover:bg-[var(--line)]/40'
                   }`}
