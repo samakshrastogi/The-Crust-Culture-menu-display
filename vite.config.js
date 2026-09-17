@@ -32,8 +32,8 @@ export default defineConfig({
             if (id.includes('gsap')) {
               return 'vendor-gsap'
             }
-            if (id.includes('swiper') || id.includes('react-icons')) {
-              return 'vendor-ui'
+            if (id.includes('react-icons')) {
+              return 'vendor-icons'
             }
             return 'vendor'
           }

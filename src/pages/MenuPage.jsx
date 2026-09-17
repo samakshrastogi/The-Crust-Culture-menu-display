@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, useCallback, useDeferredValue } from 'react'
+import { useEffect, useMemo, useRef, useState, useCallback, useDeferredValue, lazy, Suspense } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
   FiArrowRight,
@@ -11,12 +11,13 @@ import {
 import { animateFavoritePop, gsap, scrollToTop } from '../animations/gsapAnimations'
 import LiveStatusBadge from '../components/LiveStatusBadge'
 import MenuImageStrip from '../components/MenuImageStrip'
-import MenuItemSheet from '../components/MenuItemSheet'
 import MenuSectionCard from '../components/MenuSectionCard'
 import SearchBar from '../components/SearchBar'
 import SearchDishCard from '../components/SearchDishCard'
 import { menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+
+const MenuItemSheet = lazy(() => import('../components/MenuItemSheet'))
 
 const isRestrictedTime = () => {
   const hours = new Date().getHours()
@@ -771,12 +772,14 @@ export default function MenuPage() {
 
       {/* Item Detail Sheet */}
       {selectedItem && (
-        <MenuItemSheet
-          item={selectedItem}
-          favorites={favorites}
-          onClose={() => setSelectedItem(null)}
-          onToggleFavorite={toggleFavorite}
-        />
+        <Suspense fallback={null}>
+          <MenuItemSheet
+            item={selectedItem}
+            favorites={favorites}
+            onClose={() => setSelectedItem(null)}
+            onToggleFavorite={toggleFavorite}
+          />
+        </Suspense>
       )}
     </div>
   )

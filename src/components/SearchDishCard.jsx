@@ -35,10 +35,11 @@ function Highlight({ text, query }) {
   if (terms.length === 0) return text
 
   const regex = new RegExp(`(${terms.join('|')})`, 'gi')
+  const testRegex = new RegExp(`^(${terms.join('|')})$`, 'i')
   const parts = String(text).split(regex)
 
   return parts.map((part, index) =>
-    terms.some((term) => new RegExp(`^${term}$`, 'i').test(part)) ? (
+    testRegex.test(part) ? (
       <mark key={`${part}-${index}`} className="rounded bg-[var(--gold)]/35 px-0.5 text-inherit font-black">
         {part}
       </mark>

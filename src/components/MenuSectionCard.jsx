@@ -41,10 +41,11 @@ function Highlight({ text, query }) {
   }
 
   const regex = new RegExp(`(${terms.join('|')})`, 'gi')
+  const testRegex = new RegExp(`^(${terms.join('|')})$`, 'i')
   const parts = String(text).split(regex)
 
   return parts.map((part, index) =>
-    terms.some((term) => new RegExp(`^${term}$`, 'i').test(part)) ? (
+    testRegex.test(part) ? (
       <mark key={`${part}-${index}`} className="rounded bg-[var(--gold)]/35 px-0.5 text-inherit">
         {part}
       </mark>
@@ -54,9 +55,104 @@ function Highlight({ text, query }) {
   )
 }
 
+const DishActionButton = memo(function DishActionButton({
+  item,
+  sectionTitle,
+  sectionImage,
+  onSelectItem,
+}) {
+  const { cart, addToCart, updateQuantity } = useCart()
+  const isSingle = item.prices.length === 1
+  const cartItem = isSingle ? cart.find((ci) => ci.id === item.id) : null
+  const inCartQty = cartItem ? cartItem.quantity : 0
+  const multiCartItems = !isSingle ? cart.filter((ci) => ci.id === item.id) : []
+  const multiTotalQty = multiCartItems.reduce((sum, ci) => sum + ci.quantity, 0)
+
+  if (item.prices.length > 1) {
+    return (
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation()
+          onSelectItem({
+            ...item,
+            sectionTitle,
+            sectionImage,
+          })
+        }}
+        className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
+      >
+        <span>Add</span>
+        <span className="text-[10px] font-black leading-none">+</span>
+        {multiTotalQty > 0 && (
+          <span className="ml-0.5 rounded-full bg-white/25 px-1 py-0.2 text-[8px] font-black">
+            {multiTotalQty}
+          </span>
+        )}
+      </button>
+    )
+  }
+
+  if (inCartQty > 0) {
+    return (
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="flex items-center rounded-full border border-[var(--orange)] bg-[var(--surface-strong)] p-0.5 shadow-2xs"
+      >
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            updateQuantity(cartItem.cartItemId, -1)
+          }}
+          className="grid h-6 w-6 place-items-center rounded-full text-xs font-black text-[var(--orange)] hover:bg-[var(--line)] active:scale-90 cursor-pointer"
+          aria-label={`Decrease ${item.name}`}
+        >
+          <FiMinus className="text-[10px]" />
+        </button>
+        <span className="w-5 text-center text-xs font-black text-[var(--orange)]">
+          {inCartQty}
+        </span>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            updateQuantity(cartItem.cartItemId, 1)
+          }}
+          className="grid h-6 w-6 place-items-center rounded-full text-xs font-black text-[var(--orange)] hover:bg-[var(--line)] active:scale-90 cursor-pointer"
+          aria-label={`Increase ${item.name}`}
+        >
+          <FiPlus className="text-[10px]" />
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation()
+        addToCart(
+          {
+            ...item,
+            sectionTitle,
+            sectionImage,
+          },
+          0,
+          1,
+        )
+      }}
+      className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
+    >
+      <span>Add</span>
+      <span className="text-[10px] font-black leading-none">+</span>
+    </button>
+  )
+})
+
 function MenuSectionCard({ section, favorites, onToggleFavorite, onSelectItem, query }) {
   const sectionRef = useRef(null)
-  const { cart, addToCart, updateQuantity } = useCart()
 
   useEffect(() => {
     if (!sectionRef.current) {
@@ -121,11 +217,6 @@ function MenuSectionCard({ section, favorites, onToggleFavorite, onSelectItem, q
           const toppingsText = item.toppings ? item.toppings.replace(/^\((.*)\)$/, '$1') : null
           const flavorBadge = getFlavorBadge(item, section.title)
           const priceParts = item.prices.length === 1 ? parsePriceParts(item.prices[0].value) : null
-          const isSingle = item.prices.length === 1
-          const cartItem = isSingle ? cart.find((ci) => ci.id === item.id) : null
-          const inCartQty = cartItem ? cartItem.quantity : 0
-          const multiCartItems = !isSingle ? cart.filter((ci) => ci.id === item.id) : []
-          const multiTotalQty = multiCartItems.reduce((sum, ci) => sum + ci.quantity, 0)
 
           return (
             <article
@@ -256,79 +347,12 @@ function MenuSectionCard({ section, favorites, onToggleFavorite, onSelectItem, q
 
                 {/* 3. Action (Right - Clean & Uncluttered) */}
                 <div data-action-btn className="shrink-0 flex items-center justify-center pl-1">
-                  {item.prices.length > 1 ? (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onSelectItem({
-                          ...item,
-                          sectionTitle: section.title,
-                          sectionImage: section.image,
-                        })
-                      }}
-                      className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
-                    >
-                      <span>Add</span>
-                      <span className="text-[10px] font-black leading-none">+</span>
-                      {multiTotalQty > 0 && (
-                        <span className="ml-0.5 rounded-full bg-white/25 px-1 py-0.2 text-[8px] font-black">
-                          {multiTotalQty}
-                        </span>
-                      )}
-                    </button>
-                  ) : inCartQty > 0 ? (
-                    <div
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center rounded-full border border-[var(--orange)] bg-[var(--surface-strong)] p-0.5 shadow-2xs"
-                    >
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          updateQuantity(cartItem.cartItemId, -1)
-                        }}
-                        className="grid h-6 w-6 place-items-center rounded-full text-xs font-black text-[var(--orange)] hover:bg-[var(--line)] active:scale-90 cursor-pointer"
-                        aria-label={`Decrease ${item.name}`}
-                      >
-                        <FiMinus className="text-[10px]" />
-                      </button>
-                      <span className="w-5 text-center text-xs font-black text-[var(--orange)]">
-                        {inCartQty}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          updateQuantity(cartItem.cartItemId, 1)
-                        }}
-                        className="grid h-6 w-6 place-items-center rounded-full text-xs font-black text-[var(--orange)] hover:bg-[var(--line)] active:scale-90 cursor-pointer"
-                        aria-label={`Increase ${item.name}`}
-                      >
-                        <FiPlus className="text-[10px]" />
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        addToCart(
-                          {
-                            ...item,
-                            sectionTitle: section.title,
-                            sectionImage: section.image,
-                          },
-                          0,
-                          1,
-                        )
-                      }}
-                      className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
-                    >
-                      <span>Add</span>
-                      <span className="text-[10px] font-black leading-none">+</span>
-                    </button>
-                  )}
+                  <DishActionButton
+                    item={item}
+                    sectionTitle={section.title}
+                    sectionImage={section.image}
+                    onSelectItem={onSelectItem}
+                  />
                 </div>
               </div>
             </article>

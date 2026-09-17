@@ -62,13 +62,15 @@ export default function FoodImage({
           <img
             src={src}
             alt={alt || ''}
+            width="400"
+            height="300"
             loading={loading}
             decoding="async"
             fetchPriority={fetchPriority}
             ref={handleRef}
             onLoad={() => setLoaded(true)}
             onError={() => setFailed(true)}
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ease-out will-change-opacity ${
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ease-out ${
               loaded ? 'opacity-100' : 'opacity-0'
             }`}
           />

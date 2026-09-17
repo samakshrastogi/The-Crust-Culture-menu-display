@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
 
@@ -14,6 +14,16 @@ function getLowestPrice(section) {
 export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
   const stripRef = useRef(null)
   const tileRefs = useRef({})
+
+  const { lowestPrices, totalItems } = useMemo(() => {
+    const prices = {}
+    let itemsCount = 0
+    for (const section of sections) {
+      prices[section.id] = getLowestPrice(section)
+      itemsCount += section.items.length
+    }
+    return { lowestPrices: prices, totalItems: itemsCount }
+  }, [sections])
 
   useEffect(() => {
     const tiles = Object.values(tileRefs.current).filter(Boolean)
@@ -35,7 +45,7 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
         ease: 'power2.out',
         overwrite: 'auto',
       })
-      
+
       const container = activeTile.parentElement
       if (container) {
         const containerWidth = container.clientWidth
@@ -48,8 +58,6 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
       }
     }
   }, [activeCategory])
-
-  const totalItems = sections.reduce((acc, s) => acc + s.items.length, 0)
 
   return (
     <section
@@ -98,7 +106,7 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
         </button>
 
         {sections.map((section, index) => {
-          const lowestPrice = getLowestPrice(section)
+          const lowestPrice = lowestPrices[section.id]
           const isActive = activeCategory === section.title
 
           return (

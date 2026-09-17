@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FiArrowRight,
@@ -14,8 +14,9 @@ import {
 import { FaFire } from 'react-icons/fa6'
 import { revealHero, revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
-import MenuItemSheet from '../components/MenuItemSheet'
 import VegIndicator from '../components/VegIndicator'
+
+const MenuItemSheet = lazy(() => import('../components/MenuItemSheet'))
 import { menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { getFlavorBadge } from '../utils/flavorBadge'
@@ -620,12 +621,14 @@ export default function HomePage() {
 
       {/* Item Customization Sheet */}
       {selectedItem && (
-        <MenuItemSheet
-          item={selectedItem}
-          favorites={favorites}
-          onClose={() => setSelectedItem(null)}
-          onToggleFavorite={toggleFavorite}
-        />
+        <Suspense fallback={null}>
+          <MenuItemSheet
+            item={selectedItem}
+            favorites={favorites}
+            onClose={() => setSelectedItem(null)}
+            onToggleFavorite={toggleFavorite}
+          />
+        </Suspense>
       )}
     </div>
   )

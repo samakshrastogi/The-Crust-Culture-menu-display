@@ -55,22 +55,40 @@ export function useAutoUpdate() {
       }
     }
 
-    // Initial check on mount
-    checkVersion()
+    let interval = null
 
-    // Poll every 30 seconds
-    const interval = setInterval(checkVersion, 30 * 1000)
+    const startPolling = () => {
+      if (!interval) {
+        interval = setInterval(checkVersion, 30 * 1000)
+      }
+    }
 
-    // Check immediately when user switches back to the tab
+    const stopPolling = () => {
+      if (interval) {
+        clearInterval(interval)
+        interval = null
+      }
+    }
+
+    // Initial check on mount if visible
+    if (document.visibilityState === 'visible') {
+      checkVersion()
+      startPolling()
+    }
+
+    // Pause polling when tab is hidden, resume and check immediately when tab becomes visible
     const handleVisibility = () => {
       if (document.visibilityState === 'visible') {
         checkVersion()
+        startPolling()
+      } else {
+        stopPolling()
       }
     }
     document.addEventListener('visibilitychange', handleVisibility)
 
     return () => {
-      clearInterval(interval)
+      stopPolling()
       document.removeEventListener('visibilitychange', handleVisibility)
     }
   }, [])
