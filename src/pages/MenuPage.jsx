@@ -129,15 +129,13 @@ export default function MenuPage() {
   const stickyScrollRef = useRef(null)
   const [columns, setColumns] = useState(() => {
     if (typeof window === 'undefined') return 1
-    if (window.innerWidth >= 1280) return 3
-    if (window.innerWidth >= 768) return 2
-    return 1
+    return window.innerWidth >= 768 ? 2 : 1
   })
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth
-      const next = width >= 1280 ? 3 : width >= 768 ? 2 : 1
+      const next = width >= 768 ? 2 : 1
       setColumns((prev) => (prev !== next ? next : prev))
     }
     window.addEventListener('resize', handleResize)
@@ -330,7 +328,7 @@ export default function MenuPage() {
   }, [])
 
   return (
-    <div className="mx-auto max-w-7xl px-2.5 pb-20 pt-2 sm:px-6 sm:pb-24 sm:pt-3 lg:px-8">
+    <div className="mx-auto max-w-6xl px-2.5 pb-20 pt-2 sm:px-6 sm:pb-24 sm:pt-3 lg:px-8">
       {/* 1. Search and Status Row (Compact, Single Row on all screens) */}
       <div className="mb-2 flex items-center gap-2 sm:mb-2.5 sm:gap-3">
         <div className="min-w-0 flex-1">
@@ -483,11 +481,7 @@ export default function MenuPage() {
               />
             </div>
           ) : (
-            <div
-              className={`flex flex-col md:flex-row gap-2.5 sm:gap-3 md:gap-3.5 items-start ${
-                columnBuckets.length === 2 ? 'max-w-5xl mx-auto' : ''
-              }`}
-            >
+            <div className="flex flex-col md:flex-row gap-2.5 sm:gap-3 md:gap-3.5 items-start">
               {columnBuckets.map((bucket, colIdx) => (
                 <div
                   key={colIdx}
