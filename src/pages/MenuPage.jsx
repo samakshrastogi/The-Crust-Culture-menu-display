@@ -362,7 +362,7 @@ export default function MenuPage() {
   }, [])
 
   return (
-    <div className="mx-auto max-w-6xl px-2.5 pb-20 pt-2 sm:px-6 sm:pb-24 sm:pt-3 lg:px-8">
+    <div className="mx-auto  px-2.5 pb-20 pt-2 sm:px-6 sm:pb-24 sm:pt-3 lg:px-8">
       {/* 1. Search and Status Row (Compact, Single Row on all screens) */}
       <div className="mb-2 flex items-center gap-2 sm:mb-2.5 sm:gap-3">
         <div className="min-w-0 flex-1">

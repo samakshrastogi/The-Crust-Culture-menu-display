@@ -95,7 +95,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-3 py-4 pb-28 sm:px-6 sm:py-8">
+    <div className="mx-auto  px-3 py-4 pb-28 sm:px-6 sm:py-8">
       {/* Header Banner */}
       <section className="mb-5 rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-4 sm:p-6 shadow-sm transition-colors">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
