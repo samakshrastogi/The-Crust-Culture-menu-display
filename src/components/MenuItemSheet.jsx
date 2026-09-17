@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { FiArrowRight, FiHeart, FiMaximize2, FiMinus, FiPlus, FiShoppingBag, FiX } from 'react-icons/fi'
+import { FiArrowRight, FiHeart, FiMinus, FiPlus, FiShoppingBag, FiX } from 'react-icons/fi'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
-import ImageLightbox from './ImageLightbox'
 import { useCart } from '../hooks/useCart'
 import { getFlavorBadge } from '../utils/flavorBadge'
 import VegIndicator from './VegIndicator'
@@ -29,13 +28,11 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
   const sheetRef = useRef(null)
   const { cart, addToCart, updateQuantity, cartCount } = useCart()
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0)
-  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [prevItemId, setPrevItemId] = useState(item?.id)
 
   if (item?.id !== prevItemId) {
     setPrevItemId(item?.id)
     setSelectedSizeIndex(0)
-    setIsLightboxOpen(false)
   }
 
   useEffect(() => {
@@ -123,16 +120,12 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
         <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 rounded-full bg-white/40 z-20 pointer-events-none sm:hidden" />
 
         {/* Hero Food Media - Compact height to fit on screen */}
-        <div
-          className="group/hero relative h-28 sm:h-36 w-full overflow-hidden bg-stone-900 cursor-zoom-in"
-          onClick={() => setIsLightboxOpen(true)}
-          title="Click to view full photo & zoom"
-        >
+        <div className="group/hero relative h-28 sm:h-36 w-full overflow-hidden bg-stone-900">
           <FoodImage
             src={item.image || item.sectionImage}
             alt={item.name}
             category={isPizza ? 'Pizza' : 'Restaurant'}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover/hero:scale-104"
+            className="h-full w-full object-cover"
             loading="eager"
             data-sheet-img
           />
@@ -151,20 +144,6 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             aria-label="Close details"
           >
             <FiX className="text-sm" />
-          </button>
-
-          {/* Floating Tap to Zoom Cue Pill */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation()
-              setIsLightboxOpen(true)
-            }}
-            className="touch-target absolute right-2.5 bottom-2.5 z-20 inline-flex items-center gap-1 rounded-full bg-black/65 px-2.5 py-0.5 text-[10px] font-bold text-white backdrop-blur-md border border-white/25 shadow-md transition-all hover:bg-amber-500 hover:text-black active:scale-95"
-            aria-label="Zoom photo"
-          >
-            <FiMaximize2 className="text-[10px] text-amber-300" />
-            <span>Tap to Zoom</span>
           </button>
 
           {/* Tag Pill (Top Left - Exactly One Badge) */}
@@ -461,17 +440,6 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
           </div>
         </div>
       </div>
-
-      {/* Tap-to-Zoom Full-Screen Lightbox */}
-      {isLightboxOpen && (
-        <ImageLightbox
-          src={item.image || item.sectionImage}
-          alt={item.name}
-          title={item.name}
-          category={item.sectionTitle}
-          onClose={() => setIsLightboxOpen(false)}
-        />
-      )}
     </div>
   )
 }

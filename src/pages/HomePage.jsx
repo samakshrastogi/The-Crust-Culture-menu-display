@@ -7,7 +7,6 @@ import {
   FiChevronRight,
   FiClock,
   FiHeart,
-  FiMaximize2,
   FiShield,
   FiSmartphone,
   FiZap,
@@ -15,7 +14,6 @@ import {
 import { FaFire } from 'react-icons/fa6'
 import { revealHero, revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
-import ImageLightbox from '../components/ImageLightbox'
 import MenuItemSheet from '../components/MenuItemSheet'
 import VegIndicator from '../components/VegIndicator'
 import { menuSections } from '../data/menuSections'
@@ -68,7 +66,6 @@ export default function HomePage() {
   const scopeRef = useRef(null)
 
   const [selectedItem, setSelectedItem] = useState(null)
-  const [lightboxItem, setLightboxItem] = useState(null)
   const [favorites, setFavorites] = useLocalStorage('crust-favorites', [])
 
   // Only items strictly priced > 149
@@ -266,18 +263,6 @@ export default function HomePage() {
                 </div>
 
                 <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setLightboxItem(specialItem)
-                    }}
-                    aria-label="Zoom image"
-                    title="Zoom full-screen"
-                    className="flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/15 transition hover:bg-amber-500 hover:text-black active:scale-95 text-xs"
-                  >
-                    <FiMaximize2 />
-                  </button>
                   <button
                     type="button"
                     onClick={handlePrevSpecial}
@@ -522,28 +507,7 @@ export default function HomePage() {
         <div className="grid gap-6 md:grid-cols-12 items-center">
           {/* Left: Authentic Cafe Portrait Showcase (Exact 3:4 Original Aspect Ratio) */}
           <div className="md:col-span-5 lg:col-span-5 flex justify-center">
-            <div
-              role="button"
-              tabIndex={0}
-              onClick={() =>
-                setLightboxItem({
-                  image: '/images/cafe-storefront.jpg',
-                  name: 'The Crust Culture Cafe',
-                  sectionTitle: 'Noble Enclave, Palam Vihar Extension, Gurgaon',
-                })
-              }
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  setLightboxItem({
-                    image: '/images/cafe-storefront.jpg',
-                    name: 'The Crust Culture Cafe',
-                    sectionTitle: 'Noble Enclave, Palam Vihar Extension, Gurgaon',
-                  })
-                }
-              }}
-              className="group relative w-full max-w-sm overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)] bg-stone-900 shadow-md cursor-zoom-in transition-all duration-300 hover:border-[var(--gold)]/70 hover:shadow-xl"
-              title="Click to view full photo of our cafe"
-            >
+            <div className="group relative w-full max-w-sm overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)] bg-stone-900 shadow-md transition-all duration-300 hover:border-[var(--gold)]/70 hover:shadow-xl">
               {/* Full Original 3:4 Portrait Window */}
               <div className="relative aspect-[3/4] w-full overflow-hidden">
                 <FoodImage
@@ -560,13 +524,9 @@ export default function HomePage() {
                   🏡 Visit Our Cafe
                 </div>
 
-                {/* Bottom Cue & Address */}
+                {/* Bottom Address */}
                 <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-[11px] font-bold text-white">
                   <span className="truncate drop-shadow-md">📍 Noble Enclave, Gurgaon</span>
-                  <span className="shrink-0 inline-flex items-center gap-1 rounded-full bg-black/65 px-2.5 py-1 text-[10px] font-bold text-amber-300 backdrop-blur-md border border-white/20 shadow-md">
-                    <FiMaximize2 className="text-[10px]" />
-                    <span>Tap to Zoom</span>
-                  </span>
                 </div>
               </div>
             </div>
@@ -665,17 +625,6 @@ export default function HomePage() {
           favorites={favorites}
           onClose={() => setSelectedItem(null)}
           onToggleFavorite={toggleFavorite}
-        />
-      )}
-
-      {/* Full-Screen Tap-to-Zoom Lightbox */}
-      {lightboxItem && (
-        <ImageLightbox
-          src={lightboxItem.image || lightboxItem.sectionImage || heroImage}
-          alt={lightboxItem.name}
-          title={lightboxItem.name}
-          category={lightboxItem.sectionTitle}
-          onClose={() => setLightboxItem(null)}
         />
       )}
     </div>
