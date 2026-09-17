@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { FiHeart, FiMinus, FiPlus, FiShoppingBag, FiX } from 'react-icons/fi'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
@@ -25,6 +25,8 @@ function getSizeSubLabel(label, isPizza) {
 export default function MenuItemSheet({ item, favorites, onClose, onToggleFavorite }) {
   const overlayRef = useRef(null)
   const sheetRef = useRef(null)
+  const closeBtnRef = useRef(null)
+  const lastActiveElementRef = useRef(null)
   const { cart, addToCart, updateQuantity } = useCart()
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0)
   const [prevItemId, setPrevItemId] = useState(item?.id)
@@ -34,12 +36,61 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
     setSelectedSizeIndex(0)
   }
 
+  const closeWithAnimation = useCallback(() => {
+    gsap.to(sheetRef.current, {
+      y: 36,
+      opacity: 0,
+      duration: 0.2,
+      ease: 'power2.in',
+      onComplete: onClose,
+    })
+    gsap.to(overlayRef.current, { opacity: 0, duration: 0.2 })
+  }, [onClose])
+
   useEffect(() => {
     if (!item) {
       return undefined
     }
 
+    lastActiveElementRef.current = document.activeElement
     document.body.style.overflow = 'hidden'
+
+    const focusTimer = setTimeout(() => {
+      closeBtnRef.current?.focus()
+    }, 50)
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        closeWithAnimation()
+        return
+      }
+
+      if (e.key === 'Tab' && sheetRef.current) {
+        const focusableElements = sheetRef.current.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+        if (!focusableElements.length) return
+
+        const firstElement = focusableElements[0]
+        const lastElement = focusableElements[focusableElements.length - 1]
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault()
+            lastElement.focus()
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault()
+            firstElement.focus()
+          }
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
     gsap.fromTo(overlayRef.current, { opacity: 0 }, { opacity: 1, duration: 0.22, ease: 'power2.out' })
     gsap.fromTo(
       sheetRef.current,
@@ -67,9 +118,14 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
     )
 
     return () => {
+      clearTimeout(focusTimer)
+      window.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
+      if (lastActiveElementRef.current && typeof lastActiveElementRef.current.focus === 'function') {
+        lastActiveElementRef.current.focus()
+      }
     }
-  }, [item])
+  }, [item, closeWithAnimation])
 
   if (!item) {
     return null
@@ -87,24 +143,14 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
   const currentCartItem = cart?.find((ci) => ci.cartItemId === currentCartItemId)
   const currentQuantity = currentCartItem ? currentCartItem.quantity : 0
 
-  const closeWithAnimation = () => {
-    gsap.to(sheetRef.current, {
-      y: 36,
-      opacity: 0,
-      duration: 0.2,
-      ease: 'power2.in',
-      onComplete: onClose,
-    })
-    gsap.to(overlayRef.current, { opacity: 0, duration: 0.2 })
-  }
-
   return (
     <div
       ref={overlayRef}
       className="fixed inset-0 z-[60] grid place-items-end bg-black/65 p-0 backdrop-blur-sm sm:place-items-center sm:p-4"
       role="dialog"
       aria-modal="true"
-      aria-label={`${item.name} details`}
+      aria-labelledby="menu-item-sheet-title"
+      aria-describedby="menu-item-sheet-desc"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) {
           closeWithAnimation()
@@ -134,6 +180,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
 
           {/* Close button */}
           <button
+            ref={closeBtnRef}
             type="button"
             onClick={(e) => {
               e.stopPropagation()
@@ -195,12 +242,12 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             </div>
 
             {/* Sans-serif bold title */}
-            <h2 className="font-sans text-xl sm:text-2xl font-extrabold leading-tight tracking-tight text-[var(--text)] pt-0.5">
+            <h2 id="menu-item-sheet-title" className="font-sans text-xl sm:text-2xl font-extrabold leading-tight tracking-tight text-[var(--text)] pt-0.5">
               {item.name}
             </h2>
 
             {/* Description Subtitle */}
-            <p className="text-[11.5px] sm:text-xs leading-tight text-[var(--muted)] font-normal line-clamp-2">
+            <p id="menu-item-sheet-desc" className="text-[11.5px] sm:text-xs leading-tight text-[var(--muted)] font-normal line-clamp-2">
               {item.description || (isPizza ? 'A perfect blend of fresh veggies and melted cheese.' : 'Crafted fresh with authentic ingredients and rich flavors.')}
             </p>
           </div>
@@ -209,7 +256,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
           {cleanToppings && (
             <div data-sheet-item className="rounded-xl border border-[var(--line)] bg-[#fdfbf7] dark:bg-[#261b15] px-3 py-1.5 sm:py-2 shadow-2xs flex items-center gap-2.5">
               <div className="shrink-0 text-emerald-600 dark:text-emerald-400">
-                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" fill="currentColor">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" fill="currentColor" aria-hidden="true">
                   <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66C7.45 17.55 9.4 12.5 17 11V8z" />
                   <path d="M3.5 13c1.5 0 4.5-1 6.5-3.5 3-3.7 4-8.5 4-8.5s-4.8 1-8.5 4C3 7.5 2 10.5 2 12c0 .5.5 1 1.5 1z" />
                   <path d="M12.5 17c1.5 0 4-1 5.5-3 2.5-3 3-7 3-7s-4 1-7 3.5c-2 1.8-2.5 4.5-2.5 5.5 0 .5.3 1 1 1z" />
@@ -239,7 +286,11 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                   </span>
                 )}
               </div>
-              <div className={`grid gap-1.5 sm:gap-2 ${item.prices.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+              <div
+                role="radiogroup"
+                aria-label="Select size and portion"
+                className={`grid gap-1.5 sm:gap-2 ${item.prices.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}
+              >
                 {item.prices.map((price, idx) => {
                   const isSelected = selectedSizeIndex === idx
                   const label = price.label || (idx === 0 ? 'S' : idx === 1 ? 'M' : 'L')
@@ -248,6 +299,9 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                     <button
                       key={`${price.label}-${price.value}-${idx}`}
                       type="button"
+                      role="radio"
+                      aria-checked={isSelected}
+                      aria-label={`${label} ${subLabel || ''} ${formatPrice(price.value)}`}
                       onClick={() => setSelectedSizeIndex(idx)}
                       className={`relative rounded-xl py-1.5 px-1 sm:py-2 sm:px-1.5 flex flex-col items-center justify-between transition-all duration-150 cursor-pointer shadow-2xs min-h-[58px] ${
                         isSelected
@@ -256,7 +310,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                       }`}
                     >
                       {isSelected && (
-                        <div className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-[#ea580c] text-white flex items-center justify-center text-[8px] font-black shadow-xs">
+                        <div className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-[#ea580c] text-white flex items-center justify-center text-[8px] font-black shadow-xs" aria-hidden="true">
                           ✓
                         </div>
                       )}
@@ -317,7 +371,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                   type="button"
                   onClick={() => updateQuantity(currentCartItemId, -1)}
                   className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-lg sm:rounded-xl bg-white text-[#ea580c] shadow-xs hover:bg-orange-50 active:scale-95 transition-all cursor-pointer font-black shrink-0"
-                  aria-label="Decrease quantity"
+                  aria-label={`Decrease ${item.name} quantity`}
                   title="Decrease quantity"
                 >
                   <FiMinus className="text-base stroke-[3]" />
@@ -343,7 +397,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                   type="button"
                   onClick={() => updateQuantity(currentCartItemId, 1)}
                   className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-lg sm:rounded-xl bg-white text-[#ea580c] shadow-xs hover:bg-orange-50 active:scale-95 transition-all cursor-pointer font-black shrink-0"
-                  aria-label="Increase quantity"
+                  aria-label={`Increase ${item.name} quantity`}
                   title="Increase quantity"
                 >
                   <FiPlus className="text-base stroke-[3]" />
@@ -355,6 +409,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                 onClick={() => {
                   addToCart(item, selectedSizeIndex, 1)
                 }}
+                aria-label={`Add ${item.name} to cart`}
                 className="group flex w-full items-center justify-between rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#ea580c] via-[#ea580c] to-[#e65100] p-2 sm:p-2.5 text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:brightness-105 active:scale-[0.99] cursor-pointer"
               >
                 <div className="flex items-center gap-2 pl-1.5">

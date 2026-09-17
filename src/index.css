@@ -10,10 +10,10 @@
   --text: #20140e;
   --muted: #735b45;
   --line: rgba(81, 52, 28, 0.14);
-  --orange: #f97316;
-  --gold: #f6c453;
+  --orange: #ea580c;
+  --gold: #92400e;
   --cream: #fff4d6;
-  --green: #65a30d;
+  --green: #15803d;
   --red: #dc2626;
   --shadow: 0 24px 70px rgba(75, 48, 25, 0.15);
   font-family:
@@ -35,7 +35,17 @@
   --text: #fff7e8;
   --muted: #c9b59c;
   --line: rgba(255, 233, 196, 0.12);
+  --orange: #f97316;
+  --gold: #f6c453;
+  --cream: #2b1d15;
+  --green: #4ade80;
+  --red: #f87171;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 2px;
 }
 
 * {

@@ -88,15 +88,19 @@ export default function HomePage() {
   }, [])
 
   const [specialIndex, setSpecialIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
 
-  // Auto-cycle through specials every 6 seconds
+  // Auto-cycle through specials every 6 seconds with pause on hover/focus and reduced-motion support
   useEffect(() => {
     if (premiumSpecialItems.length <= 1) return
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (mediaQuery.matches || isPaused) return
+
     const interval = setInterval(() => {
       setSpecialIndex((prev) => (prev + 1) % premiumSpecialItems.length)
     }, 6000)
     return () => clearInterval(interval)
-  }, [premiumSpecialItems.length])
+  }, [premiumSpecialItems.length, isPaused])
 
   const specialItem = premiumSpecialItems[specialIndex] || premiumSpecialItems[0]
   const specialFlavorBadge = specialItem ? getFlavorBadge(specialItem, specialItem.sectionTitle) : null
@@ -227,9 +231,26 @@ export default function HomePage() {
 
         {/* Hero Media Card: Today's Special */}
         {specialItem && (
-          <div data-hero-media className="relative group">
+          <div
+            data-hero-media
+            className="relative group"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            onFocus={() => setIsPaused(true)}
+            onBlur={() => setIsPaused(false)}
+          >
             <div
+              role="button"
+              tabIndex={0}
+              aria-haspopup="dialog"
+              aria-label={`View details for Today's Special: ${specialItem.name}`}
               onClick={() => setSelectedItem(specialItem)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  setSelectedItem(specialItem)
+                }
+              }}
               className="relative block h-[280px] sm:h-[340px] lg:h-[370px] w-full overflow-hidden rounded-2xl sm:rounded-3xl border border-[var(--line)]/80 text-left cursor-pointer shadow-lg transition-all duration-300 hover:shadow-xl hover:border-amber-500/40 bg-[var(--surface)]"
             >
               <FoodImage
@@ -268,7 +289,7 @@ export default function HomePage() {
                     type="button"
                     onClick={handlePrevSpecial}
                     aria-label="Previous special item"
-                    className="flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/15 transition hover:bg-amber-500 hover:text-black active:scale-95 text-xs"
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/15 transition hover:bg-amber-500 hover:text-black active:scale-95 text-xs cursor-pointer"
                   >
                     <FiChevronLeft />
                   </button>
@@ -276,7 +297,7 @@ export default function HomePage() {
                     type="button"
                     onClick={handleNextSpecial}
                     aria-label="Next special item"
-                    className="flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/15 transition hover:bg-amber-500 hover:text-black active:scale-95 text-xs"
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-md border border-white/15 transition hover:bg-amber-500 hover:text-black active:scale-95 text-xs cursor-pointer"
                   >
                     <FiChevronRight />
                   </button>
@@ -311,20 +332,26 @@ export default function HomePage() {
 
                 {/* Progress Indicators & Customize CTA */}
                 <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-2 text-[10px] sm:text-xs">
-                  <div className="flex items-center gap-1">
-                    {premiumSpecialItems.map((_, dotIdx) => (
+                  <div className="flex items-center" role="tablist" aria-label="Specials carousel indicators">
+                    {premiumSpecialItems.map((item, dotIdx) => (
                       <button
                         key={dotIdx}
                         type="button"
+                        role="tab"
+                        aria-selected={dotIdx === specialIndex}
                         onClick={(e) => {
                           e.stopPropagation()
                           setSpecialIndex(dotIdx)
                         }}
-                        className={`h-1.5 rounded-full transition-all duration-300 ${
-                          dotIdx === specialIndex ? 'w-5 bg-amber-400' : 'w-1.5 bg-white/30 hover:bg-white/60'
-                        }`}
-                        aria-label={`Go to special ${dotIdx + 1}`}
-                      />
+                        className="flex h-6 w-6 items-center justify-center cursor-pointer"
+                        aria-label={`Go to special ${dotIdx + 1}: ${item.name}`}
+                      >
+                        <span
+                          className={`h-1.5 rounded-full transition-all duration-300 ${
+                            dotIdx === specialIndex ? 'w-5 bg-amber-400' : 'w-1.5 bg-white/30 hover:bg-white/60'
+                          }`}
+                        />
+                      </button>
                     ))}
                   </div>
                   <span className="inline-flex items-center gap-1 font-bold text-white group-hover:text-amber-300 transition-colors">
@@ -427,7 +454,17 @@ export default function HomePage() {
                 <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-orange-500/15 to-amber-600/10 blur-sm opacity-30 transition-all duration-300 group-hover:opacity-90 group-hover:scale-[1.02] pointer-events-none" />
 
                 <div
+                  role="button"
+                  tabIndex={0}
+                  aria-haspopup="dialog"
+                  aria-label={`View details for ${item.name}`}
                   onClick={() => setSelectedItem(item)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setSelectedItem(item)
+                    }
+                  }}
                   className="relative flex h-full flex-col justify-between overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:p-3 transition-all duration-300 group-hover:border-[var(--gold)]/60 group-hover:shadow-md cursor-pointer"
                 >
                   <div>
@@ -456,12 +493,12 @@ export default function HomePage() {
                           e.stopPropagation()
                           toggleFavorite(item.id)
                         }}
-                        className={`absolute top-1.5 right-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-md transition ${
+                        className={`absolute top-1.5 right-1.5 z-10 flex h-7 w-7 items-center justify-center rounded-full backdrop-blur-md transition cursor-pointer ${
                           isFav
                             ? 'bg-[var(--orange)] text-white'
                             : 'bg-black/55 text-white hover:bg-black/75 border border-white/20'
                         }`}
-                        aria-label={isFav ? 'Remove from favorites' : 'Add to favorites'}
+                        aria-label={isFav ? `Remove ${item.name} from favorites` : `Add ${item.name} to favorites`}
                       >
                         <FiHeart className={`text-xs ${isFav ? 'fill-current' : ''}`} />
                       </button>

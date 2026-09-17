@@ -60,8 +60,9 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
   }, [activeCategory])
 
   return (
-    <section
+    <nav
       ref={stripRef}
+      aria-label="Menu categories photo navigation"
       className="mb-2 sm:mb-2.5 overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-1.5 sm:p-2 shadow-xs"
     >
       <div className="no-scrollbar relative flex gap-2 sm:gap-2.5 overflow-x-auto py-0.5 px-0.5">
@@ -72,6 +73,7 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
           }}
           data-menu-tile
           type="button"
+          aria-pressed={activeCategory === 'All'}
           onClick={() => onSelect('All')}
           className={`group flex flex-col shrink-0 w-25 sm:w-28 overflow-hidden rounded-xl border text-left transition-all duration-200 cursor-pointer ${
             activeCategory === 'All'
@@ -117,6 +119,7 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
               }}
               data-menu-tile
               type="button"
+              aria-pressed={isActive}
               onClick={() => onSelect(section.title)}
               className={`group flex flex-col shrink-0 w-25 sm:w-28 overflow-hidden rounded-xl border text-left transition-all duration-200 cursor-pointer ${
                 isActive
@@ -152,6 +155,6 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
           )
         })}
       </div>
-    </section>
+    </nav>
   )
 }

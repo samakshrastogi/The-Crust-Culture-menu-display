@@ -92,12 +92,16 @@ function SearchDishCard({ item, favorites, onToggleFavorite, onSelectItem, query
             event.stopPropagation()
             onToggleFavorite(item.id, event.currentTarget)
           }}
-          className={`absolute top-1 right-1 z-10 grid h-5 w-5 place-items-center rounded-full backdrop-blur-md text-[10px] transition active:scale-90 ${
+          className={`absolute top-1 right-1 z-10 grid h-6 w-6 place-items-center rounded-full backdrop-blur-md text-[11px] transition active:scale-90 cursor-pointer ${
             favorites.includes(item.id)
               ? 'bg-[var(--orange)] text-white shadow-xs'
               : 'bg-black/50 text-white hover:bg-black/70 border border-white/20'
           }`}
-          aria-label={`Favorite ${item.name}`}
+          aria-label={
+            favorites.includes(item.id)
+              ? `Remove ${item.name} from favorites`
+              : `Add ${item.name} to favorites`
+          }
         >
           <FiHeart className={favorites.includes(item.id) ? 'fill-current' : ''} />
         </button>
@@ -130,7 +134,21 @@ function SearchDishCard({ item, favorites, onToggleFavorite, onSelectItem, query
 
         {/* Dish Title */}
         <h3 className="text-xs sm:text-sm font-extrabold text-[var(--text)] group-hover:text-[var(--orange)] transition-colors leading-snug truncate">
-          <Highlight text={item.name} query={query} />
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              onSelectItem({
+                ...item,
+                sectionTitle: item.sectionTitle,
+                sectionImage: item.sectionImage,
+              })
+            }}
+            aria-haspopup="dialog"
+            className="text-left font-inherit hover:underline focus:outline-hidden cursor-pointer"
+          >
+            <Highlight text={item.name} query={query} />
+          </button>
         </h3>
 
         {/* Toppings / Description */}
@@ -185,6 +203,7 @@ function SearchDishCard({ item, favorites, onToggleFavorite, onSelectItem, query
                     sectionImage: item.sectionImage,
                   })
                 }}
+                aria-label={`Customize options for ${item.name}`}
                 className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
               >
                 <span>Add</span>
@@ -207,11 +226,11 @@ function SearchDishCard({ item, favorites, onToggleFavorite, onSelectItem, query
                     updateQuantity(cartItem.cartItemId, -1)
                   }}
                   className="grid h-6 w-6 place-items-center rounded-full text-xs font-black text-[var(--orange)] hover:bg-[var(--line)] active:scale-90 cursor-pointer"
-                  aria-label={`Decrease ${item.name}`}
+                  aria-label={`Decrease ${item.name} quantity`}
                 >
                   <FiMinus className="text-[10px]" />
                 </button>
-                <span className="w-5 text-center text-xs font-black text-[var(--orange)]">
+                <span className="w-5 text-center text-xs font-black text-[var(--orange)]" aria-label={`${inCartQty} ${item.name} in cart`}>
                   {inCartQty}
                 </span>
                 <button
@@ -221,7 +240,7 @@ function SearchDishCard({ item, favorites, onToggleFavorite, onSelectItem, query
                     addToCart(item, 0, 1)
                   }}
                   className="grid h-6 w-6 place-items-center rounded-full text-xs font-black text-[var(--orange)] hover:bg-[var(--line)] active:scale-90 cursor-pointer"
-                  aria-label={`Increase ${item.name}`}
+                  aria-label={`Increase ${item.name} quantity`}
                 >
                   <FiPlus className="text-[10px]" />
                 </button>
@@ -233,6 +252,7 @@ function SearchDishCard({ item, favorites, onToggleFavorite, onSelectItem, query
                   e.stopPropagation()
                   addToCart(item, 0, 1)
                 }}
+                aria-label={`Add ${item.name} to cart`}
                 className="touch-target inline-flex items-center justify-center gap-1 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[9px] sm:text-[10px] font-black uppercase tracking-wider text-white shadow-2xs transition-all duration-200 group-hover:scale-105 active:scale-95 border border-white/25 whitespace-nowrap cursor-pointer"
               >
                 <span>Add</span>

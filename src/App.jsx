@@ -22,8 +22,9 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 function PageFallback() {
   return (
-    <div className="flex min-h-[60vh] items-center justify-center">
+    <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-live="polite">
       <div className="h-7 w-7 animate-spin rounded-full border-2 border-[var(--orange)] border-t-transparent" />
+      <span className="sr-only">Loading page...</span>
     </div>
   )
 }
@@ -37,17 +38,36 @@ function AppShell({ theme, onToggleTheme }) {
     location.pathname.startsWith('/sam') || location.pathname.startsWith('/shivangi')
   const showFloatingButtons = !isReceiptPage && !isAdminPage
 
+  useEffect(() => {
+    const titles = {
+      '/home': 'Home | The Crust Culture',
+      '/menu': 'Menu | The Crust Culture',
+      '/cart': 'Cart & Checkout | The Crust Culture',
+      '/order': 'Order Receipt | The Crust Culture',
+      '/sam': 'Admin Dashboard | The Crust Culture',
+    }
+    document.title = titles[location.pathname] || 'The Crust Culture - Wood-Fired Pizzeria'
+  }, [location.pathname])
+
   return (
     <div
       className={`min-h-svh bg-[var(--bg)] text-[var(--text)] ${
         isReceiptPage ? 'pb-8' : 'pb-24 md:pb-0'
       }`}
     >
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-[var(--orange)] focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-white focus:shadow-xl focus:outline-hidden"
+      >
+        Skip to main content
+      </a>
       <ScrollProgress />
       <Navbar theme={theme} onToggleTheme={onToggleTheme} />
       <PageTransition>
         <Suspense fallback={<PageFallback />}>
-          <Outlet />
+          <main id="main-content" tabIndex={-1} className="outline-hidden">
+            <Outlet />
+          </main>
         </Suspense>
       </PageTransition>
       {location.pathname === '/home' && <Footer />}
@@ -69,7 +89,7 @@ function AppShell({ theme, onToggleTheme }) {
                 }`
               }
             >
-              <FiHome className="text-lg" />
+              <FiHome className="text-lg" aria-hidden="true" />
               <span>Home</span>
             </NavLink>
 
@@ -81,7 +101,7 @@ function AppShell({ theme, onToggleTheme }) {
                 }`
               }
             >
-              <FiMenu className="text-lg" />
+              <FiMenu className="text-lg" aria-hidden="true" />
               <span>Menu</span>
             </NavLink>
 
@@ -94,10 +114,11 @@ function AppShell({ theme, onToggleTheme }) {
               }
             >
               <div className="relative">
-                <FiShoppingBag className="text-lg" />
+                <FiShoppingBag className="text-lg" aria-hidden="true" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[var(--orange)] px-1 text-[8px] font-black text-white shadow-xs">
-                    {cartCount}
+                    <span aria-hidden="true">{cartCount}</span>
+                    <span className="sr-only">({cartCount} items in cart)</span>
                   </span>
                 )}
               </div>

@@ -612,7 +612,7 @@ export default function CartPage() {
                 </div>
 
                 {/* Quick Category Filter Pills */}
-                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-0.2">
+                <div role="tablist" aria-label="Recommendation categories" className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-0.2">
                   {[
                     { id: 'all', label: 'All Picks' },
                     { id: 'sides', label: '🍞 Sides' },
@@ -623,6 +623,8 @@ export default function CartPage() {
                     <button
                       key={tab.id}
                       type="button"
+                      role="tab"
+                      aria-selected={recCategory === tab.id}
                       onClick={() => setRecCategory(tab.id)}
                       className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-extrabold transition-all cursor-pointer ${
                         recCategory === tab.id
@@ -730,7 +732,7 @@ export default function CartPage() {
               </span>
 
               {/* Order Type Selector */}
-              <div className="grid grid-cols-2 gap-1.5">
+              <div role="radiogroup" aria-label="Select order type" className="grid grid-cols-2 gap-1.5">
                 {[
                   { id: 'dine-in', label: '🍽️ Dine-In' },
                   { id: 'takeaway', label: '🥡 Takeaway' },
@@ -738,6 +740,8 @@ export default function CartPage() {
                   <button
                     key={t.id}
                     type="button"
+                    role="radio"
+                    aria-checked={orderType === t.id}
                     onClick={() => setOrderType(t.id)}
                     className={`rounded-lg py-1.5 px-1 text-center text-xs font-bold border transition-all cursor-pointer ${
                       orderType === t.id
@@ -754,21 +758,24 @@ export default function CartPage() {
               <div className="space-y-0.5">
                 <div className="flex items-center justify-between">
                   <label htmlFor="customer-name" className="block text-[10.5px] font-bold text-[var(--text)]">
-                    Your Name <span className="text-[var(--orange)]">*</span>
+                    Your Name <span className="text-[var(--orange)]" aria-hidden="true">*</span>
                   </label>
                   {nameError && (
-                    <span className="flex items-center gap-0.5 text-[9.5px] font-bold text-red-500">
-                      <FiAlertCircle className="text-[10px]" />
+                    <span id="customer-name-error" role="alert" className="flex items-center gap-0.5 text-[9.5px] font-bold text-red-500">
+                      <FiAlertCircle className="text-[10px]" aria-hidden="true" />
                       {nameError}
                     </span>
                   )}
                 </div>
                 <div className="relative">
-                  <FiUser className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs" />
+                  <FiUser className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs" aria-hidden="true" />
                   <input
                     id="customer-name"
                     type="text"
                     required
+                    aria-required="true"
+                    aria-invalid={Boolean(nameError)}
+                    aria-describedby={nameError ? 'customer-name-error' : undefined}
                     value={customerName}
                     onChange={(e) => {
                       setCustomerName(e.target.value)
@@ -786,17 +793,17 @@ export default function CartPage() {
               <div className="space-y-0.5">
                 <div className="flex items-center justify-between">
                   <label htmlFor="customer-phone" className="block text-[10.5px] font-bold text-[var(--text)]">
-                    Mobile Number <span className="text-[var(--orange)]">*</span>
+                    Mobile Number <span className="text-[var(--orange)]" aria-hidden="true">*</span>
                   </label>
                   {phoneError && (
-                    <span className="flex items-center gap-0.5 text-[9.5px] font-bold text-red-500">
-                      <FiAlertCircle className="text-[10px]" />
+                    <span id="customer-phone-error" role="alert" className="flex items-center gap-0.5 text-[9.5px] font-bold text-red-500">
+                      <FiAlertCircle className="text-[10px]" aria-hidden="true" />
                       {phoneError}
                     </span>
                   )}
                 </div>
                 <div className="relative flex items-center">
-                  <span className="absolute left-2.5 text-[11px] font-bold text-[var(--muted)] select-none">
+                  <span className="absolute left-2.5 text-[11px] font-bold text-[var(--muted)] select-none" aria-hidden="true">
                     +91
                   </span>
                   <input
@@ -804,6 +811,9 @@ export default function CartPage() {
                     type="tel"
                     maxLength={10}
                     required
+                    aria-required="true"
+                    aria-invalid={Boolean(phoneError)}
+                    aria-describedby={phoneError ? 'customer-phone-error' : undefined}
                     value={customerPhone}
                     onChange={(e) => {
                       const clean = e.target.value.replace(/\D/g, '').slice(0, 10)

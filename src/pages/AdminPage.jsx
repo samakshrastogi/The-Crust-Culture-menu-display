@@ -305,8 +305,14 @@ export default function AdminPage() {
         <div
           role="button"
           tabIndex={0}
+          aria-pressed={timeFilter === 'all'}
           onClick={() => setTimeFilter('all')}
-          onKeyDown={(e) => e.key === 'Enter' && setTimeFilter('all')}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setTimeFilter('all')
+            }
+          }}
           className={`group relative overflow-hidden rounded-2xl border p-2.5 sm:p-3 transition-all duration-200 cursor-pointer shadow-2xs hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] ${
             timeFilter === 'all'
               ? 'border-[var(--orange)] bg-gradient-to-br from-orange-500/10 via-[var(--surface)] to-[var(--surface)] ring-1 ring-[var(--orange)]/30'
@@ -364,8 +370,14 @@ export default function AdminPage() {
         <div
           role="button"
           tabIndex={0}
+          aria-pressed={timeFilter === 'today'}
           onClick={() => setTimeFilter('today')}
-          onKeyDown={(e) => e.key === 'Enter' && setTimeFilter('today')}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setTimeFilter('today')
+            }
+          }}
           className={`group relative overflow-hidden rounded-2xl border p-2.5 sm:p-3 transition-all duration-200 cursor-pointer shadow-2xs hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] ${
             timeFilter === 'today'
               ? 'border-blue-500 bg-gradient-to-br from-blue-500/10 via-[var(--surface)] to-[var(--surface)] ring-1 ring-blue-500/30'
@@ -424,9 +436,9 @@ export default function AdminPage() {
       {/* Compact Filters & Timeline Row */}
       <div className="flex items-center justify-between gap-1.5 overflow-x-auto no-scrollbar py-1 border-b border-[var(--line)]">
         {/* Timeline Tabs */}
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-1 shrink-0" role="region" aria-label="Timeline filters">
           <span className="flex items-center gap-0.5 text-[9.5px] font-bold text-[var(--muted)] mr-0.5 shrink-0">
-            <FiCalendar className="text-[9.5px] text-[var(--orange)]" />
+            <FiCalendar className="text-[9.5px] text-[var(--orange)]" aria-hidden="true" />
             <span className="hidden sm:inline">Timeline:</span>
           </span>
 
@@ -440,6 +452,7 @@ export default function AdminPage() {
             <button
               key={tab.id}
               type="button"
+              aria-pressed={timeFilter === tab.id}
               onClick={() => setTimeFilter(tab.id)}
               className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold transition-all cursor-pointer ${
                 timeFilter === tab.id
@@ -464,7 +477,7 @@ export default function AdminPage() {
         <div className="h-3 w-[1px] bg-[var(--line)] shrink-0 hidden sm:block" />
 
         {/* Order Type Filter Pills with Live Counts */}
-        <div className="flex items-center gap-1 rounded-xl bg-[var(--surface-strong)]/80 p-0.5 border border-[var(--line)] shrink-0">
+        <div className="flex items-center gap-1 rounded-xl bg-[var(--surface-strong)]/80 p-0.5 border border-[var(--line)] shrink-0" role="region" aria-label="Order type filters">
           {[
             { id: 'all', label: 'All', count: stats.totalOrders },
             { id: 'dine-in', label: '🍽️ Dine', count: stats.dineInCount },
@@ -473,6 +486,7 @@ export default function AdminPage() {
             <button
               key={tab.id}
               type="button"
+              aria-pressed={filterType === tab.id}
               onClick={() => setFilterType(tab.id)}
               className={`inline-flex items-center gap-1 rounded-lg px-2 py-0.5 text-[10px] font-bold transition-all cursor-pointer ${
                 filterType === tab.id
@@ -498,13 +512,14 @@ export default function AdminPage() {
       {/* Enhanced Search & Refresh Bar */}
       <div className="flex items-center justify-between gap-2">
         <div className="relative flex-1 min-w-[200px]">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[var(--muted)]" />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[var(--muted)]" aria-hidden="true" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Escape' && setSearchQuery('')}
             placeholder="Search by customer name, phone, or order ID..."
+            aria-label="Search orders by customer name, phone, or order ID"
             className="w-full rounded-full border border-[var(--line)] bg-[var(--surface)] pl-8 pr-8 py-1.5 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition shadow-2xs"
           />
           {searchQuery && (
@@ -513,8 +528,9 @@ export default function AdminPage() {
               onClick={() => setSearchQuery('')}
               className="absolute right-2.5 top-1/2 -translate-y-1/2 grid h-5 w-5 place-items-center rounded-full bg-[var(--surface-strong)] text-[var(--muted)] hover:text-[var(--text)] transition cursor-pointer"
               title="Clear search"
+              aria-label="Clear search"
             >
-              <FiX className="text-[10px]" />
+              <FiX className="text-[10px]" aria-hidden="true" />
             </button>
           )}
         </div>
@@ -531,8 +547,9 @@ export default function AdminPage() {
             disabled={isSyncing}
             className="grid h-7 w-7 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] transition cursor-pointer disabled:opacity-50"
             title="Sync with Google Sheets & refresh records"
+            aria-label="Sync with Google Sheets and refresh records"
           >
-            <FiRefreshCw className={`text-[11px] ${isSyncing ? 'animate-spin text-[var(--orange)]' : ''}`} />
+            <FiRefreshCw className={`text-[11px] ${isSyncing ? 'animate-spin text-[var(--orange)]' : ''}`} aria-hidden="true" />
           </button>
         </div>
       </div>

@@ -143,6 +143,22 @@ export default function MenuPage() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  // Handle drawer escape key and scroll lock
+  useEffect(() => {
+    if (!isDrawerOpen) return undefined
+    document.body.style.overflow = 'hidden'
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsDrawerOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isDrawerOpen])
+
 
   // Lightweight Sticky Sub-Header Controller (monitors scroll threshold)
   useEffect(() => {
@@ -372,13 +388,14 @@ export default function MenuPage() {
       </div>
 
       {/* 2. Smart Vibe & Budget Filters */}
-      <div className="no-scrollbar mb-2 flex items-center gap-1.5 overflow-x-auto py-0.5 sm:mb-2.5 sm:gap-2">
+      <div className="no-scrollbar mb-2 flex items-center gap-1.5 overflow-x-auto py-0.5 sm:mb-2.5 sm:gap-2" role="region" aria-label="Menu filters">
         {VIBE_FILTERS.map((filter) => {
           const isActive = activeVibeFilter === filter.id
           return (
             <button
               key={filter.id}
               type="button"
+              aria-pressed={isActive}
               onClick={() => {
                 setActiveVibeFilter(filter.id)
                 if (activeCategory !== 'All') setActiveCategory('All')
@@ -389,7 +406,7 @@ export default function MenuPage() {
                   : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]/50'
               }`}
             >
-              <span className="text-xs leading-none">{filter.icon}</span>
+              <span className="text-xs leading-none" aria-hidden="true">{filter.icon}</span>
               <span>{filter.label}</span>
             </button>
           )
@@ -414,7 +431,7 @@ export default function MenuPage() {
               : 'opacity-0 -translate-y-2 pointer-events-none'
           } -mx-2.5 sm:-mx-6 lg:-mx-8 px-2.5 sm:px-6 lg:px-8 py-1.5 bg-[var(--bg)]/95 backdrop-blur-xl border-b border-[var(--line)] shadow-xs mb-2.5`}
         >
-          <div className="mx-auto  flex items-center justify-between gap-2">
+          <div className="mx-auto flex items-center justify-between gap-2">
             {/* Scrollable category pills */}
             <div
               ref={stickyScrollRef}
@@ -427,6 +444,7 @@ export default function MenuPage() {
                     key={section.id}
                     data-section-btn={section.id}
                     type="button"
+                    aria-pressed={isCurrent}
                     onClick={() => handleScrollToSection(section.id)}
                     className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold transition-all duration-200 cursor-pointer ${
                       isCurrent
@@ -492,9 +510,10 @@ export default function MenuPage() {
 
           {/* Quick Category Filter Pills within Search Results */}
           {searchCategories.length > 1 && (
-            <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto py-0.5">
+            <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto py-0.5" role="region" aria-label="Search category filters">
               <button
                 type="button"
+                aria-pressed={activeCategory === 'All'}
                 onClick={() => setActiveCategory('All')}
                 className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer ${
                   activeCategory === 'All'
@@ -508,6 +527,7 @@ export default function MenuPage() {
                 <button
                   key={cat.title}
                   type="button"
+                  aria-pressed={activeCategory === cat.title}
                   onClick={() => setActiveCategory(activeCategory === cat.title ? 'All' : cat.title)}
                   className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer ${
                     activeCategory === cat.title
@@ -585,12 +605,17 @@ export default function MenuPage() {
           )}
 
           {/* Count & Favorites Bar */}
-          <div className="mb-2 flex items-center justify-between gap-3 text-[11px] font-semibold text-[var(--muted)] sm:mb-2.5 sm:text-xs">
+          <div
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            className="mb-2 flex items-center justify-between gap-3 text-[11px] font-semibold text-[var(--muted)] sm:mb-2.5 sm:text-xs"
+          >
             <p>
               Showing <span className="font-extrabold text-[var(--text)]">{visibleItemCount}</span> dishes
             </p>
             <p className="flex items-center gap-1.5">
-              <FiHeart className="text-[var(--orange)] fill-[var(--orange)] text-xs sm:text-sm" />
+              <FiHeart className="text-[var(--orange)] fill-[var(--orange)] text-xs sm:text-sm" aria-hidden="true" />
               <span>{favoriteCount} saved</span>
             </p>
           </div>
@@ -696,12 +721,20 @@ export default function MenuPage() {
 
       {/* Mobile Category Selection Drawer Modal */}
       {isDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-xs md:hidden">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="mobile-category-drawer-title"
+          onMouseDown={(e) => {
+            if (e.target === e.currentTarget) setIsDrawerOpen(false)
+          }}
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-xs md:hidden"
+        >
           <div className="max-h-[80vh] w-full overflow-y-auto rounded-t-3xl border-t border-[var(--line)] bg-[var(--surface)] p-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-2xl">
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <FiGrid className="text-[var(--orange)] text-base" />
-                <h3 className="font-display text-base font-black text-[var(--text)]">
+                <FiGrid className="text-[var(--orange)] text-base" aria-hidden="true" />
+                <h3 id="mobile-category-drawer-title" className="font-display text-base font-black text-[var(--text)]">
                   Menu Categories
                 </h3>
               </div>
@@ -711,7 +744,7 @@ export default function MenuPage() {
                 className="grid h-8 w-8 place-items-center rounded-full border border-[var(--line)] text-[var(--text)] cursor-pointer"
                 aria-label="Close categories drawer"
               >
-                <FiX />
+                <FiX aria-hidden="true" />
               </button>
             </div>
 

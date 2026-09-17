@@ -66,8 +66,9 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 transition-colors hover:text-[var(--orange)]"
                 >
-                  <FiMapPin className="text-xs text-[var(--orange)]" />
+                  <FiMapPin className="text-xs text-[var(--orange)]" aria-hidden="true" />
                   <span>Locate Cafe</span>
+                  <span className="sr-only"> (opens in a new tab)</span>
                 </a>
               </li>
             </ul>
@@ -92,18 +93,21 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Get Directions"
-                className="inline-flex items-center gap-1 rounded-lg bg-[var(--surface-strong)] hover:bg-[var(--orange)] hover:text-white px-2 py-1 text-[11px] font-bold text-[var(--text)] border border-[var(--line)] transition-all duration-200"
+                aria-label="Get Directions on Google Maps (opens in a new tab)"
+                className="inline-flex items-center gap-1 rounded-lg bg-[var(--surface-strong)] hover:bg-[var(--orange)] hover:text-white px-2 py-1 text-[11px] font-bold text-[var(--text)] border border-[var(--line)] transition-all duration-200 cursor-pointer"
               >
-                <FiNavigation className="text-[var(--orange)]" />
+                <FiNavigation className="text-[var(--orange)]" aria-hidden="true" />
                 <span>Directions</span>
+                <span className="sr-only"> (opens in a new tab)</span>
               </a>
 
               <a
                 href={CAFE_INFO.phone.tel}
                 title={`Call Cafe Hotline (${CAFE_INFO.phone.display})`}
-                className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--surface-strong)] hover:bg-orange-500 hover:text-white text-[var(--orange)] border border-[var(--line)] transition-all duration-200"
+                aria-label={`Call Cafe Hotline (${CAFE_INFO.phone.display})`}
+                className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--surface-strong)] hover:bg-orange-500 hover:text-white text-[var(--orange)] border border-[var(--line)] transition-all duration-200 cursor-pointer"
               >
-                <FiPhone className="text-xs" />
+                <FiPhone className="text-xs" aria-hidden="true" />
               </a>
 
               <a
@@ -111,9 +115,11 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="WhatsApp Us"
-                className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--surface-strong)] hover:bg-emerald-500 hover:text-white text-emerald-600 dark:text-emerald-400 border border-[var(--line)] transition-all duration-200"
+                aria-label="WhatsApp Us (opens in a new tab)"
+                className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--surface-strong)] hover:bg-emerald-500 hover:text-white text-emerald-600 dark:text-emerald-400 border border-[var(--line)] transition-all duration-200 cursor-pointer"
               >
-                <FaWhatsapp className="text-xs" />
+                <FaWhatsapp className="text-xs" aria-hidden="true" />
+                <span className="sr-only"> (opens in a new tab)</span>
               </a>
 
               <a
@@ -121,9 +127,11 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Order on Zomato"
-                className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--surface-strong)] hover:bg-red-500 hover:text-white text-red-500 border border-[var(--line)] transition-all duration-200"
+                aria-label="Order on Zomato (opens in a new tab)"
+                className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--surface-strong)] hover:bg-red-500 hover:text-white text-red-500 border border-[var(--line)] transition-all duration-200 cursor-pointer"
               >
-                <SiZomato className="text-xs" />
+                <SiZomato className="text-xs" aria-hidden="true" />
+                <span className="sr-only"> (opens in a new tab)</span>
               </a>
             </div>
           </div>

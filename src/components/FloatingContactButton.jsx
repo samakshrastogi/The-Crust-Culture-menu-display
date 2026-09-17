@@ -47,7 +47,7 @@ export default function FloatingContactButton() {
         return (
           <div key={action.id} className="group relative flex items-center">
             {/* Desktop Flyout Tooltip */}
-            <div className="pointer-events-none absolute right-full mr-2.5 hidden sm:flex items-center opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0">
+            <div className="pointer-events-none absolute right-full mr-2.5 hidden sm:flex items-center opacity-0 -translate-x-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-focus-within:opacity-100 group-focus-within:translate-x-0">
               <span className="rounded-full bg-[#1c120c]/90 px-3 py-1 text-xs font-bold text-white shadow-xl backdrop-blur-md border border-white/15 whitespace-nowrap">
                 {action.label}
               </span>
@@ -58,9 +58,10 @@ export default function FloatingContactButton() {
               href={action.href}
               {...(action.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               className={`relative flex h-11 w-11 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-gradient-to-tr ${action.bgGradient} text-white shadow-lg ${action.shadowColor} border border-white/35 backdrop-blur-xs transition-all duration-200 hover:scale-110 active:scale-95 hover:shadow-xl`}
-              aria-label={action.label}
+              aria-label={action.external ? `${action.label} (opens in a new tab)` : action.label}
             >
-              <Icon className={action.iconSize} />
+              <Icon className={action.iconSize} aria-hidden="true" />
+              {action.external && <span className="sr-only"> (opens in a new tab)</span>}
 
               {/* Glass sheen highlight */}
               <span className="absolute inset-x-0 top-0 h-1/2 rounded-t-full bg-white/20 pointer-events-none" />

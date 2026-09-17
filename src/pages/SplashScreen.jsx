@@ -104,9 +104,17 @@ export default function SplashScreen() {
   return (
     <main
       ref={splashRef}
+      role="button"
+      tabIndex={0}
       onClick={handleEnter}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          handleEnter()
+        }
+      }}
       className="relative flex min-h-svh flex-col items-center justify-between overflow-hidden bg-[var(--bg)] px-5 py-8 text-center select-none cursor-pointer transition-colors"
-      aria-label="Welcome screen - tap anywhere to enter menu"
+      aria-label="Welcome screen - press Enter, Space, or tap anywhere to enter menu"
     >
       {/* Full-Screen Ambient Wood-Fired Hearth Atmosphere */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_45%,rgba(249,115,22,0.13),rgba(245,158,11,0.05)_45%,transparent_75%)] dark:bg-[radial-gradient(ellipse_80%_60%_at_50%_45%,rgba(249,115,22,0.22),rgba(245,158,11,0.08)_45%,transparent_80%)]" />
@@ -121,12 +129,12 @@ export default function SplashScreen() {
       <header data-splash-header className="relative z-10 space-y-1">
         {tableNumber ? (
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/35 bg-emerald-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 shadow-xs backdrop-blur-md">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" aria-hidden="true" />
             Table {tableNumber} • Dine-In Menu
           </span>
         ) : (
           <span className="inline-flex items-center gap-2 rounded-full border border-[var(--line)] bg-[var(--surface-strong)]/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[var(--text)] shadow-xs backdrop-blur-md">
-            <span className="h-2 w-2 rounded-full bg-[var(--orange)] animate-ping" />
+            <span className="h-2 w-2 rounded-full bg-[var(--orange)] animate-ping" aria-hidden="true" />
             Table Digital Menu
           </span>
         )}
@@ -149,7 +157,8 @@ export default function SplashScreen() {
           >
             <img
               src="/logo.png"
-              alt="The Crust Culture Logo"
+              alt=""
+              aria-hidden="true"
               className="h-full w-full object-cover rounded-full"
             />
           </div>
@@ -174,7 +183,7 @@ export default function SplashScreen() {
         {/* Dietary & Craft Badges */}
         <div data-splash-badges className="flex flex-wrap items-center justify-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-700 dark:text-emerald-300 backdrop-blur-xs">
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />
             100% Pure Veg
           </span>
           <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/25 bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-700 dark:text-amber-300 backdrop-blur-xs">
@@ -190,23 +199,30 @@ export default function SplashScreen() {
           <span className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)]/80 px-2 py-0.5 border border-[var(--line)]">
             🍕 Wood-Fired Pizzas
           </span>
-          <span className="opacity-40">•</span>
+          <span className="opacity-40" aria-hidden="true">•</span>
           <span className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)]/80 px-2 py-0.5 border border-[var(--line)]">
             🧄 Garlic Breads
           </span>
-          <span className="opacity-40">•</span>
+          <span className="opacity-40" aria-hidden="true">•</span>
           <span className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)]/80 px-2 py-0.5 border border-[var(--line)]">
             🍔 Gourmet Burgers
           </span>
-          <span className="opacity-40">•</span>
+          <span className="opacity-40" aria-hidden="true">•</span>
           <span className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)]/80 px-2 py-0.5 border border-[var(--line)]">
             🥤 Shakes
           </span>
         </div>
 
         {/* Hearth Progress Bar & Appetizing Micro-Copy */}
-        <div data-splash-loader className="w-64 sm:w-72 space-y-2.5 pt-1">
-          <div className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--surface-strong)] border border-[var(--line)] shadow-inner">
+        <div data-splash-loader role="status" aria-live="polite" className="w-64 sm:w-72 space-y-2.5 pt-1">
+          <div
+            role="progressbar"
+            aria-valuenow={stageIndex === 0 ? 25 : stageIndex === 1 ? 65 : 100}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label="Menu preparation progress"
+            className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--surface-strong)] border border-[var(--line)] shadow-inner"
+          >
             <div
               ref={progressFillRef}
               className="h-full w-0 rounded-full bg-gradient-to-r from-amber-500 via-[var(--orange)] to-[#ea580c] shadow-[0_0_12px_rgba(249,115,22,0.8)]"
@@ -222,8 +238,8 @@ export default function SplashScreen() {
       {/* Bottom Action: Minimalist Skip Indicator */}
       <footer data-skip-hint className="relative z-10 flex flex-col items-center">
         <p className="inline-flex items-center gap-1 text-[11px] font-medium tracking-wide text-[var(--muted)] opacity-80 hover:opacity-100 transition-opacity">
-          <span>Tap anywhere to open menu</span>
-          <span className="text-[10px] opacity-60">→</span>
+          <span>Tap anywhere or press Enter to open menu</span>
+          <span className="text-[10px] opacity-60" aria-hidden="true">→</span>
         </p>
       </footer>
     </main>

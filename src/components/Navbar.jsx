@@ -14,7 +14,7 @@ export default function Navbar({ theme, onToggleTheme }) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[var(--bg)]/90 backdrop-blur-xl transition-colors">
-      <nav className="mx-auto flex  items-center justify-between gap-2 px-3 py-2 sm:gap-4 sm:px-6 sm:py-2.5 lg:px-8">
+      <nav aria-label="Main navigation" className="mx-auto flex items-center justify-between gap-2 px-3 py-2 sm:gap-4 sm:px-6 sm:py-2.5 lg:px-8">
         {/* Brand */}
         <BrandLogo />
 
@@ -39,7 +39,7 @@ export default function Navbar({ theme, onToggleTheme }) {
               >
                 {({ isActive }) => (
                   <>
-                    <Icon className={`text-sm ${isActive ? 'text-white' : ''}`} />
+                    <Icon className={`text-sm ${isActive ? 'text-white' : ''}`} aria-hidden="true" />
                     <span>{item.label}</span>
                     {count > 0 && (
                       <span
@@ -49,7 +49,8 @@ export default function Navbar({ theme, onToggleTheme }) {
                             : 'bg-[var(--orange)]/15 text-[var(--orange)]'
                         }`}
                       >
-                        {count}
+                        <span aria-hidden="true">{count}</span>
+                        <span className="sr-only">({count} items in cart)</span>
                       </span>
                     )}
                   </>
@@ -62,8 +63,8 @@ export default function Navbar({ theme, onToggleTheme }) {
         {/* Right Actions */}
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {/* Live Cafe Status */}
-          <div className="hidden sm:inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
-            <span className="relative flex h-2 w-2">
+          <div role="status" className="hidden sm:inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-300">
+            <span className="relative flex h-2 w-2" aria-hidden="true">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
@@ -74,8 +75,9 @@ export default function Navbar({ theme, onToggleTheme }) {
           <button
             type="button"
             onClick={onToggleTheme}
-            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--text)] shadow-sm transition hover:border-[var(--orange)] hover:text-[var(--orange)] active:scale-90"
-            aria-label="Toggle color theme"
+            aria-pressed={theme === 'dark'}
+            className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--text)] shadow-sm transition hover:border-[var(--orange)] hover:text-[var(--orange)] active:scale-90 cursor-pointer"
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {theme === 'dark' ? (

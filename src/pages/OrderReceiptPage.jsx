@@ -148,56 +148,50 @@ export default function OrderReceiptPage() {
               </div>
             </div>
 
-            {/* Itemized Dish List */}
-            <div>
-              {/* Table Header */}
-              <div className="flex items-center justify-between border-b border-[var(--line)] pb-1 text-[9px] font-black uppercase tracking-wider text-[var(--muted)]">
-                <span>Item & Portion</span>
-                <div className="flex items-center gap-4">
-                  <span className="w-7 text-center">Qty</span>
-                  <span className="w-12 text-right">Rate</span>
-                  <span className="w-12 text-right">Amount</span>
-                </div>
-              </div>
+            {/* Itemized Dish Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <caption className="sr-only">Itemized order details</caption>
+                <thead>
+                  <tr className="border-b border-[var(--line)] text-[9px] font-black uppercase tracking-wider text-[var(--muted)]">
+                    <th scope="col" className="pb-1 font-black">Item &amp; Portion</th>
+                    <th scope="col" className="pb-1 text-center w-8 font-black">Qty</th>
+                    <th scope="col" className="pb-1 text-right w-12 font-black">Rate</th>
+                    <th scope="col" className="pb-1 text-right w-14 font-black">Amount</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--line)]/40">
+                  {order.items.map((item, index) => {
+                    const unitPrice = Number(item.p) || 0
+                    const qty = Number(item.q) || 1
+                    const rowTotal = unitPrice * qty
 
-              {/* Item Rows */}
-              <div className="divide-y divide-[var(--line)]/40">
-                {order.items.map((item, index) => {
-                  const unitPrice = Number(item.p) || 0
-                  const qty = Number(item.q) || 1
-                  const rowTotal = unitPrice * qty
-
-                  return (
-                    <div
-                      key={`${item.n}-${index}`}
-                      className="flex items-center justify-between py-1.5 text-xs"
-                    >
-                      <div className="min-w-0 pr-1 leading-snug">
-                        <span className="font-extrabold text-[var(--text)]">
-                          {item.n}
-                        </span>
-                        {item.s && (
-                          <span className="ml-1 text-[10px] text-[var(--muted)] font-medium">
-                            ({item.s})
+                    return (
+                      <tr key={`${item.n}-${index}`}>
+                        <td className="py-1.5 min-w-0 pr-1 leading-snug">
+                          <span className="font-extrabold text-[var(--text)]">
+                            {item.n}
                           </span>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-4 shrink-0">
-                        <span className="w-7 text-center font-black text-[var(--text)]">
+                          {item.s && (
+                            <span className="ml-1 text-[10px] text-[var(--muted)] font-medium">
+                              ({item.s})
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-1.5 text-center font-black text-[var(--text)]">
                           x{qty}
-                        </span>
-                        <span className="w-12 text-right text-[var(--muted)] font-medium text-[11px]">
+                        </td>
+                        <td className="py-1.5 text-right text-[var(--muted)] font-medium text-[11px]">
                           ₹{unitPrice}
-                        </span>
-                        <span className="w-12 text-right font-black text-[var(--text)]">
+                        </td>
+                        <td className="py-1.5 text-right font-black text-[var(--text)]">
                           ₹{rowTotal}
-                        </span>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
 
             {/* Special Instructions */}
@@ -245,7 +239,7 @@ export default function OrderReceiptPage() {
         </article>
       ) : (
         /* TAMPERED OR INVALID ORDER WARNING */
-        <article className="rounded-2xl border-2 border-red-500/50 bg-[var(--surface)] p-5 text-center space-y-3">
+        <article role="alert" className="rounded-2xl border-2 border-red-500/50 bg-[var(--surface)] p-5 text-center space-y-3">
           <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-red-500/15 text-2xl text-red-600 dark:text-red-400">
             <FiAlertTriangle />
           </div>

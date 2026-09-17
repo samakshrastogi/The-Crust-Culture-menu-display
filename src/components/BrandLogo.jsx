@@ -9,7 +9,8 @@ export default function BrandLogo({ compact = false }) {
     >
       <img
         src="/logo.png"
-        alt="The Crust Culture Logo"
+        alt=""
+        aria-hidden="true"
         width="44"
         height="44"
         className="h-9 w-9 shrink-0 rounded-full object-cover shadow-md shadow-orange-500/25 ring-2 ring-amber-500/40 sm:h-10.5 sm:w-10.5 transition-transform duration-200 group-hover:scale-110 group-hover:rotate-6"

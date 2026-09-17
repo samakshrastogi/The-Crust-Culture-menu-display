@@ -32,7 +32,7 @@ export default function ScrollProgress() {
   }, [])
 
   return (
-    <div className="fixed left-0 top-0 z-[60] h-1 w-full bg-transparent pointer-events-none">
+    <div className="fixed left-0 top-0 z-[60] h-1 w-full bg-transparent pointer-events-none" aria-hidden="true">
       <div
         ref={barRef}
         className="h-full w-full bg-[var(--gold)] origin-left will-change-transform"
