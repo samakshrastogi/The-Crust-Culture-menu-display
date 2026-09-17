@@ -18,14 +18,13 @@ import {
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import {
-  getOrderHistory,
   exportOrdersToCSV,
   importOrderFromUrl,
   syncOrdersWithCloud,
 } from '../utils/orderHistory'
 
 export default function AdminPage() {
-  const [orders, setOrders] = useState(() => getOrderHistory())
+  const [orders, setOrders] = useState([])
   const [isSyncing, setIsSyncing] = useState(true)
   const [lastSynced, setLastSynced] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -36,7 +35,7 @@ export default function AdminPage() {
   const [importMessage, setImportMessage] = useState(null)
   const [showImportBox, setShowImportBox] = useState(false)
 
-  // Cloud sync on initial page load
+  // Cloud sync on initial page load (strictly shows only what exists in Excel/Google Sheets)
   useEffect(() => {
     let mounted = true
     syncOrdersWithCloud()
@@ -63,8 +62,8 @@ export default function AdminPage() {
       const synced = await syncOrdersWithCloud()
       setOrders(synced)
       setLastSynced(new Date())
-    } catch {
-      setOrders(getOrderHistory())
+    } catch (err) {
+      console.warn('Reload sync error:', err)
     } finally {
       setIsSyncing(false)
     }
@@ -242,7 +241,7 @@ export default function AdminPage() {
                 isSyncing ? 'bg-blue-500 animate-ping' : 'bg-emerald-500'
               }`}
             />
-            <span>{isSyncing ? 'Syncing...' : 'Google Sheets Synced'}</span>
+            <span>{isSyncing ? 'Syncing Excel...' : 'Excel / Sheets Synced'}</span>
           </span>
         </div>
 
@@ -258,7 +257,7 @@ export default function AdminPage() {
 
           <button
             type="button"
-            onClick={exportOrdersToCSV}
+            onClick={() => exportOrdersToCSV(filteredOrders)}
             disabled={orders.length === 0}
             className="inline-flex items-center gap-1 rounded-full bg-[var(--orange)] px-3 py-1 text-[11px] font-black text-white hover:brightness-110 transition cursor-pointer disabled:opacity-50 shadow-2xs"
           >
@@ -450,17 +449,25 @@ export default function AdminPage() {
       </div>
 
       {/* Chronologically Grouped Orders List */}
-      {filteredOrders.length === 0 ? (
+      {isSyncing && orders.length === 0 ? (
+        <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-8 text-center space-y-3">
+          <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-[var(--orange)] border-t-transparent" />
+          <div className="space-y-0.5">
+            <h3 className="text-xs font-black text-[var(--text)]">Loading Excel Records...</h3>
+            <p className="text-[11px] text-[var(--muted)]">Fetching verified orders directly from your Google Sheet.</p>
+          </div>
+        </div>
+      ) : filteredOrders.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-[var(--line)] bg-[var(--surface)]/50 p-6 text-center space-y-2">
           <div className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-[var(--surface-strong)] text-lg text-[var(--muted)]">
             <FiShoppingBag />
           </div>
           <div className="space-y-0.5">
-            <h3 className="text-xs font-black text-[var(--text)]">No order records found</h3>
+            <h3 className="text-xs font-black text-[var(--text)]">No orders found in Excel</h3>
             <p className="text-[11px] text-[var(--muted)] max-w-sm mx-auto">
               {searchQuery
                 ? 'No orders match your search query.'
-                : 'Orders sent to WhatsApp or opened from ticket links will automatically appear here.'}
+                : 'Only orders present in your Excel / Google Sheet will appear here.'}
             </p>
           </div>
         </div>

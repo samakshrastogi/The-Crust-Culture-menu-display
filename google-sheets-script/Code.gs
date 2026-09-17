@@ -352,31 +352,34 @@ function doGet(e) {
     
     for (let i = 0; i < dataRange.length; i++) {
       const row = dataRange[i];
-      const rawJson = row[10];
+      const orderId = String(row[1] || '').trim();
+      // Skip empty or deleted rows in the sheet
+      if (!orderId) continue;
       
+      let baseOrder = {};
+      const rawJson = row[10];
       if (rawJson && typeof rawJson === 'string' && rawJson.startsWith('{')) {
         try {
-          const parsed = JSON.parse(rawJson);
-          orders.push(parsed);
-          continue;
+          baseOrder = JSON.parse(rawJson);
         } catch (e) {}
       }
       
-      // Fallback: reconstruct record from sheet columns
       const dateVal = row[0];
-      const ts = dateVal instanceof Date ? dateVal.getTime() : (Date.parse(dateVal) || Date.now());
+      const ts = dateVal instanceof Date ? dateVal.getTime() : (Date.parse(dateVal) || baseOrder.timestamp || Date.now());
+      const sheetTotal = Number(row[6]);
       
       orders.push({
-        id: String(row[1] || ''),
+        ...baseOrder,
+        id: orderId,
         timestamp: ts,
-        customerName: String(row[2] || 'Guest'),
-        customerPhone: String(row[3] || '').replace(/^'/, ''),
-        orderType: String(row[4] || '').includes('Takeaway') ? 'takeaway' : 'dine-in',
-        total: Number(row[6]) || 0,
-        notes: String(row[7] || ''),
-        securityCode: String(row[8] || ''),
-        receiptUrl: String(row[9] || ''),
-        items: []
+        customerName: String(row[2] || baseOrder.customerName || 'Guest').trim(),
+        customerPhone: String(row[3] || baseOrder.customerPhone || '').replace(/^'/, '').trim(),
+        orderType: String(row[4] || baseOrder.orderType || '').includes('Takeaway') ? 'takeaway' : 'dine-in',
+        total: !isNaN(sheetTotal) && sheetTotal > 0 ? sheetTotal : (Number(baseOrder.total) || 0),
+        notes: String(row[7] || baseOrder.notes || '').trim(),
+        securityCode: String(row[8] || baseOrder.securityCode || '').trim(),
+        receiptUrl: String(row[9] || baseOrder.receiptUrl || '').trim(),
+        items: baseOrder.items || []
       });
     }
     

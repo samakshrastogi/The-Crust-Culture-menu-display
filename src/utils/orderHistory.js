@@ -33,56 +33,38 @@ export async function sendOrderToCloud(record) {
 }
 
 /**
- * Fetch orders from Google Sheets cloud database and merge with local cache
+ * Fetch orders from Google Sheets cloud database (strictly reflects what exists in Excel/Sheets)
  * @returns {Promise<Array>}
  */
 export async function syncOrdersWithCloud() {
-  if (typeof window === 'undefined') return getOrderHistory()
+  if (typeof window === 'undefined') return []
   try {
     const res = await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
       method: 'GET',
       redirect: 'follow',
+      cache: 'no-store',
     })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const data = await res.json()
 
     if (data && data.success && Array.isArray(data.orders)) {
-      const local = getOrderHistory()
-      const mergedMap = new Map()
+      // ONLY include orders that currently exist in Google Sheets / Excel
+      const excelOrders = data.orders
+        .filter((o) => o && (o.id || o.orderId))
+        .map((o) => ({
+          ...o,
+          id: o.id || o.orderId,
+          total: Number(o.total) || 0,
+          timestamp: Number(o.timestamp) || Date.now(),
+        }))
+        .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
 
-      // 1. Put cloud orders in map first
-      data.orders.forEach((o) => {
-        if (o && o.id) {
-          mergedMap.set(o.id, {
-            ...o,
-            total: Number(o.total) || 0,
-            timestamp: Number(o.timestamp) || Date.now(),
-          })
-        }
-      })
-
-      // 2. Add local orders if any were placed offline or not yet in cloud
-      local.forEach((o) => {
-        if (o && o.id) {
-          if (!mergedMap.has(o.id)) {
-            mergedMap.set(o.id, o)
-            // Send missing order to cloud in background
-            sendOrderToCloud(o)
-          }
-        }
-      })
-
-      // 3. Sort chronologically (newest first)
-      const combined = Array.from(mergedMap.values()).sort(
-        (a, b) => (b.timestamp || 0) - (a.timestamp || 0)
-      )
-
-      // 4. Update local cache
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(combined.slice(0, 500)))
-      return combined
+      // Overwrite local cache so it strictly mirrors what exists in the sheet
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(excelOrders.slice(0, 500)))
+      return excelOrders
     }
 
-    return getOrderHistory()
+    return []
   } catch (err) {
     console.warn('Failed to sync orders with cloud:', err)
     return getOrderHistory()
@@ -236,10 +218,11 @@ export function importOrderFromUrl(urlString) {
 }
 
 /**
- * Export all orders to a formatted CSV spreadsheet for Excel / Sheets
+ * Export orders to a formatted CSV spreadsheet for Excel / Sheets
+ * @param {Array} [customOrders] optional specific list of orders to export
  */
-export function exportOrdersToCSV() {
-  const orders = getOrderHistory()
+export function exportOrdersToCSV(customOrders) {
+  const orders = Array.isArray(customOrders) && customOrders.length > 0 ? customOrders : getOrderHistory()
   if (orders.length === 0) return false
 
   const headers = [
