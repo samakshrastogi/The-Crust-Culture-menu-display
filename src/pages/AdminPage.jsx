@@ -219,7 +219,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-2.5 py-3 sm:px-4 sm:py-3.5 space-y-2.5">
+    <div className="mx-auto  px-2.5 py-3 sm:px-4 sm:py-3.5 space-y-2.5">
       {/* Compact Top Header */}
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 sm:px-3.5 sm:py-2.5 shadow-2xs">
         <div className="flex items-center gap-2 flex-wrap">
