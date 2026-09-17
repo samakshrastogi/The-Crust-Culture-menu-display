@@ -362,45 +362,81 @@ export default function CartPage() {
 
           {/* Popular Suggestions */}
           {popularAddOns.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="text-xs font-black uppercase tracking-wider text-[var(--gold)]">
+            <div className="space-y-2">
+              <h3 className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-[var(--gold)]">
                 ★ Highly Recommended by Chef
               </h3>
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3.5">
-                {popularAddOns.map((item) => (
-                  <div
-                    key={item.id}
-                    className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2.5 shadow-2xs transition-all hover:border-[var(--gold)]/60 hover:shadow-md"
-                  >
-                    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-stone-900 mb-2">
-                      <FoodImage
-                        src={item.image || item.sectionImage}
-                        alt={item.name}
-                        category="Pizza"
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1">
-                        <VegIndicator veg={item.veg} />
-                        <h4 className="text-xs font-extrabold text-[var(--text)] line-clamp-1 group-hover:text-[var(--orange)]">
-                          {item.name}
-                        </h4>
-                      </div>
-                      <span className="text-xs font-black text-[var(--orange)]">
-                        {item.prices?.[0]?.value ? `₹${item.prices[0].value}` : ''}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => addToCart(item, 0, 1)}
-                      className="touch-target mt-2 inline-flex w-full items-center justify-center gap-1 rounded-xl bg-[var(--surface-strong)] py-1.5 text-xs font-black text-[var(--orange)] border border-[var(--line)] transition hover:bg-[var(--orange)] hover:text-white active:scale-95 cursor-pointer"
+              <div className="flex gap-2 sm:gap-2.5 overflow-x-auto no-scrollbar md:grid md:grid-cols-6 pb-1">
+                {popularAddOns.map((item) => {
+                  const inCartItem = cart.find(
+                    (ci) => ci.name?.toLowerCase().trim() === item.name?.toLowerCase().trim(),
+                  )
+                  return (
+                    <div
+                      key={item.id}
+                      className="group relative flex flex-col justify-between overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2 shadow-2xs transition-all hover:border-[var(--gold)]/60 hover:shadow-md w-36 sm:w-40 md:w-auto shrink-0 md:shrink"
                     >
-                      <FiPlus className="text-xs" />
-                      <span>Add</span>
-                    </button>
-                  </div>
-                ))}
+                      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-stone-900 mb-1.5">
+                        <FoodImage
+                          src={item.image || item.sectionImage}
+                          alt={item.name}
+                          category="Pizza"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1 min-w-0">
+                          <VegIndicator veg={item.veg} />
+                          <h4
+                            className="text-[11.5px] sm:text-xs font-extrabold text-[var(--text)] line-clamp-1 group-hover:text-[var(--orange)]"
+                            title={item.name}
+                          >
+                            {item.name}
+                          </h4>
+                        </div>
+                        <div className="flex items-center justify-between gap-1 pt-0.5">
+                          <span className="text-xs font-black text-[var(--orange)]">
+                            {item.prices?.[0]?.value ? `₹${item.prices[0].value}` : ''}
+                          </span>
+                          {inCartItem ? (
+                            <div className="shrink-0 flex items-center rounded-md border border-[#ea580c] bg-orange-50/80 dark:bg-orange-950/40 p-0.5 shadow-2xs">
+                              <button
+                                type="button"
+                                onClick={() => updateQuantity(inCartItem.cartItemId, -1)}
+                                className="grid h-5 w-5 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
+                                aria-label={`Decrease ${item.name} quantity`}
+                              >
+                                <FiMinus className="text-[9px]" />
+                              </button>
+                              <span className="w-3.5 text-center text-[10.5px] font-black text-[#ea580c]">
+                                {inCartItem.quantity}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => updateQuantity(inCartItem.cartItemId, 1)}
+                                className="grid h-5 w-5 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
+                                aria-label={`Increase ${item.name} quantity`}
+                              >
+                                <FiPlus className="text-[9px]" />
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => addToCart(item, 0, 1)}
+                              className="shrink-0 inline-flex items-center gap-0.5 rounded-lg bg-[var(--orange)] px-2 py-1 text-[10.5px] sm:text-[11px] font-black text-white hover:brightness-110 active:scale-95 transition cursor-pointer shadow-2xs"
+                              title={`Add ${item.name} to cart`}
+                              aria-label={`Add ${item.name} to cart`}
+                            >
+                              <FiPlus className="text-[9px] sm:text-[10px] stroke-[3]" />
+                              <span>Add</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )}
