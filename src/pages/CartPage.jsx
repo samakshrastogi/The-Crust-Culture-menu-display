@@ -38,6 +38,7 @@ export default function CartPage() {
   const [nameError, setNameError] = useState('')
   const [phoneError, setPhoneError] = useState('')
   const [orderSent, setOrderSent] = useState(false)
+  const [recCategory, setRecCategory] = useState('all')
 
   // Quick suggestions if tray is empty or for extra add-ons
   const popularAddOns = useMemo(() => {
@@ -50,87 +51,98 @@ export default function CartPage() {
     return allMenuItems.filter((i) => targetNames.includes(i.name)).slice(0, 4)
   }, [])
 
-  // Smart recommendations based on active orders
-  const orderRecommendations = useMemo(() => {
+  // Check meal combo components in the active cart
+  const mealStatus = useMemo(() => {
+    const titles = cart.map((ci) => (ci.sectionTitle || ci.name || '').toLowerCase())
+    const hasPizza = titles.some((t) => t.includes('pizza'))
+    const hasSide = titles.some(
+      (t) =>
+        t.includes('garlic') ||
+        t.includes('bread') ||
+        t.includes('parcel') ||
+        t.includes('nugget') ||
+        t.includes('side'),
+    )
+    const hasDrink = titles.some(
+      (t) =>
+        t.includes('drink') ||
+        t.includes('coffee') ||
+        t.includes('soda') ||
+        t.includes('chai') ||
+        t.includes('tea') ||
+        t.includes('lassi'),
+    )
+    const hasDip = titles.some(
+      (t) => t.includes('dip') || t.includes('topping') || t.includes('burst'),
+    )
+    return { hasPizza, hasSide, hasDrink, hasDip }
+  }, [cart])
+
+  // Catalog of categorized recommendation candidates with pairing badges
+  const recommendationPool = useMemo(() => {
+    const sideNames = [
+      { name: 'Garlic Bread Stuffed', pairingBadge: 'Top Pizza Companion' },
+      { name: 'Veggie Garlic Bread', pairingBadge: 'Cheesy Garlic' },
+      { name: 'Veg Parcel', pairingBadge: 'Pocket Friendly' },
+      { name: 'Paneer Tikka Stuffed', pairingBadge: 'Chef Signature' },
+      { name: 'Indi Tandoori Parcel', pairingBadge: 'Desi Spice' },
+    ]
+    const drinkNames = [
+      { name: 'Cold Coffee with Ice Cream', pairingBadge: 'Chilled Refresher' },
+      { name: 'Lemon Soda', pairingBadge: 'Fizzy & Tangy' },
+      { name: 'Cold Coffee', pairingBadge: 'Smooth Brew' },
+      { name: 'Sweet Lassi', pairingBadge: 'Creamy Classic' },
+      { name: 'Shikanji', pairingBadge: 'Desi Cooler' },
+    ]
+    const friesNames = [
+      { name: 'Peri Peri Fries', pairingBadge: 'Crispy & Spicy' },
+      { name: 'Cheese Loaded Fries', pairingBadge: 'Melted Mozzarella' },
+      { name: 'Veg Nuggets', pairingBadge: 'Crunchy Starter' },
+      { name: 'Veg Fried Momos', pairingBadge: 'Crisp Street Bite' },
+    ]
+    const dipNames = [
+      { name: 'Extra Dip', pairingBadge: 'Creamy Garlic Mayo' },
+      { name: 'Cheese Burst', pairingBadge: 'Molten Cheese Center' },
+      { name: 'Oregano', pairingBadge: 'Herb Seasoning' },
+      { name: 'Chilli Flakes', pairingBadge: 'Extra Spice Kick' },
+    ]
+
+    const mapToItems = (list) =>
+      list
+        .map(({ name, pairingBadge }) => {
+          const item = allMenuItems.find((i) => i.name.toLowerCase() === name.toLowerCase())
+          return item ? { ...item, pairingBadge } : null
+        })
+        .filter(Boolean)
+
+    return {
+      sides: mapToItems(sideNames),
+      drinks: mapToItems(drinkNames),
+      fries: mapToItems(friesNames),
+      dips: mapToItems(dipNames),
+    }
+  }, [])
+
+  // Dynamic recommendation selection based on active tab and cart state
+  const displayedRecommendations = useMemo(() => {
     if (cart.length === 0) return []
 
-    const cartItemNames = new Set(cart.map((ci) => ci.name?.toLowerCase().trim()))
-    const cartSectionTitles = cart.map((ci) => (ci.sectionTitle || '').toLowerCase())
+    const { sides, drinks, fries, dips } = recommendationPool
 
-    const hasPizza =
-      cartSectionTitles.some((t) => t.includes('pizza')) ||
-      cart.some((ci) => ci.name?.toLowerCase().includes('pizza'))
-    const hasBurgerOrSnack = cartSectionTitles.some(
-      (t) => t.includes('burger') || t.includes('sandwich') || t.includes('momo') || t.includes('taco')
-    )
-    const hasDrinks = cartSectionTitles.some(
-      (t) => t.includes('drink') || t.includes('shake') || t.includes('coffee')
-    )
+    if (recCategory === 'sides') return sides.slice(0, 4)
+    if (recCategory === 'drinks') return drinks.slice(0, 4)
+    if (recCategory === 'fries') return fries.slice(0, 4)
+    if (recCategory === 'dips') return dips.slice(0, 4)
 
-    let targetPicks
+    // 'all': Guarantee 1 Side, 1 Drink, 1 Fries, 1 Dip for maximum meal diversity
+    const picks = []
+    if (sides[0]) picks.push(sides[0])
+    if (drinks[0]) picks.push(drinks[0])
+    if (fries[0]) picks.push(fries[0])
+    if (dips[0]) picks.push(dips[0])
 
-    if (hasPizza) {
-      targetPicks = [
-        'Garlic Bread Stuffed',
-        'Veggie Garlic Bread',
-        'Cold Coffee with Ice Cream',
-        'Paneer Tikka Stuffed',
-        'Peri Peri Fries',
-        'Lemon Soda',
-        'Cheese Loaded Fries',
-        'Veg Parcel',
-      ]
-    } else if (hasBurgerOrSnack) {
-      targetPicks = [
-        'Peri Peri Fries',
-        'Cold Coffee with Ice Cream',
-        'Veg Loaded Pizza',
-        'Garlic Bread Stuffed',
-        'Lemon Soda',
-        'Double Cheese Margherita',
-        'Cheese Loaded Fries',
-      ]
-    } else if (hasDrinks) {
-      targetPicks = [
-        'Veg Loaded Pizza',
-        'Garlic Bread Stuffed',
-        'Veg Grill Sandwich',
-        'Farmhouse Pizza',
-        'Peri Peri Fries',
-        'Cheese Burger',
-      ]
-    } else {
-      targetPicks = [
-        'Garlic Bread Stuffed',
-        'Veg Loaded Pizza',
-        'Cold Coffee with Ice Cream',
-        'Peri Peri Fries',
-        'Paneer Tikka Stuffed',
-        'Double Cheese Margherita',
-      ]
-    }
-
-    const candidates = []
-    for (const name of targetPicks) {
-      if (!cartItemNames.has(name.toLowerCase())) {
-        const found = allMenuItems.find((i) => i.name.toLowerCase() === name.toLowerCase())
-        if (found && !candidates.some((c) => c.name === found.name)) {
-          candidates.push(found)
-        }
-      }
-    }
-
-    if (candidates.length < 4) {
-      for (const item of allMenuItems) {
-        if (!cartItemNames.has(item.name.toLowerCase()) && !candidates.some((c) => c.name === item.name)) {
-          candidates.push(item)
-          if (candidates.length >= 4) break
-        }
-      }
-    }
-
-    return candidates.slice(0, 4)
-  }, [cart])
+    return picks
+  }, [cart.length, recCategory, recommendationPool])
 
   const generateWhatsAppMessage = (sec, cleanPhone) => {
     if (cart.length === 0) return ''
@@ -464,12 +476,13 @@ export default function CartPage() {
               />
             </div>
 
-            {/* Recommendations Based on Orders (Occupies Left Empty Space) */}
-            {orderRecommendations.length > 0 && (
+            {/* Enhanced Smart Recommendations (Occupies Left Empty Space) */}
+            {displayedRecommendations.length > 0 && (
               <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-sm space-y-3">
+                {/* Header */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-amber-500/10 text-amber-500 text-sm">
+                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 text-white text-xs shadow-xs">
                       ✨
                     </span>
                     <div>
@@ -477,7 +490,7 @@ export default function CartPage() {
                         Frequently Ordered Together
                       </h3>
                       <p className="text-[11px] text-[var(--muted)]">
-                        Handpicked pairings that go best with your order
+                        Complete your meal with our chef's top pairings
                       </p>
                     </div>
                   </div>
@@ -486,9 +499,85 @@ export default function CartPage() {
                   </span>
                 </div>
 
+                {/* Meal Combo Status Bar */}
+                <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-[var(--surface-strong)] border border-[var(--line)] text-[11px]">
+                  <span className="text-[10px] uppercase font-black tracking-wider text-[var(--gold)] shrink-0">
+                    Meal Combo:
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] transition-colors ${
+                      mealStatus.hasPizza
+                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black'
+                        : 'bg-stone-500/10 text-[var(--muted)] font-medium'
+                    }`}
+                  >
+                    <span>🍕 Pizza</span>
+                    <span>{mealStatus.hasPizza ? '✓' : '+'}</span>
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] transition-colors ${
+                      mealStatus.hasSide
+                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black'
+                        : 'bg-stone-500/10 text-[var(--muted)] font-medium'
+                    }`}
+                  >
+                    <span>🍞 Side</span>
+                    <span>{mealStatus.hasSide ? '✓' : '+'}</span>
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] transition-colors ${
+                      mealStatus.hasDrink
+                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black'
+                        : 'bg-stone-500/10 text-[var(--muted)] font-medium'
+                    }`}
+                  >
+                    <span>🥤 Drink</span>
+                    <span>{mealStatus.hasDrink ? '✓' : '+'}</span>
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] transition-colors ${
+                      mealStatus.hasDip
+                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black'
+                        : 'bg-stone-500/10 text-[var(--muted)] font-medium'
+                    }`}
+                  >
+                    <span>🧀 Dip</span>
+                    <span>{mealStatus.hasDip ? '✓' : '+'}</span>
+                  </span>
+                </div>
+
+                {/* Quick Category Filter Pills */}
+                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-0.5">
+                  {[
+                    { id: 'all', label: 'All Combinations' },
+                    { id: 'sides', label: '🍞 Sides' },
+                    { id: 'drinks', label: '🥤 Drinks' },
+                    { id: 'fries', label: '🍟 Fries' },
+                    { id: 'dips', label: '🧀 Dips' },
+                  ].map((tab) => (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setRecCategory(tab.id)}
+                      className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-extrabold transition-all cursor-pointer ${
+                        recCategory === tab.id
+                          ? 'bg-[var(--orange)] text-white shadow-xs'
+                          : 'bg-[var(--surface-strong)] text-[var(--muted)] hover:text-[var(--text)] border border-[var(--line)]'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Recommendations 2x2 Grid with In-Card Steppers */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                  {orderRecommendations.map((recItem) => {
+                  {displayedRecommendations.map((recItem) => {
                     const priceVal = recItem.prices?.[0]?.value || '0'
+                    const inCartItem = cart.find(
+                      (ci) => ci.name?.toLowerCase().trim() === recItem.name?.toLowerCase().trim(),
+                    )
+
                     return (
                       <div
                         key={recItem.id || recItem.name}
@@ -511,27 +600,54 @@ export default function CartPage() {
                             <h4 className="text-xs font-bold text-[var(--text)] truncate group-hover:text-[var(--orange)]">
                               {recItem.name}
                             </h4>
-                            <div className="flex items-center gap-1 text-[11px]">
+                            <div className="flex items-center gap-1 text-[11px] mt-0.5">
                               <span className="font-black text-[var(--orange)]">
                                 {formatPrice(priceVal)}
                               </span>
-                              <span className="text-[10px] text-[var(--muted)] truncate">
-                                • {recItem.sectionTitle || 'Pairing'}
-                              </span>
+                              {recItem.pairingBadge && (
+                                <span className="rounded bg-amber-500/10 px-1.5 py-0.2 text-[9.5px] font-bold text-amber-600 dark:text-amber-400 border border-amber-500/20 truncate">
+                                  {recItem.pairingBadge}
+                                </span>
+                              )}
                             </div>
                           </div>
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={() => addToCart(recItem, 0, 1)}
-                          className="touch-target shrink-0 inline-flex items-center gap-1 rounded-lg bg-[var(--orange)] px-2.5 py-1.5 text-xs font-black text-white shadow-xs transition hover:brightness-110 active:scale-95 cursor-pointer"
-                          title={`Add ${recItem.name} to cart`}
-                          aria-label={`Add ${recItem.name} to cart`}
-                        >
-                          <FiPlus className="text-xs stroke-[3]" />
-                          <span>Add</span>
-                        </button>
+                        {/* Interactive In-Card Stepper / Add Button */}
+                        {inCartItem ? (
+                          <div className="shrink-0 flex items-center rounded-lg border border-[#ea580c] bg-orange-50/80 dark:bg-orange-950/40 p-0.5 shadow-2xs">
+                            <button
+                              type="button"
+                              onClick={() => updateQuantity(inCartItem.cartItemId, -1)}
+                              className="grid h-6 w-6 place-items-center rounded text-xs font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
+                              aria-label={`Decrease ${recItem.name} quantity`}
+                            >
+                              <FiMinus className="text-[10px]" />
+                            </button>
+                            <span className="w-5 text-center text-xs font-black text-[#ea580c]">
+                              {inCartItem.quantity}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => updateQuantity(inCartItem.cartItemId, 1)}
+                              className="grid h-6 w-6 place-items-center rounded text-xs font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
+                              aria-label={`Increase ${recItem.name} quantity`}
+                            >
+                              <FiPlus className="text-[10px]" />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => addToCart(recItem, 0, 1)}
+                            className="touch-target shrink-0 inline-flex items-center gap-1 rounded-lg bg-[var(--orange)] px-2.5 py-1.5 text-xs font-black text-white shadow-xs transition hover:brightness-110 active:scale-95 cursor-pointer"
+                            title={`Add ${recItem.name} to cart`}
+                            aria-label={`Add ${recItem.name} to cart`}
+                          >
+                            <FiPlus className="text-xs stroke-[3]" />
+                            <span>Add</span>
+                          </button>
+                        )}
                       </div>
                     )
                   })}
