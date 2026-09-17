@@ -44,7 +44,7 @@ export default function OrderReceiptPage() {
     : ''
 
   return (
-    <div className="mx-auto max-w-md px-3 py-4 sm:py-6">
+    <div className="mx-auto max-w-md px-3 py-4 sm:py-6 pb-16">
       {/* Top Action Bar */}
       <div className="mb-3 flex items-center justify-between no-print">
         <Link

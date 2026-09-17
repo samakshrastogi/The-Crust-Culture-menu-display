@@ -23,67 +23,78 @@ function AppShell({ theme, onToggleTheme }) {
   const location = useLocation()
   const { cartCount } = useCart()
 
+  const isReceiptPage = location.pathname.startsWith('/order')
+  const isAdminPage =
+    location.pathname.startsWith('/sam') || location.pathname.startsWith('/shivangi')
+  const showFloatingButtons = !isReceiptPage && !isAdminPage
+
   return (
-    <div className="min-h-svh bg-[var(--bg)] text-[var(--text)] pb-24 md:pb-0">
+    <div
+      className={`min-h-svh bg-[var(--bg)] text-[var(--text)] ${
+        isReceiptPage ? 'pb-8' : 'pb-24 md:pb-0'
+      }`}
+    >
       <ScrollProgress />
       <Navbar theme={theme} onToggleTheme={onToggleTheme} />
       <PageTransition>
         <Outlet />
       </PageTransition>
       {location.pathname === '/home' && <Footer />}
-      <FloatingContactButton />
+      {showFloatingButtons && <FloatingContactButton />}
       <BackToTop />
 
       {/* Bottom Navbar for Mobile Screen with Safe-Area Inset Support */}
-      <nav
-        aria-label="Mobile bottom navigation"
-        className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--line)] bg-[var(--surface)]/95 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-xl md:hidden"
-      >
-        <div className="flex justify-around items-center max-w-md mx-auto">
-          <NavLink
-            to="/home"
-            className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 text-[10px] font-black uppercase transition-colors ${
-                isActive ? 'text-[var(--orange)]' : 'text-[var(--muted)]'
-              }`
-            }
-          >
-            <FiHome className="text-lg" />
-            <span>Home</span>
-          </NavLink>
-          
-          <NavLink
-            to="/menu"
-            className={({ isActive }) =>
-              `flex flex-col items-center gap-0.5 text-[10px] font-black uppercase transition-colors ${
-                isActive ? 'text-[var(--orange)]' : 'text-[var(--muted)]'
-              }`
-            }
-          >
-            <FiMenu className="text-lg" />
-            <span>Menu</span>
-          </NavLink>
-          
-          <NavLink
-            to="/cart"
-            className={({ isActive }) =>
-              `relative flex flex-col items-center gap-0.5 text-[10px] font-black uppercase transition-colors ${
-                isActive ? 'text-[var(--orange)]' : 'text-[var(--muted)]'
-              }`
-            }
-          >
-            <div className="relative">
-              <FiShoppingBag className="text-lg" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[var(--orange)] px-1 text-[8px] font-black text-white shadow-xs">
-                  {cartCount}
-                </span>
-              )}
-            </div>
-            <span>Cart</span>
-          </NavLink>
-        </div>
-      </nav>
+      {!isReceiptPage && (
+        <nav
+          aria-label="Mobile bottom navigation"
+          className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--line)] bg-[var(--surface)]/95 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-xl md:hidden print:hidden"
+        >
+          <div className="flex justify-around items-center max-w-md mx-auto">
+            <NavLink
+              to="/home"
+              className={({ isActive }) =>
+                `flex flex-col items-center gap-0.5 text-[10px] font-black uppercase transition-colors ${
+                  isActive ? 'text-[var(--orange)]' : 'text-[var(--muted)]'
+                }`
+              }
+            >
+              <FiHome className="text-lg" />
+              <span>Home</span>
+            </NavLink>
+
+            <NavLink
+              to="/menu"
+              className={({ isActive }) =>
+                `flex flex-col items-center gap-0.5 text-[10px] font-black uppercase transition-colors ${
+                  isActive ? 'text-[var(--orange)]' : 'text-[var(--muted)]'
+                }`
+              }
+            >
+              <FiMenu className="text-lg" />
+              <span>Menu</span>
+            </NavLink>
+
+            <NavLink
+              to="/cart"
+              className={({ isActive }) =>
+                `relative flex flex-col items-center gap-0.5 text-[10px] font-black uppercase transition-colors ${
+                  isActive ? 'text-[var(--orange)]' : 'text-[var(--muted)]'
+                }`
+              }
+            >
+              <div className="relative">
+                <FiShoppingBag className="text-lg" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-[var(--orange)] px-1 text-[8px] font-black text-white shadow-xs">
+                    {cartCount}
+                  </span>
+                )}
+              </div>
+              <span>Cart</span>
+            </NavLink>
+          </div>
+        </nav>
+      )}
     </div>
   )
 }

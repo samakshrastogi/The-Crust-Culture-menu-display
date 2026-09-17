@@ -39,7 +39,7 @@ const floatingActions = [
 export default function FloatingContactButton() {
   return (
     <aside
-      className="fixed bottom-20 right-3.5 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2.5 sm:gap-3 transition-all duration-300"
+      className="fixed bottom-20 right-3.5 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2.5 sm:gap-3 transition-all duration-300 print:hidden"
       aria-label="Quick contact and ordering"
     >
       {floatingActions.map((action) => {

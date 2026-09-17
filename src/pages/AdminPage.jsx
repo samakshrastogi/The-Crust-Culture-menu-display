@@ -5,7 +5,6 @@ import {
   FiDownload,
   FiPhone,
   FiCopy,
-  FiExternalLink,
   FiCheck,
   FiClock,
   FiShoppingBag,
@@ -15,6 +14,8 @@ import {
   FiShield,
   FiRefreshCw,
   FiCalendar,
+  FiX,
+  FiFileText,
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import {
@@ -485,40 +486,60 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* Order Type Filter Pills */}
-        <div className="flex items-center gap-1 shrink-0">
+        {/* Order Type Filter Pills with Live Counts */}
+        <div className="flex items-center gap-1 rounded-xl bg-[var(--surface-strong)]/80 p-0.5 border border-[var(--line)] shrink-0">
           {[
-            { id: 'all', label: 'All Types' },
-            { id: 'dine-in', label: '🍽️ Dine-In' },
-            { id: 'takeaway', label: '🥡 Takeaway' },
+            { id: 'all', label: 'All Types', count: stats.totalOrders },
+            { id: 'dine-in', label: '🍽️ Dine-In', count: stats.dineInCount },
+            { id: 'takeaway', label: '🥡 Takeaway', count: stats.takeawayCount },
           ].map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => setFilterType(tab.id)}
-              className={`rounded-full px-2 py-0.5 text-[10.5px] font-bold transition cursor-pointer ${
+              className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[10.5px] font-bold transition-all cursor-pointer ${
                 filterType === tab.id
-                  ? 'bg-[var(--surface-strong)] border border-[var(--orange)] text-[var(--orange)] ring-1 ring-[var(--orange)]/30'
-                  : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'
+                  ? 'bg-[var(--surface)] border border-[var(--orange)] text-[var(--orange)] shadow-2xs'
+                  : 'text-[var(--muted)] hover:text-[var(--text)]'
               }`}
             >
-              {tab.label}
+              <span>{tab.label}</span>
+              <span
+                className={`rounded-full px-1.5 py-0.2 text-[9px] font-black ${
+                  filterType === tab.id
+                    ? 'bg-orange-500/15 text-[var(--orange)]'
+                    : 'bg-stone-500/10 text-[var(--muted)]'
+                }`}
+              >
+                {tab.count}
+              </span>
             </button>
           ))}
         </div>
       </div>
 
-      {/* Compact Search & Action Bar */}
+      {/* Enhanced Search & Refresh Bar */}
       <div className="flex items-center justify-between gap-2">
         <div className="relative flex-1 min-w-[200px]">
-          <FiSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-[var(--muted)]" />
+          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[var(--muted)]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Escape' && setSearchQuery('')}
             placeholder="Search by customer name, phone, or order ID..."
-            className="w-full rounded-full border border-[var(--line)] bg-[var(--surface)] pl-8 pr-3 py-1.5 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)]"
+            className="w-full rounded-full border border-[var(--line)] bg-[var(--surface)] pl-8 pr-8 py-1.5 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition shadow-2xs"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 grid h-5 w-5 place-items-center rounded-full bg-[var(--surface-strong)] text-[var(--muted)] hover:text-[var(--text)] transition cursor-pointer"
+              title="Clear search"
+            >
+              <FiX className="text-[10px]" />
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
@@ -560,6 +581,19 @@ export default function AdminPage() {
                 ? 'No orders match your search query.'
                 : 'Only orders present in your Excel / Google Sheet will appear here.'}
             </p>
+            {(searchQuery || timeFilter !== 'all' || filterType !== 'all') && (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('')
+                  setTimeFilter('all')
+                  setFilterType('all')
+                }}
+                className="mt-2 inline-flex items-center gap-1 rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-3 py-1 text-xs font-bold text-[var(--orange)] hover:border-[var(--orange)] transition cursor-pointer"
+              >
+                <span>Reset All Filters</span>
+              </button>
+            )}
           </div>
         </div>
       ) : (
@@ -585,8 +619,8 @@ export default function AdminPage() {
                   </span>
                 </div>
 
-                {/* Orders in this Period */}
-                <div className="space-y-1.5">
+                {/* Orders in this Period - Structured Kitchen Ticket Layout */}
+                <div className="space-y-2">
                   {group.orders.map((order) => {
                     const dateStr = order.timestamp
                       ? new Date(order.timestamp).toLocaleString('en-IN', {
@@ -603,132 +637,162 @@ export default function AdminPage() {
                     return (
                       <div
                         key={order.id}
-                        className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:p-3 shadow-2xs transition hover:border-[var(--orange)]/40 space-y-2"
+                        className={`group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3 sm:p-3.5 shadow-2xs transition-all hover:border-[var(--orange)]/60 hover:shadow-sm border-l-4 ${
+                          order.orderType === 'dine-in' ? 'border-l-amber-500' : 'border-l-emerald-500'
+                        }`}
                       >
-                        {/* Row 1: ID, Badges, Time, Price & Top Actions */}
-                        <div className="flex flex-wrap items-center justify-between gap-1.5 border-b border-[var(--line)]/40 pb-1.5">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <span className="font-mono text-xs font-black text-[var(--orange)]">
-                              {order.id}
-                            </span>
-                            <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-1.5 py-0.2 text-[9.5px] font-bold text-[var(--muted)]">
-                              {order.orderType === 'dine-in' ? '🍽️ Dine-In' : '🥡 Takeaway'}
-                            </span>
-                            {order.securityCode && (
-                              <span className="inline-flex items-center gap-0.5 font-mono text-[9.5px] text-emerald-600 dark:text-emerald-400 font-bold">
-                                <FiShield className="text-[8.5px]" />
-                                {order.securityCode}
+                        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-start">
+                          {/* Column 1: Order & Diner Info */}
+                          <div className="md:col-span-4 space-y-1.5 border-b md:border-b-0 md:border-r border-[var(--line)]/50 pb-2.5 md:pb-0 md:pr-3">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-mono text-xs font-black text-[var(--orange)] bg-orange-500/10 px-2 py-0.5 rounded-lg border border-orange-500/20">
+                                #{order.id}
                               </span>
-                            )}
-                            <span className="text-[10px] text-[var(--muted)] flex items-center gap-1 ml-1">
-                              <FiClock className="text-[9px]" />
-                              {dateStr}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <span className="text-sm font-black text-[var(--orange)]">
-                              ₹{order.total}
-                            </span>
-
-                            {/* Compact Action Buttons */}
-                            <button
-                              type="button"
-                              onClick={() => handleCopyLink(order)}
-                              className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2 py-0.5 text-[10px] font-bold text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
-                              title="Copy Verified Order Link"
-                            >
-                              {copiedId === order.id ? (
-                                <>
-                                  <FiCheck className="text-emerald-500 text-[10px]" />
-                                  <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
-                                </>
-                              ) : (
-                                <>
-                                  <FiCopy className="text-[10px]" />
-                                  <span>Copy</span>
-                                </>
-                              )}
-                            </button>
-
-                            {order.receiptUrl && (
-                              <Link
-                                to={
-                                  order.receiptUrl.includes('/order?v=')
-                                    ? `/order?v=${order.receiptUrl.split('?v=')[1]}`
-                                    : order.receiptUrl
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 rounded-full bg-[var(--orange)]/10 border border-[var(--orange)]/30 px-2 py-0.5 text-[10px] font-black text-[var(--orange)] hover:bg-[var(--orange)] hover:text-white transition"
+                              <span
+                                className={`rounded-full px-2 py-0.5 text-[9.5px] font-bold border ${
+                                  order.orderType === 'dine-in'
+                                    ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/25'
+                                    : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25'
+                                }`}
                               >
-                                <FiExternalLink className="text-[10px]" />
-                                <span>Ticket</span>
-                              </Link>
-                            )}
-                          </div>
-                        </div>
+                                {order.orderType === 'dine-in' ? '🍽️ Dine-In' : '🥡 Takeaway'}
+                              </span>
+                            </div>
 
-                        {/* Row 2: Customer Name, Phone & Quick Contact */}
-                        <div className="flex flex-wrap items-center justify-between gap-1.5 text-xs">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-bold text-[var(--text)] text-xs">
-                              {order.customerName || 'Guest'}
-                            </span>
-                            {cleanPhone ? (
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-[var(--muted)] text-[11px]">+91 {cleanPhone}</span>
-                                <a
-                                  href={`tel:+91${cleanPhone}`}
-                                  className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-0.2 text-[9px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20"
-                                  title="Call Customer"
-                                >
-                                  <FiPhone className="text-[8.5px]" />
-                                  <span>Call</span>
-                                </a>
-                                <a
-                                  href={`https://wa.me/91${cleanPhone}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-0.2 text-[9px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20"
-                                  title="Message on WhatsApp"
-                                >
-                                  <FaWhatsapp className="text-[8.5px]" />
-                                  <span>WhatsApp</span>
-                                </a>
+                            <div className="pt-0.5">
+                              <h4 className="text-sm font-black text-[var(--text)] tracking-tight">
+                                {order.customerName || 'Guest Diner'}
+                              </h4>
+                              <div className="flex items-center gap-2 text-[11px] text-[var(--muted)] mt-0.5 flex-wrap">
+                                {cleanPhone ? (
+                                  <>
+                                    <span className="font-medium">+91 {cleanPhone}</span>
+                                    <div className="flex items-center gap-1">
+                                      <a
+                                        href={`tel:+91${cleanPhone}`}
+                                        className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[9px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20 transition"
+                                        title="Call Customer"
+                                      >
+                                        <FiPhone className="text-[8.5px]" />
+                                        <span>Call</span>
+                                      </a>
+                                      <a
+                                        href={`https://wa.me/91${cleanPhone}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[9px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20 transition"
+                                        title="Message on WhatsApp"
+                                      >
+                                        <FaWhatsapp className="text-[8.5px]" />
+                                        <span>WhatsApp</span>
+                                      </a>
+                                    </div>
+                                  </>
+                                ) : (
+                                  <span className="text-[9.5px] italic text-[var(--muted)]">No phone provided</span>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 text-[10px] text-[var(--muted)] pt-0.5">
+                              <FiClock className="text-[10px] text-[var(--muted)]" />
+                              <span>{dateStr}</span>
+                              {order.securityCode && (
+                                <span className="inline-flex items-center gap-0.5 font-mono text-[9px] text-emerald-600 dark:text-emerald-400 font-bold ml-auto">
+                                  <FiShield className="text-[8px]" />
+                                  {order.securityCode}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Column 2: Items & Cooking Notes */}
+                          <div className="md:col-span-5 space-y-2 border-b md:border-b-0 md:border-r border-[var(--line)]/50 pb-2.5 md:pb-0 md:pr-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-black uppercase tracking-wider text-[var(--muted)]">
+                                Ordered Items ({order.items?.reduce((sum, i) => sum + (Number(i.quantity) || 1), 0) || 0})
+                              </span>
+                            </div>
+
+                            {order.items && order.items.length > 0 ? (
+                              <div className="flex flex-wrap gap-1.5">
+                                {order.items.map((item, idx) => (
+                                  <span
+                                    key={idx}
+                                    className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--surface-strong)] px-2 py-1 text-[11px] font-medium text-[var(--text)] border border-[var(--line)] shadow-2xs"
+                                  >
+                                    <span className="rounded bg-orange-500/15 px-1 py-0.2 text-[9.5px] font-black text-[var(--orange)]">
+                                      {item.quantity || 1}x
+                                    </span>
+                                    <span className="font-bold">{item.name}</span>
+                                    {item.size && (
+                                      <span className="text-[9px] text-[var(--muted)]">({item.size})</span>
+                                    )}
+                                  </span>
+                                ))}
                               </div>
                             ) : (
-                              <span className="text-[9.5px] text-[var(--muted)]">No phone provided</span>
+                              <p className="text-[11px] text-[var(--muted)] italic">Items details in verified receipt</p>
+                            )}
+
+                            {/* Cooking / Special Instructions Callout */}
+                            {order.notes && (
+                              <div className="flex items-start gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/25 px-2 py-1.5 text-[10.5px] text-amber-800 dark:text-amber-300">
+                                <span className="shrink-0 font-bold">📝 Note:</span>
+                                <span className="italic font-medium">&ldquo;{order.notes}&rdquo;</span>
+                              </div>
                             )}
                           </div>
-                        </div>
 
-                        {/* Row 3: Items Ordered (Compact Pills) */}
-                        {order.items && order.items.length > 0 && (
-                          <div className="flex flex-wrap gap-1">
-                            {order.items.map((item, idx) => (
-                              <span
-                                key={idx}
-                                className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--text)] border border-[var(--line)]"
-                              >
-                                <span className="font-semibold">{item.name}</span>
-                                {item.size && (
-                                  <span className="text-[8.5px] text-[var(--muted)]">({item.size})</span>
-                                )}
-                                <span className="rounded bg-[var(--surface)] px-1 text-[9px] font-black text-[var(--orange)]">
-                                  x{item.quantity}
-                                </span>
+                          {/* Column 3: Amount & Action Buttons */}
+                          <div className="md:col-span-3 flex flex-col justify-between h-full space-y-2.5 text-left md:text-right md:pl-1">
+                            <div>
+                              <span className="text-[10px] font-bold text-[var(--muted)] uppercase tracking-wider block">
+                                Grand Total
                               </span>
-                            ))}
-                          </div>
-                        )}
+                              <span className="text-xl sm:text-2xl font-black text-[var(--orange)] tracking-tight block">
+                                ₹{order.total}
+                              </span>
+                            </div>
 
-                        {/* Row 4: Notes (if any) */}
-                        {order.notes && (
-                          <p className="text-[10.5px] italic text-[var(--muted)] border-l-2 border-amber-500 pl-1.5 py-0.2">
-                            &ldquo;{order.notes}&rdquo;
-                          </p>
-                        )}
+                            <div className="flex items-center md:justify-end gap-1.5 flex-wrap">
+                              <button
+                                type="button"
+                                onClick={() => handleCopyLink(order)}
+                                className="inline-flex items-center gap-1 rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1 text-[10.5px] font-bold text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer shadow-2xs"
+                                title="Copy Order Link"
+                              >
+                                {copiedId === order.id ? (
+                                  <>
+                                    <FiCheck className="text-emerald-500 text-xs" />
+                                    <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <FiCopy className="text-xs" />
+                                    <span>Copy</span>
+                                  </>
+                                )}
+                              </button>
+
+                              {order.receiptUrl && (
+                                <Link
+                                  to={
+                                    order.receiptUrl.includes('/order?v=')
+                                      ? `/order?v=${order.receiptUrl.split('?v=')[1]}`
+                                      : order.receiptUrl
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 rounded-xl bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-3 py-1 text-[10.5px] font-black text-white hover:brightness-110 transition shadow-2xs"
+                                >
+                                  <FiFileText className="text-xs" />
+                                  <span>Ticket</span>
+                                </Link>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     )
                   })}
