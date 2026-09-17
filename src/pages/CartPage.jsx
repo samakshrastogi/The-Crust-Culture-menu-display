@@ -251,37 +251,35 @@ export default function CartPage() {
   }
 
   return (
-    <div className="mx-auto  px-3 py-4 pb-28 sm:px-6 sm:py-8">
-      {/* Header Banner */}
-      <section className="mb-5 rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-4 sm:p-6 shadow-sm transition-colors">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-[var(--orange)] to-amber-500 text-white shadow-md shadow-orange-500/20">
-              <FiShoppingBag className="text-xl" />
+    <div className="mx-auto px-2.5 py-2.5 pb-20 sm:px-5 sm:py-4">
+      {/* Compact Header Bar */}
+      <section className="mb-3 rounded-2xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 sm:px-4 sm:py-2.5 shadow-2xs transition-colors">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[var(--orange)] to-amber-500 text-white shadow-2xs">
+              <FiShoppingBag className="text-base" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <h1 className="font-display text-xl sm:text-2xl font-black tracking-tight text-[var(--text)]">
+                <h1 className="font-display text-base sm:text-lg font-black tracking-tight text-[var(--text)]">
                   My Cart
                 </h1>
-                <span className="rounded-full bg-[var(--orange)]/10 px-2.5 py-0.5 text-xs font-black text-[var(--orange)] border border-[var(--orange)]/20">
+                <span className="rounded-full bg-[var(--orange)]/10 px-2 py-0.2 text-[10px] sm:text-xs font-black text-[var(--orange)] border border-[var(--orange)]/20">
                   {cartCount} {cartCount === 1 ? 'item' : 'items'}
                 </span>
               </div>
-              <p className="mt-0.5 text-xs text-[var(--muted)]">
-                Review your items and send your order straight to our kitchen on WhatsApp.
+              <p className="text-[10px] sm:text-[11px] text-[var(--muted)] truncate">
+                Direct WhatsApp kitchen confirmation • Zero fee
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Link
-              to="/menu"
-              className="touch-target inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-3.5 py-2 text-xs font-bold text-[var(--text)] transition hover:border-[var(--orange)] hover:text-[var(--orange)]"
-            >
-              <span>+ Add More</span>
-            </Link>
-          </div>
+          <Link
+            to="/menu"
+            className="touch-target shrink-0 inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-3 py-1.5 text-xs font-bold text-[var(--text)] transition hover:border-[var(--orange)] hover:text-[var(--orange)]"
+          >
+            <span>+ Add More</span>
+          </Link>
         </div>
       </section>
 
@@ -381,75 +379,75 @@ export default function CartPage() {
         </div>
       ) : (
         /* Active Cart View */
-        <div className="grid gap-5 lg:grid-cols-12 items-start">
+        <div className="grid gap-3 lg:gap-3.5 lg:grid-cols-12 items-start">
           {/* Left Column: Items List */}
-          <div className="space-y-3 lg:col-span-7">
-            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3 sm:p-4 shadow-sm divide-y divide-[var(--line)]/50">
+          <div className="space-y-2.5 lg:col-span-7">
+            <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:p-3 shadow-2xs divide-y divide-[var(--line)]/40">
               {cart.map((item) => {
                 const itemTotal = item.price * item.quantity
                 return (
-                  <div key={item.cartItemId} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+                  <div key={item.cartItemId} className="flex items-center gap-2.5 py-2 first:pt-0 last:pb-0">
                     {/* Thumbnail */}
-                    <div className="relative h-14 w-14 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-xl border border-[var(--line)] bg-stone-900">
+                    <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-[var(--line)] bg-stone-900">
                       <FoodImage
                         src={item.image}
                         alt={item.name}
                         category="Pizza"
                         className="h-full w-full object-cover"
                       />
-                      <div className="absolute top-1 left-1">
+                      <div className="absolute top-0.5 left-0.5 scale-75 origin-top-left">
                         <VegIndicator veg={item.veg} />
                       </div>
                     </div>
 
                     {/* Details */}
-                    <div className="min-w-0 flex-1 space-y-0.5">
-                      <h3 className="text-xs sm:text-sm font-extrabold text-[var(--text)] truncate">
+                    <div className="min-w-0 flex-1 space-y-0.2">
+                      <h3 className="text-xs sm:text-[13px] font-extrabold text-[var(--text)] truncate">
                         {item.name}
                       </h3>
-                      <div className="flex flex-wrap items-center gap-1.5">
+                      <div className="flex flex-wrap items-center gap-1.5 text-[10.5px]">
                         {item.size && (
-                          <span className="rounded bg-[var(--surface-strong)] px-1.5 py-0.2 text-[10px] font-bold text-[var(--gold)] border border-[var(--line)]">
+                          <span className="rounded bg-[var(--surface-strong)] px-1.5 py-0.2 text-[9px] font-bold text-[var(--gold)] border border-[var(--line)]">
                             {item.size}
                           </span>
                         )}
-                        <span className="text-[11px] font-bold text-[var(--muted)]">
+                        <span className="text-[10px] font-medium text-[var(--muted)]">
                           {formatPrice(item.price)} each
                         </span>
-                      </div>
-                      <div className="text-xs font-black text-[var(--orange)]">
-                        {formatPrice(itemTotal)}
+                        <span className="text-xs font-black text-[var(--orange)]">
+                          • {formatPrice(itemTotal)}
+                        </span>
                       </div>
                     </div>
 
                     {/* Quantity Stepper & Delete */}
                     <div className="flex items-center gap-1.5 shrink-0">
-                      <div className="flex items-center rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] p-0.5 shadow-2xs">
+                      <div className="flex items-center rounded-lg border border-[var(--line)] bg-[var(--surface-strong)] p-0.5 shadow-2xs">
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.cartItemId, -1)}
-                          className="grid h-7 w-7 place-items-center rounded-lg text-xs text-[var(--text)] transition hover:bg-[var(--line)] active:scale-90 cursor-pointer"
+                          className="grid h-6 w-6 place-items-center rounded text-xs text-[var(--text)] transition hover:bg-[var(--line)] active:scale-90 cursor-pointer"
                           aria-label={`Decrease quantity of ${item.name}`}
                         >
-                          <FiMinus className="text-[11px]" />
+                          <FiMinus className="text-[10px]" />
                         </button>
-                        <span className="w-7 text-center text-xs font-black text-[var(--text)]">
+                        <span className="w-5 text-center text-xs font-black text-[var(--text)]">
                           {item.quantity}
                         </span>
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.cartItemId, 1)}
-                          className="grid h-7 w-7 place-items-center rounded-lg text-xs text-[var(--text)] transition hover:bg-[var(--line)] active:scale-90 cursor-pointer"
+                          className="grid h-6 w-6 place-items-center rounded text-xs text-[var(--text)] transition hover:bg-[var(--line)] active:scale-90 cursor-pointer"
                           aria-label={`Increase quantity of ${item.name}`}
                         >
-                          <FiPlus className="text-[11px]" />
+                          <FiPlus className="text-[10px]" />
                         </button>
                       </div>
 
                       <button
                         type="button"
                         onClick={() => removeFromCart(item.cartItemId)}
-                        className="grid h-7 w-7 place-items-center rounded-lg text-[var(--muted)] hover:text-red-500 transition cursor-pointer"
+                        className="grid h-6 w-6 place-items-center rounded text-[var(--muted)] hover:text-red-500 transition cursor-pointer"
                         title="Remove item"
                         aria-label={`Remove ${item.name}`}
                       >
@@ -462,50 +460,53 @@ export default function CartPage() {
             </div>
 
             {/* Special Instructions */}
-            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-sm">
-              <label htmlFor="cooking-notes" className="block text-xs font-black uppercase tracking-wider text-[var(--gold)] mb-1.5">
-                💬 Cooking / Packaging Notes
-              </label>
+            <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:p-2.5 shadow-2xs">
+              <div className="flex items-center justify-between mb-1">
+                <label htmlFor="cooking-notes" className="text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
+                  💬 Cooking / Packaging Notes
+                </label>
+                <span className="text-[9px] text-[var(--muted)]">Optional</span>
+              </div>
               <input
                 id="cooking-notes"
                 type="text"
                 value={cookingInstructions}
                 onChange={(e) => setCookingInstructions(e.target.value)}
                 placeholder="e.g. Extra crisp crust, less spicy, send extra ketchup"
-                className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] px-3 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition"
+                className="w-full rounded-lg border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1.5 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition"
               />
             </div>
 
             {/* Enhanced Smart Recommendations (Occupies Left Empty Space) */}
             {displayedRecommendations.length > 0 && (
-              <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-sm space-y-3">
+              <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:p-3 shadow-2xs space-y-2">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500 text-white text-xs shadow-xs">
+                    <span className="grid h-6 w-6 place-items-center rounded-md bg-gradient-to-br from-amber-400 to-orange-500 text-white text-[10px] shadow-xs">
                       ✨
                     </span>
                     <div>
-                      <h3 className="text-xs font-black uppercase tracking-wider text-[var(--gold)]">
+                      <h3 className="text-[11px] font-black uppercase tracking-wider text-[var(--gold)]">
                         Frequently Ordered Together
                       </h3>
-                      <p className="text-[11px] text-[var(--muted)]">
+                      <p className="text-[10px] text-[var(--muted)]">
                         Complete your meal with our chef's top pairings
                       </p>
                     </div>
                   </div>
-                  <span className="rounded-full bg-[var(--orange)]/10 px-2 py-0.5 text-[10px] font-black text-[var(--orange)] border border-[var(--orange)]/20">
+                  <span className="rounded-full bg-[var(--orange)]/10 px-2 py-0.2 text-[9.5px] font-black text-[var(--orange)] border border-[var(--orange)]/20">
                     Pairings
                   </span>
                 </div>
 
                 {/* Meal Combo Status Bar */}
-                <div className="flex flex-wrap items-center gap-1.5 p-2 rounded-xl bg-[var(--surface-strong)] border border-[var(--line)] text-[11px]">
-                  <span className="text-[10px] uppercase font-black tracking-wider text-[var(--gold)] shrink-0">
-                    Meal Combo:
+                <div className="flex flex-wrap items-center gap-1 p-1 sm:p-1.5 rounded-lg bg-[var(--surface-strong)] border border-[var(--line)] text-[10px]">
+                  <span className="text-[9.5px] uppercase font-black tracking-wider text-[var(--gold)] shrink-0">
+                    Combo:
                   </span>
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] transition-colors ${
+                    className={`inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9.5px] transition-colors ${
                       mealStatus.hasPizza
                         ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black'
                         : 'bg-stone-500/10 text-[var(--muted)] font-medium'
@@ -515,7 +516,7 @@ export default function CartPage() {
                     <span>{mealStatus.hasPizza ? '✓' : '+'}</span>
                   </span>
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] transition-colors ${
+                    className={`inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9.5px] transition-colors ${
                       mealStatus.hasSide
                         ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black'
                         : 'bg-stone-500/10 text-[var(--muted)] font-medium'
@@ -525,7 +526,7 @@ export default function CartPage() {
                     <span>{mealStatus.hasSide ? '✓' : '+'}</span>
                   </span>
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] transition-colors ${
+                    className={`inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9.5px] transition-colors ${
                       mealStatus.hasDrink
                         ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black'
                         : 'bg-stone-500/10 text-[var(--muted)] font-medium'
@@ -535,7 +536,7 @@ export default function CartPage() {
                     <span>{mealStatus.hasDrink ? '✓' : '+'}</span>
                   </span>
                   <span
-                    className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] transition-colors ${
+                    className={`inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded-full text-[9.5px] transition-colors ${
                       mealStatus.hasDip
                         ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-black'
                         : 'bg-stone-500/10 text-[var(--muted)] font-medium'
@@ -547,9 +548,9 @@ export default function CartPage() {
                 </div>
 
                 {/* Quick Category Filter Pills */}
-                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-0.5">
+                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-0.2">
                   {[
-                    { id: 'all', label: 'All Combinations' },
+                    { id: 'all', label: 'All Picks' },
                     { id: 'sides', label: '🍞 Sides' },
                     { id: 'drinks', label: '🥤 Drinks' },
                     { id: 'fries', label: '🍟 Fries' },
@@ -559,9 +560,9 @@ export default function CartPage() {
                       key={tab.id}
                       type="button"
                       onClick={() => setRecCategory(tab.id)}
-                      className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-extrabold transition-all cursor-pointer ${
+                      className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-extrabold transition-all cursor-pointer ${
                         recCategory === tab.id
-                          ? 'bg-[var(--orange)] text-white shadow-xs'
+                          ? 'bg-[var(--orange)] text-white shadow-2xs'
                           : 'bg-[var(--surface-strong)] text-[var(--muted)] hover:text-[var(--text)] border border-[var(--line)]'
                       }`}
                     >
@@ -571,7 +572,7 @@ export default function CartPage() {
                 </div>
 
                 {/* Recommendations 2x2 Grid with In-Card Steppers */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-0.5">
                   {displayedRecommendations.map((recItem) => {
                     const priceVal = recItem.prices?.[0]?.value || '0'
                     const inCartItem = cart.find(
@@ -581,10 +582,10 @@ export default function CartPage() {
                     return (
                       <div
                         key={recItem.id || recItem.name}
-                        className="group flex items-center justify-between gap-2.5 rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] p-2 transition-all hover:border-[var(--orange)]/60 hover:shadow-xs"
+                        className="group flex items-center justify-between gap-2 rounded-lg border border-[var(--line)] bg-[var(--surface-strong)] p-1.5 transition-all hover:border-[var(--orange)]/60 hover:shadow-2xs"
                       >
-                        <div className="flex items-center gap-2.5 min-w-0">
-                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-[var(--line)] bg-stone-900">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-md border border-[var(--line)] bg-stone-900">
                             <FoodImage
                               src={recItem.image || recItem.sectionImage}
                               alt={recItem.name}
@@ -597,15 +598,15 @@ export default function CartPage() {
                           </div>
 
                           <div className="min-w-0">
-                            <h4 className="text-xs font-bold text-[var(--text)] truncate group-hover:text-[var(--orange)]">
+                            <h4 className="text-[11.5px] font-bold text-[var(--text)] truncate group-hover:text-[var(--orange)]">
                               {recItem.name}
                             </h4>
-                            <div className="flex items-center gap-1 text-[11px] mt-0.5">
+                            <div className="flex items-center gap-1 text-[10.5px]">
                               <span className="font-black text-[var(--orange)]">
                                 {formatPrice(priceVal)}
                               </span>
                               {recItem.pairingBadge && (
-                                <span className="rounded bg-amber-500/10 px-1.5 py-0.2 text-[9.5px] font-bold text-amber-600 dark:text-amber-400 border border-amber-500/20 truncate">
+                                <span className="rounded bg-amber-500/10 px-1 py-0.2 text-[8.5px] font-bold text-amber-600 dark:text-amber-400 border border-amber-500/20 truncate">
                                   {recItem.pairingBadge}
                                 </span>
                               )}
@@ -615,36 +616,36 @@ export default function CartPage() {
 
                         {/* Interactive In-Card Stepper / Add Button */}
                         {inCartItem ? (
-                          <div className="shrink-0 flex items-center rounded-lg border border-[#ea580c] bg-orange-50/80 dark:bg-orange-950/40 p-0.5 shadow-2xs">
+                          <div className="shrink-0 flex items-center rounded-md border border-[#ea580c] bg-orange-50/80 dark:bg-orange-950/40 p-0.5 shadow-2xs">
                             <button
                               type="button"
                               onClick={() => updateQuantity(inCartItem.cartItemId, -1)}
-                              className="grid h-6 w-6 place-items-center rounded text-xs font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
+                              className="grid h-5 w-5 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
                               aria-label={`Decrease ${recItem.name} quantity`}
                             >
-                              <FiMinus className="text-[10px]" />
+                              <FiMinus className="text-[9px]" />
                             </button>
-                            <span className="w-5 text-center text-xs font-black text-[#ea580c]">
+                            <span className="w-4 text-center text-[11px] font-black text-[#ea580c]">
                               {inCartItem.quantity}
                             </span>
                             <button
                               type="button"
                               onClick={() => updateQuantity(inCartItem.cartItemId, 1)}
-                              className="grid h-6 w-6 place-items-center rounded text-xs font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
+                              className="grid h-5 w-5 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
                               aria-label={`Increase ${recItem.name} quantity`}
                             >
-                              <FiPlus className="text-[10px]" />
+                              <FiPlus className="text-[9px]" />
                             </button>
                           </div>
                         ) : (
                           <button
                             type="button"
                             onClick={() => addToCart(recItem, 0, 1)}
-                            className="touch-target shrink-0 inline-flex items-center gap-1 rounded-lg bg-[var(--orange)] px-2.5 py-1.5 text-xs font-black text-white shadow-xs transition hover:brightness-110 active:scale-95 cursor-pointer"
+                            className="touch-target shrink-0 inline-flex items-center gap-0.5 rounded-md bg-[var(--orange)] px-2 py-1 text-[11px] font-black text-white shadow-2xs transition hover:brightness-110 active:scale-95 cursor-pointer"
                             title={`Add ${recItem.name} to cart`}
                             aria-label={`Add ${recItem.name} to cart`}
                           >
-                            <FiPlus className="text-xs stroke-[3]" />
+                            <FiPlus className="text-[10px] stroke-[3]" />
                             <span>Add</span>
                           </button>
                         )}
@@ -657,15 +658,15 @@ export default function CartPage() {
           </div>
 
           {/* Right Column: Order Details & WhatsApp Action */}
-          <div className="space-y-3.5 lg:col-span-5">
+          <div className="space-y-2.5 lg:col-span-5">
             {/* Order Type & Diner Info Card */}
-            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-sm space-y-3">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
+            <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:p-3 shadow-2xs space-y-2">
+              <span className="text-[9.5px] font-black uppercase tracking-wider text-[var(--gold)]">
                 Select Order Type
               </span>
 
               {/* Order Type Selector */}
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-1.5">
                 {[
                   { id: 'dine-in', label: '🍽️ Dine-In' },
                   { id: 'takeaway', label: '🥡 Takeaway' },
@@ -674,7 +675,7 @@ export default function CartPage() {
                     key={t.id}
                     type="button"
                     onClick={() => setOrderType(t.id)}
-                    className={`rounded-xl py-2 px-1 text-center text-xs font-bold border transition-all cursor-pointer ${
+                    className={`rounded-lg py-1.5 px-1 text-center text-xs font-bold border transition-all cursor-pointer ${
                       orderType === t.id
                         ? 'border-[var(--orange)] bg-[var(--orange)]/10 text-[var(--orange)] ring-1 ring-[var(--orange)]/50'
                         : 'border-[var(--line)] bg-[var(--surface-strong)] text-[var(--muted)] hover:text-[var(--text)]'
@@ -686,20 +687,20 @@ export default function CartPage() {
               </div>
 
               {/* Customer Name (Required) */}
-              <div className="space-y-1 pt-0.5">
+              <div className="space-y-0.5">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="customer-name" className="block text-[11px] font-bold text-[var(--text)]">
+                  <label htmlFor="customer-name" className="block text-[10.5px] font-bold text-[var(--text)]">
                     Your Name <span className="text-[var(--orange)]">*</span>
                   </label>
                   {nameError && (
-                    <span className="flex items-center gap-1 text-[10px] font-bold text-red-500">
-                      <FiAlertCircle className="text-[11px]" />
+                    <span className="flex items-center gap-0.5 text-[9.5px] font-bold text-red-500">
+                      <FiAlertCircle className="text-[10px]" />
                       {nameError}
                     </span>
                   )}
                 </div>
                 <div className="relative">
-                  <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs" />
+                  <FiUser className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs" />
                   <input
                     id="customer-name"
                     type="text"
@@ -710,7 +711,7 @@ export default function CartPage() {
                       if (e.target.value.trim()) setNameError('')
                     }}
                     placeholder="Enter your name"
-                    className={`w-full rounded-xl border bg-[var(--surface-strong)] pl-8 pr-3 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none transition ${
+                    className={`w-full rounded-lg border bg-[var(--surface-strong)] pl-7 pr-2.5 py-1.5 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none transition ${
                       nameError ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-[var(--line)] focus:border-[var(--orange)]'
                     }`}
                   />
@@ -718,20 +719,20 @@ export default function CartPage() {
               </div>
 
               {/* Customer Phone Number (Required) */}
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="customer-phone" className="block text-[11px] font-bold text-[var(--text)]">
+                  <label htmlFor="customer-phone" className="block text-[10.5px] font-bold text-[var(--text)]">
                     Mobile Number <span className="text-[var(--orange)]">*</span>
                   </label>
                   {phoneError && (
-                    <span className="flex items-center gap-1 text-[10px] font-bold text-red-500">
-                      <FiAlertCircle className="text-[11px]" />
+                    <span className="flex items-center gap-0.5 text-[9.5px] font-bold text-red-500">
+                      <FiAlertCircle className="text-[10px]" />
                       {phoneError}
                     </span>
                   )}
                 </div>
                 <div className="relative flex items-center">
-                  <span className="absolute left-3 text-xs font-bold text-[var(--muted)] select-none">
+                  <span className="absolute left-2.5 text-[11px] font-bold text-[var(--muted)] select-none">
                     +91
                   </span>
                   <input
@@ -746,35 +747,35 @@ export default function CartPage() {
                       if (clean.length === 10) setPhoneError('')
                     }}
                     placeholder="10-digit mobile number"
-                    className={`w-full rounded-xl border bg-[var(--surface-strong)] pl-11 pr-3 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none transition font-medium tracking-wide ${
+                    className={`w-full rounded-lg border bg-[var(--surface-strong)] pl-10 pr-2.5 py-1.5 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none transition font-medium tracking-wide ${
                       phoneError ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-[var(--line)] focus:border-[var(--orange)]'
                     }`}
                   />
                 </div>
-                <p className="text-[9.5px] text-[var(--muted)]">
+                <p className="text-[9px] text-[var(--muted)]">
                   Saved on this device for one-tap reorders
                 </p>
               </div>
             </div>
 
             {/* Bill Breakdown Card */}
-            <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-sm space-y-2.5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[var(--gold)]">
+            <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:p-3 shadow-2xs space-y-2">
+              <span className="text-[9.5px] font-black uppercase tracking-wider text-[var(--gold)]">
                 Bill Breakdown
               </span>
 
-              <div className="space-y-1.5 text-xs">
-                <div className="flex justify-between text-[var(--muted)]">
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between text-[11px] text-[var(--muted)]">
                   <span>Item Subtotal ({cartCount} items)</span>
                   <span className="font-bold text-[var(--text)]">{formatPrice(cartTotal)}</span>
                 </div>
-                <div className="flex justify-between text-[var(--muted)]">
+                <div className="flex justify-between text-[11px] text-[var(--muted)]">
                   <span>Packaging Charges</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">₹0 Free</span>
                 </div>
-                <div className="pt-2 border-t border-[var(--line)] flex justify-between items-baseline">
-                  <span className="font-extrabold text-sm text-[var(--text)]">Grand Total</span>
-                  <span className="text-xl sm:text-2xl font-black text-[var(--orange)]">
+                <div className="pt-1.5 border-t border-[var(--line)] flex justify-between items-baseline">
+                  <span className="font-extrabold text-xs sm:text-sm text-[var(--text)]">Grand Total</span>
+                  <span className="text-lg sm:text-xl font-black text-[var(--orange)]">
                     {formatPrice(cartTotal)}
                   </span>
                 </div>
@@ -784,40 +785,40 @@ export default function CartPage() {
               <button
                 type="button"
                 onClick={handleSendWhatsAppOrder}
-                className="touch-target group relative mt-2 flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#075E54] via-[#128C7E] to-[#25D366] px-4 py-3.5 text-white shadow-lg shadow-emerald-600/25 transition-all duration-200 hover:brightness-110 hover:scale-[1.01] active:scale-[0.99] border border-white/20 cursor-pointer"
+                className="touch-target group relative mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#075E54] via-[#128C7E] to-[#25D366] px-3.5 py-2.5 text-white shadow-md shadow-emerald-600/25 transition-all duration-200 hover:brightness-110 hover:scale-[1.005] active:scale-[0.99] border border-white/20 cursor-pointer"
               >
-                <FaWhatsapp className="text-xl shrink-0" />
+                <FaWhatsapp className="text-lg shrink-0" />
                 <div className="text-left">
-                  <div className="text-sm sm:text-base font-black tracking-wide leading-none">
+                  <div className="text-sm font-black tracking-wide leading-none">
                     Send Order on WhatsApp
                   </div>
-                  <div className="text-[10px] text-emerald-100 font-medium mt-0.5">
-                    Direct confirmation with cafe kitchen • Zero commission
+                  <div className="text-[9.5px] text-emerald-100 font-medium mt-0.5">
+                    Direct confirmation with kitchen • Zero commission
                   </div>
                 </div>
               </button>
 
               {/* Tamper-proof Security Note */}
-              <div className="flex items-center justify-center gap-1.5 pt-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-                <FiShield className="text-xs shrink-0" />
+              <div className="flex items-center justify-center gap-1 pt-0.5 text-[9.5px] font-bold text-emerald-600 dark:text-emerald-400">
+                <FiShield className="text-[11px] shrink-0" />
                 <span>Tamper-proof verified kitchen ticket included</span>
               </div>
 
               {/* Direct Phone Support */}
-              <div className="flex items-center justify-center gap-1.5 pt-1 text-[11px] text-[var(--muted)]">
+              <div className="flex items-center justify-center gap-1 pt-0.5 text-[10px] text-[var(--muted)]">
                 <span>Need quick help?</span>
                 <a
                   href={CAFE_INFO.phone.tel}
-                  className="inline-flex items-center gap-1 font-bold text-[var(--orange)] hover:underline"
+                  className="inline-flex items-center gap-0.5 font-bold text-[var(--orange)] hover:underline"
                 >
-                  <FiPhone className="text-xs" />
+                  <FiPhone className="text-[10px]" />
                   <span>Call {CAFE_INFO.phone.display}</span>
                 </a>
               </div>
             </div>
 
             {/* Cafe Assurance Strip */}
-            <div className="flex items-center justify-around rounded-xl border border-[var(--line)]/50 bg-[var(--surface-strong)]/30 py-2 px-2 text-[10px] font-bold text-[var(--muted)] text-center">
+            <div className="flex items-center justify-around rounded-lg border border-[var(--line)]/50 bg-[var(--surface-strong)]/30 py-1.5 px-2 text-[9px] font-bold text-[var(--muted)] text-center">
               <span className="flex items-center gap-1">
                 <FiCheckCircle className="text-emerald-500" />
                 100% Pure Veg
