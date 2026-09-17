@@ -117,14 +117,14 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
     >
       <div
         ref={sheetRef}
-        className="modal-scroll relative max-h-[92svh] w-full overflow-y-auto rounded-t-3xl border border-[var(--line)] bg-[var(--surface)] shadow-2xl sm:max-w-md sm:rounded-3xl"
+        className="no-scrollbar relative max-h-[92svh] w-full overflow-y-auto rounded-t-3xl border border-[var(--line)] bg-[var(--surface)] text-[var(--text)] shadow-2xl sm:max-w-md sm:rounded-3xl"
       >
         {/* Mobile drag handle */}
         <div className="absolute top-2 left-1/2 -translate-x-1/2 w-10 h-1 rounded-full bg-white/40 z-20 pointer-events-none sm:hidden" />
 
-        {/* Hero Food Media with Tap-to-Zoom Lightbox Trigger */}
+        {/* Hero Food Media - Compact height to fit on screen */}
         <div
-          className="group/hero relative h-36 sm:h-44 w-full overflow-hidden bg-stone-900 cursor-zoom-in"
+          className="group/hero relative h-28 sm:h-36 w-full overflow-hidden bg-stone-900 cursor-zoom-in"
           onClick={() => setIsLightboxOpen(true)}
           title="Click to view full photo & zoom"
         >
@@ -137,8 +137,8 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             data-sheet-img
           />
           {/* Subtle top and bottom dark gradient vignettes for maximum contrast */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-black/60 to-transparent" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-black/60 to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-black/60 to-transparent" />
 
           {/* Close button */}
           <button
@@ -183,18 +183,18 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
           </div>
         </div>
 
-        {/* Card Content Body - Pixel-perfect match to target Image 2 */}
-        <div className="space-y-3.5 p-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:p-5 bg-white dark:bg-stone-900">
+        {/* Card Content Body - Compact & Fully Theme Responsive */}
+        <div className="space-y-2.5 p-3.5 pb-[max(0.85rem,env(safe-area-inset-bottom))] sm:p-4 bg-[var(--surface)] text-[var(--text)]">
           {/* Header Row: Category + Dietary + Title + Favorite */}
-          <div data-sheet-item className="space-y-1">
+          <div data-sheet-item className="space-y-0.5">
             <div className="flex items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-1.5">
                 <VegIndicator veg={item.veg} />
-                <span className="inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-950/50 border border-amber-200/80 dark:border-amber-700/50 px-2.5 py-0.5 text-[9.5px] font-extrabold uppercase tracking-wider text-amber-800 dark:text-amber-300">
+                <span className="inline-flex items-center rounded-full bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-amber-800 dark:text-amber-300">
                   {item.sectionTitle}
                 </span>
                 {showFlavorBadgeInBody && (
-                  <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[9.5px] font-extrabold uppercase tracking-wider ${flavorBadge.badgeClass}`}>
+                  <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${flavorBadge.badgeClass}`}>
                     <span>{flavorBadge.emoji}</span>
                     <span>{flavorBadge.label}</span>
                   </span>
@@ -205,10 +205,10 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
               <button
                 type="button"
                 onClick={(event) => onToggleFavorite(item.id, event.currentTarget)}
-                className={`grid h-8 w-8 shrink-0 place-items-center rounded-full border transition-all duration-200 active:scale-90 ${
+                className={`grid h-7 w-7 sm:h-8 sm:w-8 shrink-0 place-items-center rounded-full border transition-all duration-200 active:scale-90 ${
                   isFavorite
                     ? 'border-orange-500 bg-orange-500 text-white shadow-xs shadow-orange-500/30'
-                    : 'border-stone-200 dark:border-stone-700 bg-stone-50/80 dark:bg-stone-800/80 text-stone-600 dark:text-stone-400 hover:border-red-400 hover:text-red-500'
+                    : 'border-[var(--line)] bg-[var(--surface-strong)]/50 text-[var(--muted)] hover:border-red-400 hover:text-red-500'
                 }`}
                 aria-label={isFavorite ? `Remove ${item.name} from favorites` : `Add ${item.name} to favorites`}
               >
@@ -216,43 +216,43 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
               </button>
             </div>
 
-            {/* Sans-serif bold title matching Image 2 */}
-            <h2 className="font-sans text-2xl sm:text-[26px] font-extrabold leading-tight tracking-tight text-stone-900 dark:text-stone-50 pt-0.5">
+            {/* Sans-serif bold title */}
+            <h2 className="font-sans text-xl sm:text-2xl font-extrabold leading-tight tracking-tight text-[var(--text)] pt-0.5">
               {item.name}
             </h2>
 
             {/* Description Subtitle */}
-            <p className="text-xs sm:text-[13px] leading-relaxed text-stone-500 dark:text-stone-400 font-normal">
+            <p className="text-[11.5px] sm:text-xs leading-tight text-[var(--muted)] font-normal line-clamp-2">
               {item.description || (isPizza ? 'A perfect blend of fresh veggies and melted cheese.' : 'Crafted fresh with authentic ingredients and rich flavors.')}
             </p>
           </div>
 
-          {/* Fresh Ingredients & Toppings - Exact Image 2 Card */}
+          {/* Fresh Ingredients & Toppings - Compact Card */}
           {cleanToppings && (
-            <div data-sheet-item className="rounded-xl border border-stone-200/80 dark:border-stone-800 bg-[#fdfbf7] dark:bg-stone-800/40 p-3 shadow-2xs flex items-center gap-3">
-              <div className="shrink-0 text-emerald-600">
-                <svg viewBox="0 0 24 24" className="w-6 h-6 fill-emerald-600" fill="currentColor">
+            <div data-sheet-item className="rounded-xl border border-[var(--line)] bg-[#fdfbf7] dark:bg-[#261b15] px-3 py-1.5 sm:py-2 shadow-2xs flex items-center gap-2.5">
+              <div className="shrink-0 text-emerald-600 dark:text-emerald-400">
+                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" fill="currentColor">
                   <path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66C7.45 17.55 9.4 12.5 17 11V8z" />
                   <path d="M3.5 13c1.5 0 4.5-1 6.5-3.5 3-3.7 4-8.5 4-8.5s-4.8 1-8.5 4C3 7.5 2 10.5 2 12c0 .5.5 1 1.5 1z" />
                   <path d="M12.5 17c1.5 0 4-1 5.5-3 2.5-3 3-7 3-7s-4 1-7 3.5c-2 1.8-2.5 4.5-2.5 5.5 0 .5.3 1 1 1z" />
                 </svg>
               </div>
               <div className="min-w-0 flex-1">
-                <div className="text-[10.5px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                <div className="text-[10px] font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                   Fresh Ingredients & Toppings
                 </div>
-                <p className="text-xs sm:text-[13px] font-medium text-stone-800 dark:text-stone-200 leading-snug mt-0.5">
+                <p className="text-[11.5px] sm:text-xs font-medium text-[var(--text)] leading-snug mt-0.5">
                   {cleanToppings}
                 </p>
               </div>
             </div>
           )}
 
-          {/* Pricing & Size Selection - Frameless Direct Grid matching Image 2 */}
+          {/* Pricing & Size Selection - Compact Grid */}
           {item.prices && item.prices.length > 1 ? (
-            <div data-sheet-item className="space-y-2">
+            <div data-sheet-item className="space-y-1.5">
               <div className="flex items-center justify-between px-0.5">
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-stone-700 dark:text-stone-300">
+                <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-[var(--muted)]">
                   Select Size & Portion
                 </span>
                 {selectedPriceObj && (
@@ -261,7 +261,7 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                   </span>
                 )}
               </div>
-              <div className={`grid gap-2 sm:gap-2.5 ${item.prices.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+              <div className={`grid gap-1.5 sm:gap-2 ${item.prices.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
                 {item.prices.map((price, idx) => {
                   const isSelected = selectedSizeIndex === idx
                   const label = price.label || (idx === 0 ? 'S' : idx === 1 ? 'M' : 'L')
@@ -271,34 +271,34 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                       key={`${price.label}-${price.value}-${idx}`}
                       type="button"
                       onClick={() => setSelectedSizeIndex(idx)}
-                      className={`relative rounded-xl sm:rounded-2xl py-2 px-1.5 sm:py-2.5 sm:px-2 flex flex-col items-center justify-between transition-all duration-150 cursor-pointer shadow-2xs ${
+                      className={`relative rounded-xl py-1.5 px-1 sm:py-2 sm:px-1.5 flex flex-col items-center justify-between transition-all duration-150 cursor-pointer shadow-2xs min-h-[58px] ${
                         isSelected
-                          ? 'border-2 border-[#ea580c] bg-orange-50/50 dark:bg-orange-950/25'
-                          : 'border border-stone-200 dark:border-stone-700/80 bg-white dark:bg-stone-800/60 hover:border-orange-200'
+                          ? 'border-2 border-[#ea580c] bg-orange-50/70 dark:bg-orange-950/30'
+                          : 'border border-[var(--line)] bg-[var(--surface)] hover:border-orange-300 dark:hover:border-orange-800'
                       }`}
                     >
                       {isSelected && (
-                        <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-[#ea580c] text-white flex items-center justify-center text-[9px] font-black shadow-xs">
+                        <div className="absolute top-1 right-1 w-3.5 h-3.5 rounded-full bg-[#ea580c] text-white flex items-center justify-center text-[8px] font-black shadow-xs">
                           ✓
                         </div>
                       )}
-                      <div className="flex items-center gap-1 sm:gap-1.5 mb-1">
+                      <div className="flex items-center gap-1 mb-0.5">
                         <span
-                          className={`grid h-5 w-5 place-items-center rounded-full text-[10px] font-black ${
+                          className={`grid h-4.5 w-4.5 place-items-center rounded-full text-[9px] font-black ${
                             isSelected
                               ? 'bg-[#ea580c] text-white shadow-xs'
-                              : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300'
+                              : 'bg-[var(--surface-strong)] text-[var(--muted)]'
                           }`}
                         >
                           {label}
                         </span>
                         {subLabel && (
-                          <span className={`text-[11px] sm:text-xs font-semibold truncate ${isSelected ? 'text-stone-800 dark:text-stone-200' : 'text-stone-600 dark:text-stone-400'}`}>
+                          <span className={`text-[10.5px] sm:text-[11px] font-semibold truncate ${isSelected ? 'text-[var(--text)]' : 'text-[var(--muted)]'}`}>
                             {subLabel}
                           </span>
                         )}
                       </div>
-                      <span className="text-base sm:text-lg font-black text-stone-900 dark:text-white">
+                      <span className="text-sm sm:text-base font-black text-[var(--text)]">
                         {formatPrice(price.value)}
                       </span>
                     </button>
@@ -310,54 +310,54 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             item.prices && item.prices.length === 1 && (
               <div
                 data-sheet-item
-                className="relative overflow-hidden rounded-xl border border-stone-200/90 dark:border-stone-800 bg-[#fdfbf7] dark:bg-stone-800/40 px-3.5 py-2.5 shadow-2xs flex items-center justify-between"
+                className="relative overflow-hidden rounded-xl border border-[var(--line)] bg-[#fdfbf7] dark:bg-[#261b15] px-3 py-2 shadow-2xs flex items-center justify-between"
               >
                 <div className="space-y-0.5">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-stone-700 dark:text-stone-300">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-[var(--muted)]">
                     Standard Fresh Portion
                   </span>
-                  <p className="text-xs font-semibold text-stone-500 dark:text-stone-400">
+                  <p className="text-xs font-semibold text-[var(--text)]">
                     {item.prices[0].label || 'Regular Portion'}
                   </p>
                 </div>
 
                 <div className="text-right">
-                  <span className="text-xl sm:text-2xl font-black tracking-tight text-[#ea580c]">
+                  <span className="text-lg sm:text-xl font-black tracking-tight text-[#ea580c]">
                     {formatPrice(item.prices[0].value)}
                   </span>
-                  <span className="block text-[9px] font-medium text-stone-400">Taxes Included</span>
+                  <span className="block text-[8px] font-medium text-[var(--muted)]">Taxes Included</span>
                 </div>
               </div>
             )
           )}
 
           {/* Primary Action: Add to Cart / Quantity Controller */}
-          <div data-sheet-item className="space-y-2.5 pt-0.5">
+          <div data-sheet-item className="space-y-2 pt-0.5">
             {currentQuantity > 0 ? (
-              <div className="flex w-full items-center justify-between rounded-2xl bg-gradient-to-r from-[#ea580c] via-[#ea580c] to-[#e65100] p-2 text-white shadow-lg shadow-orange-500/25">
+              <div className="flex w-full items-center justify-between rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#ea580c] via-[#ea580c] to-[#e65100] p-1.5 sm:p-2 text-white shadow-lg shadow-orange-500/25">
                 {/* Decrement Button */}
                 <button
                   type="button"
                   onClick={() => updateQuantity(currentCartItemId, -1)}
-                  className="grid h-11 w-11 place-items-center rounded-xl bg-white text-[#ea580c] shadow-sm hover:bg-orange-50 active:scale-95 transition-all cursor-pointer font-black"
+                  className="grid h-9.5 w-9.5 sm:h-10.5 sm:w-10.5 place-items-center rounded-lg sm:rounded-xl bg-white text-[#ea580c] shadow-sm hover:bg-orange-50 active:scale-95 transition-all cursor-pointer font-black"
                   aria-label="Decrease quantity"
                   title="Decrease quantity"
                 >
-                  <FiMinus className="text-lg stroke-[3]" />
+                  <FiMinus className="text-base sm:text-lg stroke-[3]" />
                 </button>
 
                 {/* Current Quantity & Item Total Info */}
-                <div className="flex flex-col items-center justify-center px-2 select-none">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base sm:text-[17px] font-black tracking-tight text-white">
+                <div className="flex flex-col items-center justify-center px-1.5 select-none">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm sm:text-base font-black tracking-tight text-white">
                       {currentQuantity} in Cart
                     </span>
-                    <span className="h-4 w-px bg-white/30" />
-                    <span className="rounded-lg bg-[#b43403] px-2.5 py-0.5 text-sm font-black text-white shadow-xs">
+                    <span className="h-3.5 w-px bg-white/30" />
+                    <span className="rounded-lg bg-[#b43403] px-2 py-0.5 text-xs sm:text-sm font-black text-white shadow-xs">
                       ₹{(currentCartItem?.price || selectedPriceObj?.value || 0) * currentQuantity}
                     </span>
                   </div>
-                  <span className="text-[11px] font-medium text-white/90 mt-0.5">
+                  <span className="text-[10px] sm:text-[10.5px] font-medium text-white/90 mt-0.5">
                     {formatPrice(selectedPriceObj?.value || 0)} each • Tap - or +
                   </span>
                 </div>
@@ -366,11 +366,11 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                 <button
                   type="button"
                   onClick={() => updateQuantity(currentCartItemId, 1)}
-                  className="grid h-11 w-11 place-items-center rounded-xl bg-white text-[#ea580c] shadow-sm hover:bg-orange-50 active:scale-95 transition-all cursor-pointer font-black"
+                  className="grid h-9.5 w-9.5 sm:h-10.5 sm:w-10.5 place-items-center rounded-lg sm:rounded-xl bg-white text-[#ea580c] shadow-sm hover:bg-orange-50 active:scale-95 transition-all cursor-pointer font-black"
                   aria-label="Increase quantity"
                   title="Increase quantity"
                 >
-                  <FiPlus className="text-lg stroke-[3]" />
+                  <FiPlus className="text-base sm:text-lg stroke-[3]" />
                 </button>
               </div>
             ) : (
@@ -379,52 +379,52 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                 onClick={() => {
                   addToCart(item, selectedSizeIndex, 1)
                 }}
-                className="group flex w-full items-center justify-between rounded-2xl bg-gradient-to-r from-[#ea580c] via-[#ea580c] to-[#e65100] p-2.5 text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:brightness-105 active:scale-[0.99] cursor-pointer"
+                className="group flex w-full items-center justify-between rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#ea580c] via-[#ea580c] to-[#e65100] p-2 sm:p-2.5 text-white shadow-lg shadow-orange-500/25 transition-all duration-200 hover:brightness-105 active:scale-[0.99] cursor-pointer"
               >
-                <div className="flex items-center gap-2.5 pl-2">
-                  <span className="grid h-9 w-9 place-items-center rounded-xl bg-white/20 text-white backdrop-blur-xs">
-                    <FiShoppingBag className="text-lg" />
+                <div className="flex items-center gap-2 pl-1.5">
+                  <span className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-lg bg-white/20 text-white backdrop-blur-xs">
+                    <FiShoppingBag className="text-base" />
                   </span>
-                  <span className="text-base font-black tracking-wide">
+                  <span className="text-sm sm:text-base font-black tracking-wide">
                     Add to Cart
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 rounded-xl bg-white text-[#ea580c] px-3.5 py-2 shadow-sm font-black text-sm">
+                <div className="flex items-center gap-1 rounded-lg bg-white text-[#ea580c] px-3 py-1.5 shadow-sm font-black text-xs sm:text-sm">
                   <span>
                     {formatPrice(selectedPriceObj?.value || 0)}
                   </span>
-                  <span className="text-base leading-none">+</span>
+                  <span className="text-sm leading-none">+</span>
                 </div>
               </button>
             )}
 
-            {/* Full-width Outlined View Cart Button matching Image 2 */}
+            {/* Full-width Outlined View Cart Button */}
             {cartCount > 0 && (
               <Link
                 to="/cart"
                 onClick={onClose}
-                className="flex w-full items-center justify-center gap-1.5 py-3 px-4 rounded-2xl border border-[#ea580c]/40 bg-[#fffaf5] dark:bg-orange-950/20 text-[#ea580c] font-extrabold text-sm shadow-2xs hover:bg-orange-100/60 active:scale-[0.99] transition-all group/viewcart"
+                className="flex w-full items-center justify-center gap-1.5 py-2 sm:py-2.5 px-3 rounded-xl sm:rounded-2xl border border-[#ea580c]/40 bg-orange-500/10 hover:bg-orange-500/15 text-[#ea580c] font-extrabold text-xs sm:text-sm shadow-2xs active:scale-[0.99] transition-all group/viewcart"
               >
                 <span>View Cart ({cartCount} {cartCount === 1 ? 'item' : 'items'})</span>
-                <FiArrowRight className="text-sm stroke-[2.5] transition-transform group-hover/viewcart:translate-x-0.5" />
+                <FiArrowRight className="text-xs sm:text-sm stroke-[2.5] transition-transform group-hover/viewcart:translate-x-0.5" />
               </Link>
             )}
           </div>
 
-          {/* Cafe Quality Footer Accents - 3-column with vertical dividers matching Image 2 */}
-          <div data-sheet-item className="flex items-center justify-center gap-3 sm:gap-5 py-2 pt-3 border-t border-stone-100 dark:border-stone-800 text-xs font-semibold text-stone-700 dark:text-stone-300">
-            <div className="flex items-center gap-1.5">
-              <span className="text-base">🍃</span>
+          {/* Cafe Quality Footer Accents - Compact */}
+          <div data-sheet-item className="flex items-center justify-center gap-2.5 sm:gap-4 py-1.5 pt-2 border-t border-[var(--line)] text-[10.5px] sm:text-xs font-semibold text-[var(--muted)]">
+            <div className="flex items-center gap-1">
+              <span className="text-sm">🍃</span>
               <span>100% Pure Veg</span>
             </div>
-            <span className="h-3.5 w-px bg-stone-200 dark:bg-stone-700" />
-            <div className="flex items-center gap-1.5">
-              <span className="text-base">🔥</span>
+            <span className="h-3 w-px bg-[var(--line)]" />
+            <div className="flex items-center gap-1">
+              <span className="text-sm">🔥</span>
               <span>Wood-Fired</span>
             </div>
-            <span className="h-3.5 w-px bg-stone-200 dark:bg-stone-700" />
-            <div className="flex items-center gap-1.5">
-              <span className="text-base">👨‍🍳</span>
+            <span className="h-3 w-px bg-[var(--line)]" />
+            <div className="flex items-center gap-1">
+              <span className="text-sm">👨‍🍳</span>
               <span>Baked Fresh</span>
             </div>
           </div>

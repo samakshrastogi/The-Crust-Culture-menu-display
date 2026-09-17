@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "./styles/swiper.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --bg: #fffaf0;
   --bg-soft: #fff4dc;
