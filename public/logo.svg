@@ -98,7 +98,7 @@
     <path d="M120 90 C 116 99 113 107 113 116 C 113 122 116 126 120 126 C 124 126 127 122 127 116 C 127 107 124 99 120 90 Z" fill="#ffffff" />
   </g>
 
-  <!-- Golden Wheat Ears / Artisan Stalks (Left) -->
+  <!-- Golden Wheat Ears / Stalks (Left) -->
   <g fill="url(#goldBorder)" opacity="0.85">
     <ellipse cx="44" cy="116" rx="3.5" ry="8" transform="rotate(-30 44 116)" />
     <ellipse cx="40" cy="132" rx="3.5" ry="8" transform="rotate(-20 40 132)" />
@@ -106,7 +106,7 @@
     <path d="M42 106 Q 40 136 46 166" stroke="url(#goldBorder)" stroke-width="1.8" fill="none" stroke-linecap="round" />
   </g>
 
-  <!-- Golden Wheat Ears / Artisan Stalks (Right) -->
+  <!-- Golden Wheat Ears / Stalks (Right) -->
   <g fill="url(#goldBorder)" opacity="0.85">
     <ellipse cx="196" cy="116" rx="3.5" ry="8" transform="rotate(30 196 116)" />
     <ellipse cx="200" cy="132" rx="3.5" ry="8" transform="rotate(20 200 132)" />
@@ -115,10 +115,10 @@
   </g>
 
   <!-- ==================================================== -->
-  <!-- PIZZA CENTERPIECE (Artisan Wood-Fired Sourdough Pie) -->
+  <!-- PIZZA CENTERPIECE (Wood-Fired Sourdough Pie) -->
   <!-- ==================================================== -->
   <g filter="url(#pizzaShadow)">
-    <!-- 1. Puffy Artisan Cornicione Crust -->
+    <!-- 1. Puffy Cornicione Crust -->
     <circle cx="120" cy="132" r="46" fill="url(#crustGrad)" stroke="#78350f" stroke-width="1.5" />
 
     <!-- 2. Authentic Wood-Fired Leopard Char Spots along the Crust -->
@@ -190,7 +190,7 @@
       <circle cx="117.2" cy="155.2" r="0.9" fill="#fef08a" opacity="0.9" />
     </g>
 
-    <!-- Golden Artisan Grilled Paneer / Mozzarella Cubes -->
+    <!-- Golden Grilled Paneer / Mozzarella Cubes -->
     <g stroke="#d97706" stroke-width="0.6">
       <!-- Cube 1 (Top Right) -->
       <rect x="124" y="106" width="7" height="7" rx="1.5" fill="url(#paneerGrad)" transform="rotate(18 127 109)" />

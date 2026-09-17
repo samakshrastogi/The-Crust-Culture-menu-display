@@ -34,7 +34,7 @@
   <!-- Rustic Slate Board -->
   <rect x="80" y="80" width="640" height="440" rx="36" fill="#181310" stroke="#3d2719" stroke-width="5"/>
 
-  <!-- CENTRAL BOWL: Molten Artisan Cheese Dip -->
+  <!-- CENTRAL BOWL: Molten Cheese Dip -->
   <g transform="translate(400, 300)">
     <!-- Bowl Outer Cast -->
     <ellipse cx="0" cy="0" rx="140" ry="90" fill="url(#bowlGrad)" stroke="#78350f" stroke-width="8"/>

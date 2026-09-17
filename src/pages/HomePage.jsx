@@ -119,7 +119,7 @@ export default function HomePage() {
       initialAllMenuItems.find((i) => i.name === 'Cheese Loaded Fries' && i.id !== specialItem?.id) ||
       initialAllMenuItems.find((i) => i.name === 'Veg Burger' && i.id !== specialItem?.id)
 
-    // 4. Chilled Artisan Beverage (Drinks Corner)
+    // 4. Chilled Cafe Beverage (Drinks Corner)
     const drink =
       initialAllMenuItems.find((i) => i.name === 'Cold Coffee with Ice Cream' && i.id !== specialItem?.id) ||
       initialAllMenuItems.find((i) => i.name === 'Cold Coffee' && i.id !== specialItem?.id)
@@ -191,7 +191,7 @@ export default function HomePage() {
             data-hero-copy
             className="mt-2 text-xs leading-relaxed text-[var(--muted)] sm:mt-3 sm:text-sm max-w-xl"
           >
-            Wood-fired artisan sourdough pizzas, gourmet stuffed garlic breads, and street bites
+            Wood-fired sourdough pizzas, gourmet stuffed garlic breads, and street bites
             baked fresh to order in Palam Vihar, Gurgaon.
           </p>
 
@@ -582,7 +582,7 @@ export default function HomePage() {
               </h2>
               <p className="text-xs sm:text-sm leading-relaxed text-[var(--muted)]">
                 At The Crust Culture, great food starts with genuine passion and fresh ingredients.
-                From hand-stretched artisan pizzas and fresh malai paneer to gourmet burgers and
+                From hand-stretched pizzas and fresh malai paneer to gourmet burgers and
                 handcrafted sides, we bring pure vegetarian culinary joy straight to your table.
               </p>
             </div>
@@ -592,7 +592,7 @@ export default function HomePage() {
               {[
                 {
                   icon: FiAward,
-                  title: 'Artisan Malai Paneer',
+                  title: 'Fresh Malai Paneer',
                   desc: 'Fresh gourmet dairy, rich mozzarella, and garden-picked herbs.',
                   accent: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20',
                 },

@@ -59,7 +59,7 @@
   <path d="M0 450 L800 450 L800 600 L0 600 Z" fill="#170f09"/>
   <path d="M0 450 L800 450" stroke="#3d2617" stroke-width="6"/>
 
-  <!-- DRINK 1: Tall Artisan Cold Coffee (Left Center) -->
+  <!-- DRINK 1: Tall Cold Coffee (Left Center) -->
   <g transform="translate(180, 70)">
     <!-- Straw -->
     <line x1="165" y1="50" x2="205" y2="-30" stroke="#f97316" stroke-width="12" stroke-linecap="round"/>

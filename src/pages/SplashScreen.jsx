@@ -4,7 +4,7 @@ import { gsap } from '../animations/gsapAnimations'
 
 const LOADING_STAGES = [
   { text: 'Firing up the stone oven...', progress: '25%' },
-  { text: 'Kneading artisan sourdough...', progress: '65%' },
+  { text: 'Kneading fresh sourdough...', progress: '65%' },
   { text: 'Your table menu is ready!', progress: '100%' },
 ]
 
@@ -167,7 +167,7 @@ export default function SplashScreen() {
             The Crust Culture
           </h1>
           <p className="text-xs sm:text-sm font-semibold text-stone-700 dark:text-stone-300 tracking-wide">
-            Wood Fired Cafe & Artisan Pizzeria
+            Wood Fired Cafe
           </p>
         </div>
 
@@ -182,13 +182,13 @@ export default function SplashScreen() {
           </span>
         </div>
 
-        {/* Artisan Menu Highlights Strip */}
+        {/* Menu Highlights Strip */}
         <div
           data-splash-highlights
           className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold text-[var(--muted)] pt-0.5"
         >
           <span className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)]/80 px-2 py-0.5 border border-[var(--line)]">
-            🍕 Artisan Pizzas
+            🍕 Wood-Fired Pizzas
           </span>
           <span className="opacity-40">•</span>
           <span className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)]/80 px-2 py-0.5 border border-[var(--line)]">

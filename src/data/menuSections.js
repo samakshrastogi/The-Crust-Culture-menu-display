@@ -164,7 +164,7 @@ const rawMenuSections = [
       },
       {
         name: "Garlic Bread",
-        toppings: "(Freshly Baked Artisan Loaf, Roasted Garlic Butter & Parsley)",
+        toppings: "(Freshly Baked Sourdough Loaf, Roasted Garlic Butter & Parsley)",
         prices: ["99"],
       },
       {
@@ -513,7 +513,7 @@ const itemMetadata = {
     image: "/images/topping-ketchup.jpg",
   },
   classic: {
-    tag: "Artisan Mini",
+    tag: "Classic Mini",
     image: "/images/pizza-classic.jpg",
   },
   onion: {

@@ -21,7 +21,7 @@ export default function Footer() {
           <div className="space-y-2 lg:col-span-5">
             <BrandLogo />
             <p className="text-xs leading-relaxed text-[var(--muted)] max-w-sm">
-              Artisan stone-oven sourdough pizzas, gourmet stuffed garlic breads & beverages crafted with passion in Gurgaon.
+              Stone-oven sourdough pizzas, gourmet stuffed garlic breads & beverages crafted with passion at The Crust Culture Cafe in Gurgaon.
             </p>
             <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.2 font-bold text-emerald-600 dark:text-emerald-400">
