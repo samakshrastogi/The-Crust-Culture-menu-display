@@ -9,11 +9,14 @@ import {
   FiPhone,
   FiCheckCircle,
   FiShield,
+  FiAlertCircle,
+  FiUser,
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import FoodImage from '../components/FoodImage'
 import VegIndicator from '../components/VegIndicator'
 import { useCart } from '../hooks/useCart'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 import { menuSections } from '../data/menuSections'
 import { CAFE_INFO } from '../data/cafeInfo'
 import { generateOrderSecurity } from '../utils/orderSecurity'
@@ -28,8 +31,11 @@ export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, cartCount, cartTotal, addToCart } = useCart()
 
   const [orderType, setOrderType] = useState('dine-in')
-  const [customerName, setCustomerName] = useState('')
+  const [customerName, setCustomerName] = useLocalStorage('crust-customer-name', '')
+  const [customerPhone, setCustomerPhone] = useLocalStorage('crust-customer-phone', '')
   const [cookingInstructions, setCookingInstructions] = useState('')
+  const [nameError, setNameError] = useState('')
+  const [phoneError, setPhoneError] = useState('')
 
   // Quick suggestions if tray is empty or for extra add-ons
   const popularAddOns = useMemo(() => {
@@ -53,10 +59,13 @@ export default function CartPage() {
   const generateWhatsAppMessage = () => {
     if (cart.length === 0) return ''
 
+    const cleanPhone = customerPhone.replace(/\D/g, '')
+
     const security = generateOrderSecurity({
       cart,
       total: cartTotal,
       customerName,
+      customerPhone: cleanPhone,
       orderType,
       cookingInstructions,
     })
@@ -66,7 +75,8 @@ export default function CartPage() {
       `*Order ID:* ${security.orderId}`,
       ``,
       `*CUSTOMER DETAILS*`,
-      `• *Name:* ${customerName.trim() || 'Guest'}`,
+      `• *Name:* ${customerName.trim()}`,
+      `• *Phone:* +91 ${cleanPhone}`,
       `• *Order:* ${orderType === 'dine-in' ? '🍽️ Dine-In' : '🛍️ Takeaway'}`,
       ``,
       `*ITEMS ORDERED (${cartCount} ${cartCount === 1 ? 'item' : 'items'})*`,
@@ -75,17 +85,11 @@ export default function CartPage() {
 
     cart.forEach((item, index) => {
       const sizeInfo = item.size ? ` (${item.size})` : ''
-      const lineTotal = item.price * item.quantity
-      lines.push(`${index + 1}. *${item.name}*${sizeInfo}`)
-      lines.push(`    Qty: ${item.quantity}  |  Rs. ${lineTotal}`)
+      lines.push(`${index + 1}. *${item.name}*${sizeInfo}  x${item.quantity}`)
     })
 
-    lines.push(`----------------------------------`)
-    lines.push(``)
-    lines.push(`*BILLING SUMMARY*`)
-    lines.push(`• *Grand Total:* Rs. ${cartTotal}`)
-
     if (cookingInstructions.trim()) {
+      lines.push(`----------------------------------`)
       lines.push(``)
       lines.push(`*SPECIAL INSTRUCTIONS*`)
       lines.push(`"${cookingInstructions.trim()}"`)
@@ -93,11 +97,9 @@ export default function CartPage() {
 
     lines.push(``)
     lines.push(`----------------------------------`)
-    lines.push(`🔒 *KITCHEN VERIFICATION CODE:* ${security.securityCode}`)
-    lines.push(``)
-    lines.push(`🧾 *VERIFIED KITCHEN TICKET:*`)
+    lines.push(`🧾 *VIEW OFFICIAL BILL & TICKET:*`)
     lines.push(`${security.receiptUrl}`)
-    lines.push(`_(Kitchen: tap link to view verified authentic bill & items)_`)
+    lines.push(`_(Kitchen: tap link to view verified total bill, genuine rates & print KOT)_`)
     lines.push(`----------------------------------`)
     lines.push(`_Sent via The Crust Culture Digital Menu_`)
 
@@ -105,6 +107,28 @@ export default function CartPage() {
   }
 
   const handleSendWhatsAppOrder = () => {
+    let hasError = false
+    if (!customerName?.trim()) {
+      setNameError('Please enter your name')
+      hasError = true
+    } else {
+      setNameError('')
+    }
+
+    const cleanPhone = customerPhone?.replace(/\D/g, '') || ''
+    if (cleanPhone.length !== 10) {
+      setPhoneError('Please enter a valid 10-digit mobile number')
+      hasError = true
+    } else {
+      setPhoneError('')
+    }
+
+    if (hasError) {
+      const targetId = !customerName?.trim() ? 'customer-name' : 'customer-phone'
+      document.getElementById(targetId)?.focus()
+      return
+    }
+
     const text = generateWhatsAppMessage()
     if (!text) return
     const url = `https://api.whatsapp.com/send?phone=${CAFE_PHONE}&text=${encodeURIComponent(text)}`
@@ -343,19 +367,75 @@ export default function CartPage() {
                 ))}
               </div>
 
-              {/* Customer Name */}
+              {/* Customer Name (Required) */}
               <div className="space-y-1 pt-0.5">
-                <label htmlFor="customer-name" className="block text-[11px] font-bold text-[var(--muted)]">
-                  Name (Optional)
-                </label>
-                <input
-                  id="customer-name"
-                  type="text"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  placeholder="e.g. Rahul"
-                  className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] px-3 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition"
-                />
+                <div className="flex items-center justify-between">
+                  <label htmlFor="customer-name" className="block text-[11px] font-bold text-[var(--text)]">
+                    Your Name <span className="text-[var(--orange)]">*</span>
+                  </label>
+                  {nameError && (
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-red-500">
+                      <FiAlertCircle className="text-[11px]" />
+                      {nameError}
+                    </span>
+                  )}
+                </div>
+                <div className="relative">
+                  <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted)] text-xs" />
+                  <input
+                    id="customer-name"
+                    type="text"
+                    required
+                    value={customerName}
+                    onChange={(e) => {
+                      setCustomerName(e.target.value)
+                      if (e.target.value.trim()) setNameError('')
+                    }}
+                    placeholder="Enter your name"
+                    className={`w-full rounded-xl border bg-[var(--surface-strong)] pl-8 pr-3 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none transition ${
+                      nameError ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-[var(--line)] focus:border-[var(--orange)]'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {/* Customer Phone Number (Required) */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="customer-phone" className="block text-[11px] font-bold text-[var(--text)]">
+                    Mobile Number <span className="text-[var(--orange)]">*</span>
+                  </label>
+                  {phoneError && (
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-red-500">
+                      <FiAlertCircle className="text-[11px]" />
+                      {phoneError}
+                    </span>
+                  )}
+                </div>
+                <div className="relative flex items-center">
+                  <span className="absolute left-3 text-xs font-bold text-[var(--muted)] select-none">
+                    +91
+                  </span>
+                  <input
+                    id="customer-phone"
+                    type="tel"
+                    maxLength={10}
+                    required
+                    value={customerPhone}
+                    onChange={(e) => {
+                      const clean = e.target.value.replace(/\D/g, '').slice(0, 10)
+                      setCustomerPhone(clean)
+                      if (clean.length === 10) setPhoneError('')
+                    }}
+                    placeholder="10-digit mobile number"
+                    className={`w-full rounded-xl border bg-[var(--surface-strong)] pl-11 pr-3 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none transition font-medium tracking-wide ${
+                      phoneError ? 'border-red-500 focus:ring-1 focus:ring-red-500' : 'border-[var(--line)] focus:border-[var(--orange)]'
+                    }`}
+                  />
+                </div>
+                <p className="text-[9.5px] text-[var(--muted)]">
+                  Saved on this device for one-tap reorders
+                </p>
               </div>
             </div>
 

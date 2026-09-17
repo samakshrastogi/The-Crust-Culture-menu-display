@@ -64,7 +64,7 @@ function fromBase64Url(str) {
  */
 function computeSignature(orderId, total, items, timestamp) {
   const itemDigest = items
-    .map((item) => `${item.id || item.n}:${item.q || item.quantity}:${item.p || item.price}:${item.s || item.size || ''}`)
+    .map((item) => `${item.n || item.name}:${item.q || item.quantity}:${item.p || item.price}:${item.s || item.size || ''}`)
     .sort()
     .join('|')
   const raw = `${orderId}#${total}#${itemDigest}#${timestamp}#${SECRET_SALT}`
@@ -77,39 +77,44 @@ function computeSignature(orderId, total, items, timestamp) {
  * @param {Array} params.cart - cart items
  * @param {number} params.total - total amount
  * @param {string} params.customerName - customer name
+ * @param {string} [params.customerPhone] - customer phone number
  * @param {string} params.orderType - 'dine-in' | 'takeaway'
  * @param {string} params.cookingInstructions - optional notes
  * @returns {{ orderId: string, securityCode: string, token: string, receiptUrl: string }}
  */
-export function generateOrderSecurity({ cart, total, customerName, orderType, cookingInstructions }) {
+export function generateOrderSecurity({ cart, total, customerName, customerPhone, orderType, cookingInstructions }) {
   // Generate random 4-digit order suffix
-  const orderId = `TCC-${Math.floor(1000 + Math.random() * 9000)}`
-  const timestamp = Date.now()
+  const numSuffix = Math.floor(1000 + Math.random() * 9000)
+  const orderId = `TCC-${numSuffix}`
+  const timestamp = Math.floor(Date.now() / 1000)
 
-  const compactItems = cart.map((item) => ({
-    id: item.id,
+  const items = cart.map((item) => ({
     n: item.name,
     s: item.size || '',
     q: item.quantity,
     p: item.price,
   }))
 
-  const signature = computeSignature(orderId, total, compactItems, timestamp)
+  const signature = computeSignature(orderId, total, items, timestamp)
   const shortChecksum = signature.slice(0, 4).toUpperCase()
 
-  // Anti-tamper code e.g. #CC-398-8F2B (embeds total and 4-hex checksum)
+  // Anti-tamper code e.g. #CC-398-8F2B
   const securityCode = `#CC-${total}-${shortChecksum}`
 
-  const payload = {
-    id: orderId,
-    ts: timestamp,
-    name: customerName?.trim() || 'Guest',
-    type: orderType || 'dine-in',
-    items: compactItems,
-    notes: cookingInstructions?.trim() || '',
+  // Ultra-compact tuple encoding: [id, ts, name, phone, type, items, notes, total, sig]
+  // items: [ [name, size, qty, price], ... ]
+  const compactItems = items.map((i) => [i.n, i.s, i.q, i.p])
+  const payload = [
+    numSuffix,
+    timestamp,
+    customerName?.trim() || '',
+    customerPhone?.trim() || '',
+    orderType === 'takeaway' ? 't' : 'd',
+    compactItems,
+    cookingInstructions?.trim() || '',
     total,
-    sig: signature,
-  }
+    signature,
+  ]
 
   const token = toBase64Url(JSON.stringify(payload))
   const origin = typeof window !== 'undefined' ? window.location.origin : ''
@@ -117,7 +122,7 @@ export function generateOrderSecurity({ cart, total, customerName, orderType, co
 
   return {
     orderId,
-    timestamp,
+    timestamp: timestamp * 1000,
     securityCode,
     token,
     receiptUrl,
@@ -140,8 +145,52 @@ export function verifyOrderToken(token) {
   }
 
   try {
-    const payload = JSON.parse(jsonStr)
-    const { id, ts, name, type, items, notes, total, sig } = payload
+    const raw = JSON.parse(jsonStr)
+
+    let id
+    let ts
+    let name
+    let phone = ''
+    let type
+    let items
+    let notes = ''
+    let total
+    let sig
+
+    if (Array.isArray(raw)) {
+      // Ultra-compact tuple format: [numSuffix, ts, name, phone, type, compactItems, notes, total, sig]
+      const [numSuffix, rawTs, rawName, rawPhone, rawType, rawItems, rawNotes, rawTotal, rawSig] = raw
+      id = typeof numSuffix === 'number' || /^\d+$/.test(numSuffix) ? `TCC-${numSuffix}` : numSuffix
+      ts = rawTs > 1e11 ? rawTs : rawTs * 1000 // handle sec vs ms
+      name = rawName || 'Guest'
+      phone = rawPhone || ''
+      type = rawType === 't' ? 'takeaway' : 'dine-in'
+      items = (rawItems || []).map((arr) => ({
+        n: arr[0],
+        s: arr[1] || '',
+        q: Number(arr[2]) || 1,
+        p: Number(arr[3]) || 0,
+      }))
+      notes = rawNotes || ''
+      total = Number(rawTotal) || 0
+      sig = rawSig
+    } else {
+      // Legacy object format
+      id = raw.id
+      ts = raw.ts
+      name = raw.name || 'Guest'
+      phone = raw.phone || ''
+      type = raw.type || 'dine-in'
+      items = (raw.items || []).map((i) => ({
+        n: i.n || i.name,
+        s: i.s || i.size || '',
+        q: Number(i.q || i.quantity) || 1,
+        p: Number(i.p || i.price) || 0,
+      }))
+      notes = raw.notes || ''
+      total = Number(raw.total) || 0
+      sig = raw.sig
+    }
 
     if (!id || !ts || !Array.isArray(items) || typeof total !== 'number' || !sig) {
       return { valid: false, order: null, error: 'Incomplete order payload structure.' }
@@ -152,17 +201,19 @@ export function verifyOrderToken(token) {
     if (computedTotal !== total) {
       return {
         valid: false,
-        order: payload,
+        order: null,
         error: `Price discrepancy detected! Stated total is ₹${total} but itemized total is ₹${computedTotal}.`,
       }
     }
 
     // Recalculate signature with internal secret salt
-    const expectedSignature = computeSignature(id, total, items, ts)
-    if (expectedSignature !== sig) {
+    const tsForSig = ts > 1e11 ? Math.floor(ts / 1000) : ts
+    const expectedSigSec = computeSignature(id, total, items, tsForSig)
+    const expectedSigMs = computeSignature(id, total, items, ts)
+    if (expectedSigSec !== sig && expectedSigMs !== sig) {
       return {
         valid: false,
-        order: payload,
+        order: null,
         error: 'Security signature mismatch! This order data has been altered or tampered with.',
       }
     }
@@ -176,6 +227,7 @@ export function verifyOrderToken(token) {
         id,
         timestamp: ts,
         customerName: name,
+        customerPhone: phone,
         orderType: type,
         items,
         notes,
