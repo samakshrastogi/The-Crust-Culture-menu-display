@@ -8,7 +8,6 @@ import {
   FiTrash2,
   FiPhone,
   FiCheckCircle,
-  FiShield,
   FiAlertCircle,
   FiUser,
 } from 'react-icons/fi'
@@ -781,9 +780,6 @@ export default function CartPage() {
                     }`}
                   />
                 </div>
-                <p className="text-[9px] text-[var(--muted)]">
-                  Saved on this device for one-tap reorders
-                </p>
               </div>
             </div>
 
@@ -826,12 +822,6 @@ export default function CartPage() {
                   </div>
                 </div>
               </button>
-
-              {/* Tamper-proof Security Note */}
-              <div className="flex items-center justify-center gap-1 pt-0.5 text-[9.5px] font-bold text-emerald-600 dark:text-emerald-400">
-                <FiShield className="text-[11px] shrink-0" />
-                <span>Tamper-proof verified kitchen ticket included</span>
-              </div>
 
               {/* Direct Phone Support */}
               <div className="flex items-center justify-center gap-1 pt-0.5 text-[10px] text-[var(--muted)]">
