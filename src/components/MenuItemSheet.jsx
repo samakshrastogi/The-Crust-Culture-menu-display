@@ -331,47 +331,91 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             )
           )}
 
-          {/* Primary Action: Add to Cart / Quantity Controller */}
-          <div data-sheet-item className="space-y-2 pt-0.5">
+          {/* Primary Action: Add to Cart / Quantity Controller + Inline View Cart */}
+          <div data-sheet-item className="pt-0.5">
             {currentQuantity > 0 ? (
-              <div className="flex w-full items-center justify-between rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#ea580c] via-[#ea580c] to-[#e65100] p-1.5 sm:p-2 text-white shadow-lg shadow-orange-500/25">
-                {/* Decrement Button */}
-                <button
-                  type="button"
-                  onClick={() => updateQuantity(currentCartItemId, -1)}
-                  className="grid h-9.5 w-9.5 sm:h-10.5 sm:w-10.5 place-items-center rounded-lg sm:rounded-xl bg-white text-[#ea580c] shadow-sm hover:bg-orange-50 active:scale-95 transition-all cursor-pointer font-black"
-                  aria-label="Decrease quantity"
-                  title="Decrease quantity"
-                >
-                  <FiMinus className="text-base sm:text-lg stroke-[3]" />
-                </button>
+              <div className="flex w-full items-center gap-2">
+                {/* 1 in Cart Stepper */}
+                <div className="flex flex-1 items-center justify-between rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#ea580c] via-[#ea580c] to-[#e65100] p-1 sm:p-1.5 text-white shadow-md shadow-orange-500/20 min-w-0">
+                  {/* Decrement Button */}
+                  <button
+                    type="button"
+                    onClick={() => updateQuantity(currentCartItemId, -1)}
+                    className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-lg sm:rounded-xl bg-white text-[#ea580c] shadow-xs hover:bg-orange-50 active:scale-95 transition-all cursor-pointer font-black shrink-0"
+                    aria-label="Decrease quantity"
+                    title="Decrease quantity"
+                  >
+                    <FiMinus className="text-base stroke-[3]" />
+                  </button>
 
-                {/* Current Quantity & Item Total Info */}
-                <div className="flex flex-col items-center justify-center px-1.5 select-none">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-sm sm:text-base font-black tracking-tight text-white">
-                      {currentQuantity} in Cart
-                    </span>
-                    <span className="h-3.5 w-px bg-white/30" />
-                    <span className="rounded-lg bg-[#b43403] px-2 py-0.5 text-xs sm:text-sm font-black text-white shadow-xs">
-                      ₹{(currentCartItem?.price || selectedPriceObj?.value || 0) * currentQuantity}
+                  {/* Current Quantity & Item Total Info */}
+                  <div className="flex flex-col items-center justify-center px-1 select-none min-w-0">
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs sm:text-sm font-black tracking-tight text-white whitespace-nowrap">
+                        {currentQuantity} in Cart
+                      </span>
+                      <span className="rounded bg-[#b43403] px-1.5 py-0.2 text-[10px] sm:text-xs font-black text-white shadow-2xs">
+                        ₹{(currentCartItem?.price || selectedPriceObj?.value || 0) * currentQuantity}
+                      </span>
+                    </div>
+                    <span className="text-[9.5px] sm:text-[10px] font-medium text-white/85 truncate">
+                      {formatPrice(selectedPriceObj?.value || 0)} each
                     </span>
                   </div>
-                  <span className="text-[10px] sm:text-[10.5px] font-medium text-white/90 mt-0.5">
-                    {formatPrice(selectedPriceObj?.value || 0)} each • Tap - or +
-                  </span>
+
+                  {/* Increment Button */}
+                  <button
+                    type="button"
+                    onClick={() => updateQuantity(currentCartItemId, 1)}
+                    className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-lg sm:rounded-xl bg-white text-[#ea580c] shadow-xs hover:bg-orange-50 active:scale-95 transition-all cursor-pointer font-black shrink-0"
+                    aria-label="Increase quantity"
+                    title="Increase quantity"
+                  >
+                    <FiPlus className="text-base stroke-[3]" />
+                  </button>
                 </div>
 
-                {/* Increment Button */}
+                {/* Inline View Cart Button */}
+                <Link
+                  to="/cart"
+                  onClick={onClose}
+                  className="flex items-center justify-center gap-1 sm:gap-1.5 h-11 sm:h-13 px-3 sm:px-3.5 rounded-xl sm:rounded-2xl border-2 border-[#ea580c]/50 bg-orange-50/70 dark:bg-orange-950/30 hover:bg-orange-100/80 text-[#ea580c] font-black text-xs sm:text-sm shadow-xs active:scale-[0.98] transition-all group/viewcart whitespace-nowrap shrink-0"
+                >
+                  <span>View Cart ({cartCount})</span>
+                  <FiArrowRight className="text-xs sm:text-sm stroke-[2.5] transition-transform group-hover/viewcart:translate-x-0.5 shrink-0" />
+                </Link>
+              </div>
+            ) : cartCount > 0 ? (
+              <div className="flex w-full items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => updateQuantity(currentCartItemId, 1)}
-                  className="grid h-9.5 w-9.5 sm:h-10.5 sm:w-10.5 place-items-center rounded-lg sm:rounded-xl bg-white text-[#ea580c] shadow-sm hover:bg-orange-50 active:scale-95 transition-all cursor-pointer font-black"
-                  aria-label="Increase quantity"
-                  title="Increase quantity"
+                  onClick={() => {
+                    addToCart(item, selectedSizeIndex, 1)
+                  }}
+                  className="group flex flex-1 items-center justify-between rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#ea580c] via-[#ea580c] to-[#e65100] p-1.5 sm:p-2 text-white shadow-md shadow-orange-500/20 transition-all duration-200 hover:brightness-105 active:scale-[0.99] cursor-pointer min-w-0"
                 >
-                  <FiPlus className="text-base sm:text-lg stroke-[3]" />
+                  <div className="flex items-center gap-2 pl-1">
+                    <span className="grid h-8 w-8 sm:h-9 sm:w-9 place-items-center rounded-lg bg-white/20 text-white backdrop-blur-xs shrink-0">
+                      <FiShoppingBag className="text-base" />
+                    </span>
+                    <span className="text-sm sm:text-base font-black tracking-wide truncate">
+                      Add to Cart
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1 rounded-lg bg-white text-[#ea580c] px-2.5 py-1.5 shadow-sm font-black text-xs sm:text-sm shrink-0">
+                    <span>{formatPrice(selectedPriceObj?.value || 0)}</span>
+                    <span className="text-sm leading-none">+</span>
+                  </div>
                 </button>
+
+                <Link
+                  to="/cart"
+                  onClick={onClose}
+                  className="flex items-center justify-center gap-1 sm:gap-1.5 h-11 sm:h-13 px-3 sm:px-3.5 rounded-xl sm:rounded-2xl border-2 border-[#ea580c]/50 bg-orange-50/70 dark:bg-orange-950/30 hover:bg-orange-100/80 text-[#ea580c] font-black text-xs sm:text-sm shadow-xs active:scale-[0.98] transition-all group/viewcart whitespace-nowrap shrink-0"
+                >
+                  <span>View Cart ({cartCount})</span>
+                  <FiArrowRight className="text-xs sm:text-sm stroke-[2.5] transition-transform group-hover/viewcart:translate-x-0.5 shrink-0" />
+                </Link>
               </div>
             ) : (
               <button
@@ -396,18 +440,6 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                   <span className="text-sm leading-none">+</span>
                 </div>
               </button>
-            )}
-
-            {/* Full-width Outlined View Cart Button */}
-            {cartCount > 0 && (
-              <Link
-                to="/cart"
-                onClick={onClose}
-                className="flex w-full items-center justify-center gap-1.5 py-2 sm:py-2.5 px-3 rounded-xl sm:rounded-2xl border border-[#ea580c]/40 bg-orange-500/10 hover:bg-orange-500/15 text-[#ea580c] font-extrabold text-xs sm:text-sm shadow-2xs active:scale-[0.99] transition-all group/viewcart"
-              >
-                <span>View Cart ({cartCount} {cartCount === 1 ? 'item' : 'items'})</span>
-                <FiArrowRight className="text-xs sm:text-sm stroke-[2.5] transition-transform group-hover/viewcart:translate-x-0.5" />
-              </Link>
             )}
           </div>
 

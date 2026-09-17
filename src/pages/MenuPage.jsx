@@ -127,6 +127,22 @@ export default function MenuPage() {
   const [showStickyBar, setShowStickyBar] = useState(false)
   const sectionsRef = useRef(null)
   const stickyScrollRef = useRef(null)
+  const [columns, setColumns] = useState(() => {
+    if (typeof window === 'undefined') return 1
+    if (window.innerWidth >= 1280) return 3
+    if (window.innerWidth >= 768) return 2
+    return 1
+  })
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth
+      const next = width >= 1280 ? 3 : width >= 768 ? 2 : 1
+      setColumns((prev) => (prev !== next ? next : prev))
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     const timer = window.setTimeout(() => setLoading(false), 300)
@@ -209,6 +225,36 @@ export default function MenuPage() {
       })
       .filter((section) => section.items.length > 0)
   }, [query, activeCategory, activeVibeFilter])
+
+  // Distribute sections across columns balancing heights so all columns stay filled with zero dead whitespace
+  const columnBuckets = useMemo(() => {
+    if (filteredSections.length <= 1) {
+      return [filteredSections]
+    }
+
+    const colCount = Math.min(columns, filteredSections.length)
+    if (colCount <= 1) {
+      return [filteredSections]
+    }
+
+    const buckets = Array.from({ length: colCount }, () => [])
+    const heights = Array(colCount).fill(0)
+
+    for (const section of filteredSections) {
+      let minCol = 0
+      for (let i = 1; i < colCount; i++) {
+        if (heights[i] < heights[minCol]) {
+          minCol = i
+        }
+      }
+
+      buckets[minCol].push(section)
+      // Estimate section height: ~50px header + ~56px per dish row
+      heights[minCol] += 50 + (section.items?.length || 0) * 56
+    }
+
+    return buckets
+  }, [filteredSections, columns])
 
   const visibleItemCount = filteredSections.reduce((total, section) => total + section.items.length, 0)
   const totalMenuItemsCount = initialAllMenuItems.length
@@ -437,19 +483,26 @@ export default function MenuPage() {
               />
             </div>
           ) : (
-            <div className="columns-1 md:columns-2 xl:columns-3 gap-2.5 sm:gap-3 md:gap-3.5 [column-fill:_balance]">
-              {filteredSections.map((section) => (
+            <div
+              className={`flex flex-col md:flex-row gap-2.5 sm:gap-3 md:gap-3.5 items-start ${
+                columnBuckets.length === 2 ? 'max-w-5xl mx-auto' : ''
+              }`}
+            >
+              {columnBuckets.map((bucket, colIdx) => (
                 <div
-                  key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
-                  className="break-inside-avoid mb-2.5 sm:mb-3 md:mb-3.5"
+                  key={colIdx}
+                  className="flex flex-1 flex-col gap-2.5 sm:gap-3 md:gap-3.5 min-w-0 w-full"
                 >
-                  <MenuSectionCard
-                    section={section}
-                    favorites={favorites}
-                    onToggleFavorite={toggleFavorite}
-                    onSelectItem={setSelectedItem}
-                    query={query}
-                  />
+                  {bucket.map((section) => (
+                    <MenuSectionCard
+                      key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
+                      section={section}
+                      favorites={favorites}
+                      onToggleFavorite={toggleFavorite}
+                      onSelectItem={setSelectedItem}
+                      query={query}
+                    />
+                  ))}
                 </div>
               ))}
             </div>
