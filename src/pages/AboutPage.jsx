@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { FiClock, FiMapPin, FiPhone } from 'react-icons/fi'
 import { revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
+import { CAFE_INFO } from '../data/cafeInfo'
 
 const restaurantImages = [
   '/images/pizza-margherita.jpg',
@@ -63,7 +64,7 @@ export default function AboutPage() {
           <h2 className="text-2xl font-black text-[var(--text)]">Contact</h2>
           <div className="mt-4 space-y-2 text-sm text-[var(--muted)]">
             <p>
-              <a href="tel:+919625261591" className="hover:text-[var(--orange)] transition">+91 96252 61591</a>
+              <a href={CAFE_INFO.phone.tel} className="hover:text-[var(--orange)] transition">{CAFE_INFO.phone.international}</a>
             </p>
           </div>
         </div>

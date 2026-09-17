@@ -179,11 +179,11 @@ export default function HomePage() {
             data-hero-title
             className="font-display text-2xl font-extrabold leading-[1.1] text-[var(--text)] sm:text-4xl lg:text-5xl tracking-tight"
           >
-            Fresh crusts,{' '}
+            Hot, crispy pizzas{' '}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--orange)] to-amber-500">
-              slow fire
+              dripping with cheese
             </span>
-            , fast table ordering.
+            , baked fresh for you.
           </h1>
 
           {/* Subtitle */}
@@ -191,8 +191,7 @@ export default function HomePage() {
             data-hero-copy
             className="mt-2 text-xs leading-relaxed text-[var(--muted)] sm:mt-3 sm:text-sm max-w-xl"
           >
-            Wood-fired sourdough pizzas, gourmet stuffed garlic breads, and street bites
-            baked fresh to order in Palam Vihar, Gurgaon.
+            Loaded with stretchy mozzarella, farm-fresh toppings, and bold herbs — baked piping hot in our stone oven in just 15 minutes.
           </p>
 
           {/* Hero Actions (Primary Menu CTA & Heritage Link) */}
@@ -201,7 +200,7 @@ export default function HomePage() {
               to="/menu"
               className="touch-target group inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-6 py-2.5 text-xs font-black text-white shadow-md shadow-orange-500/20 transition-all duration-200 hover:shadow-orange-500/35 hover:-translate-y-0.5 active:translate-y-0 sm:text-sm"
             >
-              <span>Explore Menu</span>
+              <span>Explore Hot Pizzas 🍕</span>
               <FiArrowRight className="text-sm transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
 
@@ -209,7 +208,7 @@ export default function HomePage() {
               href="#our-story"
               className="touch-target inline-flex items-center justify-center rounded-full border border-[var(--line)] bg-[var(--surface)] px-4 py-2.5 text-xs font-bold text-[var(--text)] transition hover:border-[var(--gold)] hover:bg-[var(--surface-strong)] active:translate-y-0 sm:text-sm"
             >
-              <span>Our Story & Craft</span>
+              <span>Why It Hits Different ✨</span>
             </a>
           </div>
 
@@ -575,15 +574,13 @@ export default function HomePage() {
           <div className="md:col-span-7 lg:col-span-7 space-y-4">
             <div className="space-y-2">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--gold)]">
-                Our Story & Heritage
+                Why Pizza Lovers Choose Us
               </span>
               <h2 className="font-display text-xl sm:text-2xl lg:text-3xl font-extrabold leading-tight text-[var(--text)]">
-                Crafted with passion, tables built for sharing.
+                Real dough, bubbling mozzarella & unforgettable crunch.
               </h2>
               <p className="text-xs sm:text-sm leading-relaxed text-[var(--muted)]">
-                At The Crust Culture, great food starts with genuine passion and fresh ingredients.
-                From hand-stretched pizzas and fresh malai paneer to gourmet burgers and
-                handcrafted sides, we bring pure vegetarian culinary joy straight to your table.
+                We don’t cut corners. Every pizza starts with naturally fermented dough stretched by hand, layered with our rich spiced tomato sauce, and packed with 100% real mozzarella. Baked in our blazing stone oven until the crust is crispy and the cheese is golden and bubbly.
               </p>
             </div>
 
@@ -592,14 +589,14 @@ export default function HomePage() {
               {[
                 {
                   icon: FiAward,
-                  title: 'Fresh Malai Paneer',
-                  desc: 'Fresh gourmet dairy, rich mozzarella, and garden-picked herbs.',
+                  title: '100% Real Mozzarella & Paneer',
+                  desc: 'No artificial blends. Pure stretchy mozzarella, soft malai paneer, and fragrant Italian herbs.',
                   accent: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20',
                 },
                 {
                   icon: FiSmartphone,
-                  title: 'Smart Table Ordering',
-                  desc: 'Scan your table QR code to browse photos and send orders straight to our cafe.',
+                  title: 'Quick Table Ordering',
+                  desc: 'Scan your table QR code, browse mouth-watering photos, customize toppings, and get it served in 15 mins!',
                   accent: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
                 },
               ].map((card) => {

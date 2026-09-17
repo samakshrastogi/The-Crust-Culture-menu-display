@@ -11,6 +11,7 @@ import {
 import { FaWhatsapp } from 'react-icons/fa6'
 import { SiZomato } from 'react-icons/si'
 import BrandLogo from './BrandLogo'
+import { CAFE_INFO } from '../data/cafeInfo'
 
 export default function Footer() {
   return (
@@ -98,15 +99,15 @@ export default function Footer() {
               </a>
 
               <a
-                href="tel:+919625261591"
-                title="Call Cafe Hotline"
+                href={CAFE_INFO.phone.tel}
+                title={`Call Cafe Hotline (${CAFE_INFO.phone.display})`}
                 className="grid h-7 w-7 place-items-center rounded-lg bg-[var(--surface-strong)] hover:bg-orange-500 hover:text-white text-[var(--orange)] border border-[var(--line)] transition-all duration-200"
               >
                 <FiPhone className="text-xs" />
               </a>
 
               <a
-                href="https://wa.me/919625261591?text=Hello%20The%20Crust%20Culture,%20I%20would%20like%20to%20place%20an%20order"
+                href={`${CAFE_INFO.phone.waLink}?text=Hello%20The%20Crust%20Culture,%20I%20would%20like%20to%20place%20an%20order`}
                 target="_blank"
                 rel="noopener noreferrer"
                 title="WhatsApp Us"

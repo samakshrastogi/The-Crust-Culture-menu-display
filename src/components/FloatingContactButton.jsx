@@ -1,6 +1,7 @@
 import { FiPhone } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import { SiZomato } from 'react-icons/si'
+import { CAFE_INFO } from '../data/cafeInfo'
 
 const floatingActions = [
   {
@@ -15,8 +16,8 @@ const floatingActions = [
   },
   {
     id: 'phone',
-    label: 'Call Cafe',
-    href: 'tel:+919625261591',
+    label: `Call Cafe (${CAFE_INFO.phone.display})`,
+    href: CAFE_INFO.phone.tel,
     icon: FiPhone,
     iconSize: 'text-lg sm:text-xl',
     bgGradient: 'from-[#ea580c] via-[var(--orange)] to-[#fb923c]',
@@ -26,7 +27,7 @@ const floatingActions = [
   {
     id: 'whatsapp',
     label: 'Chat on WhatsApp',
-    href: 'https://wa.me/919625261591?text=Hello%20The%20Crust%20Culture,%20I%20would%20like%20to%20place%20an%20order',
+    href: `${CAFE_INFO.phone.waLink}?text=Hello%20The%20Crust%20Culture,%20I%20would%20like%20to%20place%20an%20order`,
     icon: FaWhatsapp,
     iconSize: 'text-xl sm:text-2xl',
     bgGradient: 'from-[#075E54] via-[#25D366] to-[#4ade80]',

@@ -1,4 +1,5 @@
 import { FiMapPin, FiPhone } from 'react-icons/fi'
+import { CAFE_INFO } from '../data/cafeInfo'
 
 export default function ContactPage() {
   return (
@@ -22,7 +23,7 @@ export default function ContactPage() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
           {[
-            { icon: FiPhone, label: 'Phone', value: '+91 96252 61591', href: 'tel:+919625261591' },
+            { icon: FiPhone, label: 'Phone', value: CAFE_INFO.phone.international, href: CAFE_INFO.phone.tel },
             {
               icon: FiMapPin,
               label: 'Address',

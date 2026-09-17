@@ -14,8 +14,9 @@ import FoodImage from '../components/FoodImage'
 import VegIndicator from '../components/VegIndicator'
 import { useCart } from '../hooks/useCart'
 import { menuSections } from '../data/menuSections'
+import { CAFE_INFO } from '../data/cafeInfo'
 
-const CAFE_PHONE = '919625261591'
+const CAFE_PHONE = CAFE_INFO.phone.waNumber
 
 function formatPrice(value) {
   return `₹${value}`
@@ -397,11 +398,11 @@ export default function CartPage() {
               <div className="flex items-center justify-center gap-1.5 pt-1 text-[11px] text-[var(--muted)]">
                 <span>Need quick help?</span>
                 <a
-                  href="tel:+919625261591"
+                  href={CAFE_INFO.phone.tel}
                   className="inline-flex items-center gap-1 font-bold text-[var(--orange)] hover:underline"
                 >
                   <FiPhone className="text-xs" />
-                  <span>Call 96252 61591</span>
+                  <span>Call {CAFE_INFO.phone.display}</span>
                 </a>
               </div>
             </div>
