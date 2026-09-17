@@ -36,11 +36,24 @@ const categoryStyles = {
   },
 }
 
-export default function FoodImage({ src, alt, category = 'Restaurant', className = '', loading = 'lazy', ...props }) {
+export default function FoodImage({
+  src,
+  alt,
+  category = 'Restaurant',
+  className = '',
+  loading = 'lazy',
+  fetchPriority,
+  ...props
+}) {
   const imageRef = useRef(null)
   const [loaded, setLoaded] = useState(false)
   const [failed, setFailed] = useState(false)
   const style = categoryStyles[category] || categoryStyles.Restaurant
+
+  const webpSrc =
+    src && typeof src === 'string' && src.startsWith('/images/') && !src.endsWith('.svg')
+      ? src.replace(/\.(jpg|jpeg|png)$/i, '.webp')
+      : null
 
   const handleRef = (node) => {
     imageRef.current = node
@@ -74,30 +87,35 @@ export default function FoodImage({ src, alt, category = 'Restaurant', className
         </div>
       )}
 
-      {/* Progressive blur-up food image */}
+      {/* Progressive blur-up food image with WebP source */}
       {!failed && (
-        <img
-          src={src}
-          alt={alt}
-          loading={loading}
-          ref={handleRef}
-          onLoad={() => {
-            setLoaded(true)
-            if (imageRef.current) {
-              gsap.fromTo(
-                imageRef.current,
-                { scale: 1.04 },
-                { scale: 1, duration: 0.5, ease: 'power2.out', clearProps: 'transform' },
-              )
-            }
-          }}
-          onError={() => setFailed(true)}
-          className={`absolute inset-0 h-full w-full object-cover transition-all duration-500 ease-out will-change-[transform,opacity,filter] ${
-            loaded
-              ? 'opacity-100 blur-0 scale-100'
-              : 'opacity-0 blur-sm scale-105'
-          }`}
-        />
+        <picture className="contents">
+          {webpSrc && <source type="image/webp" srcSet={webpSrc} />}
+          <img
+            src={src}
+            alt={alt}
+            loading={loading}
+            decoding="async"
+            fetchPriority={fetchPriority}
+            ref={handleRef}
+            onLoad={() => {
+              setLoaded(true)
+              if (imageRef.current) {
+                gsap.fromTo(
+                  imageRef.current,
+                  { scale: 1.04 },
+                  { scale: 1, duration: 0.5, ease: 'power2.out', clearProps: 'transform' },
+                )
+              }
+            }}
+            onError={() => setFailed(true)}
+            className={`absolute inset-0 h-full w-full object-cover transition-all duration-500 ease-out will-change-[transform,opacity,filter] ${
+              loaded
+                ? 'opacity-100 blur-0 scale-100'
+                : 'opacity-0 blur-sm scale-105'
+            }`}
+          />
+        </picture>
       )}
 
       {/* Warm internal photographic depth vignette & rim highlight */}

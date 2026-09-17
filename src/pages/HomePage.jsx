@@ -239,6 +239,7 @@ export default function HomePage() {
                 category={specialItem.sectionTitle?.includes('Pizza') ? 'Pizza' : 'Restaurant'}
                 className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
                 loading="eager"
+                fetchPriority="high"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/10" />
 

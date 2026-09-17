@@ -76,11 +76,21 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
       <div className="flex items-center justify-between gap-2.5 border-b border-[var(--line)] bg-gradient-to-r from-[var(--surface-strong)]/60 via-[var(--surface)] to-[var(--surface-strong)]/60 px-3 py-2 sm:px-3.5 sm:py-2.5">
         <div className="flex items-center gap-2 min-w-0">
           {section.image && (
-            <img
-              src={section.image}
-              alt=""
-              className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg object-cover border border-amber-500/25 shadow-2xs shrink-0"
-            />
+            <picture className="shrink-0">
+              {section.image.startsWith('/images/') && (
+                <source
+                  type="image/webp"
+                  srcSet={section.image.replace(/\.(jpg|jpeg|png)$/i, '.webp')}
+                />
+              )}
+              <img
+                src={section.image}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg object-cover border border-amber-500/25 shadow-2xs shrink-0"
+              />
+            </picture>
           )}
           <div className="min-w-0">
             <h2 className="truncate text-xs sm:text-sm font-extrabold text-[var(--text)]">
