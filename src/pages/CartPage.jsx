@@ -30,7 +30,6 @@ export default function CartPage() {
   const [tableNumber, setTableNumber] = useState(defaultTable)
   const [customerName, setCustomerName] = useState('')
   const [customerPhone, setCustomerPhone] = useState('')
-  const [deliveryAddress, setDeliveryAddress] = useState('')
   const [cookingInstructions, setCookingInstructions] = useState('')
 
   // Quick suggestions if tray is empty or for extra add-ons
@@ -70,10 +69,8 @@ export default function CartPage() {
 
     if (orderType === 'dine-in') {
       message += `🍽️ *Order Type:* Dine-In${tableNumber ? ` (Table ${tableNumber})` : ''}\n`
-    } else if (orderType === 'takeaway') {
-      message += `🥡 *Order Type:* Takeaway / Pickup\n`
     } else {
-      message += `🛵 *Order Type:* Doorstep Delivery\n`
+      message += `🥡 *Order Type:* Takeaway / Pickup\n`
     }
 
     if (customerName.trim()) {
@@ -81,9 +78,6 @@ export default function CartPage() {
     }
     if (customerPhone.trim()) {
       message += `📞 *Phone:* ${customerPhone.trim()}\n`
-    }
-    if (orderType === 'delivery' && deliveryAddress.trim()) {
-      message += `📍 *Delivery Address:* ${deliveryAddress.trim()}\n`
     }
     if (cookingInstructions.trim()) {
       message += `💬 *Cooking Notes:* ${cookingInstructions.trim()}\n`
@@ -326,11 +320,10 @@ export default function CartPage() {
               </span>
 
               {/* Order Type Selector */}
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-2 gap-2">
                 {[
                   { id: 'dine-in', label: '🍽️ Dine-In' },
                   { id: 'takeaway', label: '🥡 Takeaway' },
-                  { id: 'delivery', label: '🛵 Delivery' },
                 ].map((t) => (
                   <button
                     key={t.id}
@@ -393,22 +386,6 @@ export default function CartPage() {
                   />
                 </div>
               </div>
-
-              {orderType === 'delivery' && (
-                <div className="space-y-1 pt-0.5">
-                  <label htmlFor="delivery-address" className="block text-[11px] font-bold text-[var(--muted)]">
-                    Delivery Address
-                  </label>
-                  <input
-                    id="delivery-address"
-                    type="text"
-                    value={deliveryAddress}
-                    onChange={(e) => setDeliveryAddress(e.target.value)}
-                    placeholder="House/Flat No, Society, Landmark"
-                    className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] px-3 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition"
-                  />
-                </div>
-              )}
             </div>
 
             {/* Bill Breakdown Card */}
