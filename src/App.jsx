@@ -113,7 +113,8 @@ export default function App() {
             <Route path="/menu" element={<MenuPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/order" element={<OrderReceiptPage />} />
-            <Route path="/shivangi" element={<AdminPage />} />
+            <Route path="/sam" element={<AdminPage />} />
+            <Route path="/shivangi" element={<Navigate to="/sam" replace />} />
             <Route path="/favorites" element={<Navigate to="/cart" replace />} />
             <Route path="/about" element={<Navigate to="/home" replace />} />
             <Route path="/contact" element={<Navigate to="/home" replace />} />
