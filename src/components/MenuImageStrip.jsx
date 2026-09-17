@@ -78,6 +78,7 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
               alt="All dishes"
               category="Pizza"
               loading="eager"
+              fetchPriority="high"
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-108"
             />
             <span className="absolute top-1 right-1 rounded-full bg-black/65 backdrop-blur-xs px-1.5 py-0.2 text-[8px] sm:text-[9px] font-black text-white border border-white/20">
@@ -96,7 +97,7 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
           </div>
         </button>
 
-        {sections.map((section) => {
+        {sections.map((section, index) => {
           const lowestPrice = getLowestPrice(section)
           const isActive = activeCategory === section.title
 
@@ -121,7 +122,8 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
                   src={section.image}
                   alt={section.title}
                   category={section.title.includes('Pizza') ? 'Pizza' : 'Restaurant'}
-                  loading="eager"
+                  loading={index < 8 ? 'eager' : 'lazy'}
+                  fetchPriority={index < 4 ? 'high' : 'auto'}
                   className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-108"
                 />
                 <span className="absolute top-1 right-1 rounded-full bg-black/65 backdrop-blur-xs px-1.5 py-0.2 text-[8px] sm:text-[9px] font-black text-white border border-white/20">

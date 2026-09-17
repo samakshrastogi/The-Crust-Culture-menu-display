@@ -221,7 +221,7 @@ export default function HomePage() {
             </div>
             <div className="flex items-center gap-1.5">
               <FiZap className="h-3.5 w-3.5 text-amber-500" />
-              <span>Dine-In • Takeaway • Midnight Delivery</span>
+              <span>Dine-In • Takeaway • Midnight Kitchen</span>
             </div>
           </div>
         </div>

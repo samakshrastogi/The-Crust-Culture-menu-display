@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { FiHeart, FiMaximize2, FiMinus, FiPlus, FiShoppingBag, FiX } from 'react-icons/fi'
+import { Link } from 'react-router-dom'
+import { FiArrowRight, FiHeart, FiMaximize2, FiMinus, FiPlus, FiShoppingBag, FiX } from 'react-icons/fi'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
 import ImageLightbox from './ImageLightbox'
@@ -26,17 +27,15 @@ function getSizeSubLabel(label, isPizza) {
 export default function MenuItemSheet({ item, favorites, onClose, onToggleFavorite }) {
   const overlayRef = useRef(null)
   const sheetRef = useRef(null)
-  const { cart, addToCart, updateQuantity } = useCart()
+  const { cart, addToCart, updateQuantity, cartCount } = useCart()
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [prevItemId, setPrevItemId] = useState(item?.id)
-  const [addedFeedback, setAddedFeedback] = useState(false)
 
   if (item?.id !== prevItemId) {
     setPrevItemId(item?.id)
     setSelectedSizeIndex(0)
     setIsLightboxOpen(false)
-    setAddedFeedback(false)
   }
 
   useEffect(() => {
@@ -324,32 +323,32 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
           )}
 
           {/* Primary Action: Add to Cart / Quantity Controller */}
-          <div data-sheet-item className="pt-0.5">
+          <div data-sheet-item className="space-y-2 pt-0.5">
             {currentQuantity > 0 ? (
-              <div className="flex w-full items-center justify-between rounded-xl bg-gradient-to-r from-[var(--orange)] to-[#ea580c] p-1.5 sm:p-2 text-white shadow-md shadow-orange-500/25 border border-white/20 transition-all duration-200">
+              <div className="flex w-full items-center justify-between rounded-2xl bg-gradient-to-r from-[var(--orange)] via-[#ea580c] to-[#d9480f] p-2 text-white shadow-lg shadow-orange-500/25 border border-white/20 transition-all duration-200">
                 {/* Decrement Button */}
                 <button
                   type="button"
                   onClick={() => updateQuantity(currentCartItemId, -1)}
-                  className="touch-target grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-lg bg-white/20 hover:bg-white/30 active:scale-90 text-white transition cursor-pointer"
+                  className="touch-target grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl bg-white text-[var(--orange)] shadow-md hover:bg-amber-50 active:scale-90 transition-all cursor-pointer font-black"
                   aria-label="Decrease quantity"
                   title="Decrease quantity"
                 >
-                  <FiMinus className="text-base sm:text-lg stroke-[2.5]" />
+                  <FiMinus className="text-base sm:text-lg stroke-[3]" />
                 </button>
 
-                {/* Current Quantity and Item Total Info */}
+                {/* Current Quantity & Item Total Info */}
                 <div className="flex flex-col items-center justify-center px-2 select-none">
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <span className="text-xs sm:text-sm font-black tracking-wide">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base sm:text-lg font-black tracking-tight text-white">
                       {currentQuantity} in Cart
                     </span>
-                    <span className="rounded-md bg-white/25 px-1.5 py-0.5 text-[10px] sm:text-xs font-black">
-                      ₹{(currentCartItem.price || selectedPriceObj?.value || 0) * currentQuantity}
+                    <span className="rounded-lg bg-black/20 px-2.5 py-0.5 text-xs sm:text-sm font-black text-amber-200 border border-white/15 shadow-inner">
+                      ₹{(currentCartItem?.price || selectedPriceObj?.value || 0) * currentQuantity}
                     </span>
                   </div>
-                  <span className="text-[9px] sm:text-[10px] font-bold text-white/80">
-                    {formatPrice(selectedPriceObj?.value || 0)} each
+                  <span className="text-[10px] sm:text-[11px] font-semibold text-white/80">
+                    {formatPrice(selectedPriceObj?.value || 0)} each • Tap - or +
                   </span>
                 </div>
 
@@ -357,11 +356,11 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                 <button
                   type="button"
                   onClick={() => updateQuantity(currentCartItemId, 1)}
-                  className="touch-target grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-lg bg-white/20 hover:bg-white/30 active:scale-90 text-white transition cursor-pointer"
+                  className="touch-target grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-xl bg-white text-[var(--orange)] shadow-md hover:bg-amber-50 active:scale-90 transition-all cursor-pointer font-black"
                   aria-label="Increase quantity"
                   title="Increase quantity"
                 >
-                  <FiPlus className="text-base sm:text-lg stroke-[2.5]" />
+                  <FiPlus className="text-base sm:text-lg stroke-[3]" />
                 </button>
               </div>
             ) : (
@@ -369,30 +368,36 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                 type="button"
                 onClick={() => {
                   addToCart(item, selectedSizeIndex, 1)
-                  setAddedFeedback(true)
-                  setTimeout(() => setAddedFeedback(false), 2000)
                 }}
-                className={`touch-target group flex w-full items-center justify-between rounded-xl px-4 py-3 sm:py-3.5 text-white shadow-md transition-all duration-200 active:scale-98 cursor-pointer ${
-                  addedFeedback
-                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 shadow-emerald-600/30'
-                    : 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] shadow-orange-500/25 hover:brightness-110'
-                }`}
+                className="touch-target group flex w-full items-center justify-between rounded-2xl bg-gradient-to-r from-[var(--orange)] via-[#ea580c] to-[#d9480f] p-2 text-white shadow-lg shadow-orange-500/25 border border-white/20 transition-all duration-200 hover:brightness-105 active:scale-[0.99] cursor-pointer"
               >
-                <div className="flex items-center gap-2">
-                  <FiShoppingBag className="text-sm sm:text-base" />
-                  <span className="text-xs sm:text-sm font-black tracking-wide">
-                    {addedFeedback ? 'Added to Cart! 🛒' : 'Add to Cart'}
+                <div className="flex items-center gap-2.5 pl-2">
+                  <span className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl bg-white/20 text-white backdrop-blur-xs">
+                    <FiShoppingBag className="text-base sm:text-lg" />
+                  </span>
+                  <span className="text-sm sm:text-base font-black tracking-wide">
+                    Add to Cart
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-1.5 rounded-xl bg-white text-[var(--orange)] px-3 py-2 sm:py-2.5 shadow-md">
                   <span className="text-xs sm:text-sm font-black">
                     {formatPrice(selectedPriceObj?.value || 0)}
                   </span>
-                  <span className="text-[10px] font-black bg-white/25 px-1.5 py-0.5 rounded">
-                    +
-                  </span>
+                  <span className="text-xs font-black leading-none">+</span>
                 </div>
               </button>
+            )}
+
+            {/* Quick View Cart Action when item is added */}
+            {currentQuantity > 0 && (
+              <Link
+                to="/cart"
+                onClick={onClose}
+                className="touch-target flex items-center justify-center gap-1.5 pt-0.5 text-xs font-black text-[var(--orange)] hover:text-[#c2410c] transition group/viewcart"
+              >
+                <span>View Cart ({cartCount} {cartCount === 1 ? 'item' : 'items'})</span>
+                <FiArrowRight className="text-xs transition-transform group-hover/viewcart:translate-x-0.5" />
+              </Link>
             )}
           </div>
 
