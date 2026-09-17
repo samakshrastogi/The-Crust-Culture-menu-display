@@ -23,7 +23,7 @@ function formatPrice(value) {
 }
 
 export default function CartPage() {
-  const { cart, updateQuantity, removeFromCart, clearCart, cartCount, cartTotal, addToCart } = useCart()
+  const { cart, updateQuantity, removeFromCart, cartCount, cartTotal, addToCart } = useCart()
 
   const [orderType, setOrderType] = useState('dine-in')
   const [customerName, setCustomerName] = useState('')
@@ -121,18 +121,6 @@ export default function CartPage() {
             >
               <span>+ Add More</span>
             </Link>
-
-            {cart.length > 0 && (
-              <button
-                type="button"
-                onClick={clearCart}
-                className="touch-target inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-600 dark:text-red-400 transition hover:bg-red-500/20 active:scale-95 cursor-pointer"
-                title="Clear all items in cart"
-              >
-                <FiTrash2 className="text-xs" />
-                <span>Clear Cart</span>
-              </button>
-            )}
           </div>
         </div>
       </section>
