@@ -403,21 +403,21 @@ export default function CartPage() {
                               <button
                                 type="button"
                                 onClick={() => updateQuantity(inCartItem.cartItemId, -1)}
-                                className="grid h-5 w-5 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
+                                className="grid h-6 w-6 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
                                 aria-label={`Decrease ${item.name} quantity`}
                               >
-                                <FiMinus className="text-[9px]" />
+                                <FiMinus className="text-[10px]" />
                               </button>
-                              <span className="w-3.5 text-center text-[10.5px] font-black text-[#ea580c]">
+                              <span className="w-4 text-center text-[10.5px] font-black text-[#ea580c]">
                                 {inCartItem.quantity}
                               </span>
                               <button
                                 type="button"
                                 onClick={() => updateQuantity(inCartItem.cartItemId, 1)}
-                                className="grid h-5 w-5 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
+                                className="grid h-6 w-6 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
                                 aria-label={`Increase ${item.name} quantity`}
                               >
-                                <FiPlus className="text-[9px]" />
+                                <FiPlus className="text-[10px]" />
                               </button>
                             </div>
                           ) : (
@@ -686,10 +686,10 @@ export default function CartPage() {
                             <button
                               type="button"
                               onClick={() => updateQuantity(inCartItem.cartItemId, -1)}
-                              className="grid h-5 w-5 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
+                              className="grid h-6 w-6 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
                               aria-label={`Decrease ${recItem.name} quantity`}
                             >
-                              <FiMinus className="text-[9px]" />
+                              <FiMinus className="text-[10px]" />
                             </button>
                             <span className="w-4 text-center text-[11px] font-black text-[#ea580c]">
                               {inCartItem.quantity}
@@ -697,10 +697,10 @@ export default function CartPage() {
                             <button
                               type="button"
                               onClick={() => updateQuantity(inCartItem.cartItemId, 1)}
-                              className="grid h-5 w-5 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
+                              className="grid h-6 w-6 place-items-center rounded text-[11px] font-black text-[#ea580c] hover:bg-[#ea580c] hover:text-white transition active:scale-90 cursor-pointer"
                               aria-label={`Increase ${recItem.name} quantity`}
                             >
-                              <FiPlus className="text-[9px]" />
+                              <FiPlus className="text-[10px]" />
                             </button>
                           </div>
                         ) : (
