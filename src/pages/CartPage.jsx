@@ -51,27 +51,12 @@ export default function CartPage() {
   const generateWhatsAppMessage = () => {
     if (cart.length === 0) return ''
 
-    const dateStr = new Date().toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    })
-    const timeStr = new Date().toLocaleTimeString('en-IN', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true,
-    })
-
     const lines = [
-      `*================================*`,
-      `*    THE CRUST CULTURE CAFE      *`,
-      `*         -- NEW ORDER --        *`,
-      `*================================*`,
+      `*NEW ORDER*`,
       ``,
       `*CUSTOMER DETAILS*`,
       `• *Name:* ${customerName.trim() || 'Guest'}`,
-      `• *Order Type:* ${orderType === 'dine-in' ? 'Dine-In' : 'Takeaway / Self-Pickup'}`,
-      `• *Time:* ${timeStr} (${dateStr})`,
+      `• *Order:* ${orderType === 'dine-in' ? 'Dine-In' : 'Takeaway'}`,
       ``,
       `*ITEMS ORDERED (${cartCount} ${cartCount === 1 ? 'item' : 'items'})*`,
       `----------------------------------`,
@@ -87,19 +72,17 @@ export default function CartPage() {
     lines.push(`----------------------------------`)
     lines.push(``)
     lines.push(`*BILLING SUMMARY*`)
-    lines.push(`• Items Subtotal: Rs. ${cartTotal}`)
-    lines.push(`• Taxes & Charges: Included (Rs. 0)`)
-    lines.push(`• *GRAND TOTAL: Rs. ${cartTotal}*`)
-    lines.push(``)
+    lines.push(`• *Grand Total:* Rs. ${cartTotal}`)
 
     if (cookingInstructions.trim()) {
+      lines.push(``)
       lines.push(`*SPECIAL INSTRUCTIONS*`)
       lines.push(`"${cookingInstructions.trim()}"`)
-      lines.push(``)
     }
 
-    lines.push(`==================================`)
-    lines.push(`_Order sent via The Crust Culture Digital Menu_`)
+    lines.push(``)
+    lines.push(`----------------------------------`)
+    lines.push(`_Sent via The Crust Culture Digital Menu_`)
 
     return lines.join('\n')
   }
