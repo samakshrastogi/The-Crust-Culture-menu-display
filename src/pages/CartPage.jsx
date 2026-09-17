@@ -51,42 +51,63 @@ export default function CartPage() {
   const generateWhatsAppMessage = () => {
     if (cart.length === 0) return ''
 
-    let message = `🍕 *THE CRUST CULTURE — NEW ORDER* 🍕\n`
-    message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`
-    message += `📋 *Items Ordered:*\n`
-
-    cart.forEach((item) => {
-      const sizeStr = item.size ? ` (${item.size})` : ''
-      const lineTotal = item.price * item.quantity
-      message += `• ${item.quantity}x ${item.name}${sizeStr} — ₹${lineTotal}\n`
+    const dateStr = new Date().toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    })
+    const timeStr = new Date().toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
     })
 
-    message += `\n💰 *Grand Total: ₹${cartTotal}*\n`
-    message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`
+    const lines = [
+      `*================================*`,
+      `*    THE CRUST CULTURE CAFE      *`,
+      `*         -- NEW ORDER --        *`,
+      `*================================*`,
+      ``,
+      `*CUSTOMER DETAILS*`,
+      `• *Name:* ${customerName.trim() || 'Guest'}`,
+      `• *Order Type:* ${orderType === 'dine-in' ? 'Dine-In' : 'Takeaway / Self-Pickup'}`,
+      `• *Time:* ${timeStr} (${dateStr})`,
+      ``,
+      `*ITEMS ORDERED (${cartCount} ${cartCount === 1 ? 'item' : 'items'})*`,
+      `----------------------------------`,
+    ]
 
-    if (orderType === 'dine-in') {
-      message += `🍽️ *Order Type:* Dine-In\n`
-    } else {
-      message += `🥡 *Order Type:* Takeaway / Pickup\n`
-    }
+    cart.forEach((item, index) => {
+      const sizeInfo = item.size ? ` (${item.size})` : ''
+      const lineTotal = item.price * item.quantity
+      lines.push(`${index + 1}. *${item.name}*${sizeInfo}`)
+      lines.push(`    Qty: ${item.quantity}  |  Rs. ${lineTotal}`)
+    })
 
-    if (customerName.trim()) {
-      message += `👤 *Customer Name:* ${customerName.trim()}\n`
-    }
+    lines.push(`----------------------------------`)
+    lines.push(``)
+    lines.push(`*BILLING SUMMARY*`)
+    lines.push(`• Items Subtotal: Rs. ${cartTotal}`)
+    lines.push(`• Taxes & Charges: Included (Rs. 0)`)
+    lines.push(`• *GRAND TOTAL: Rs. ${cartTotal}*`)
+    lines.push(``)
+
     if (cookingInstructions.trim()) {
-      message += `💬 *Cooking Notes:* ${cookingInstructions.trim()}\n`
+      lines.push(`*SPECIAL INSTRUCTIONS*`)
+      lines.push(`"${cookingInstructions.trim()}"`)
+      lines.push(``)
     }
 
-    message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`
-    message += `_Sent via The Crust Culture Digital Menu_`
+    lines.push(`==================================`)
+    lines.push(`_Order sent via The Crust Culture Digital Menu_`)
 
-    return message
+    return lines.join('\n')
   }
 
   const handleSendWhatsAppOrder = () => {
     const text = generateWhatsAppMessage()
     if (!text) return
-    const url = `https://wa.me/${CAFE_PHONE}?text=${encodeURIComponent(text)}`
+    const url = `https://api.whatsapp.com/send?phone=${CAFE_PHONE}&text=${encodeURIComponent(text)}`
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
