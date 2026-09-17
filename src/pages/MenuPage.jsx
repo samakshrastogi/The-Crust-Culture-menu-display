@@ -14,6 +14,7 @@ import MenuImageStrip from '../components/MenuImageStrip'
 import MenuItemSheet from '../components/MenuItemSheet'
 import MenuSectionCard from '../components/MenuSectionCard'
 import SearchBar from '../components/SearchBar'
+import SearchDishCard from '../components/SearchDishCard'
 import SkeletonLoader from '../components/SkeletonLoader'
 import { menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
@@ -254,7 +255,40 @@ export default function MenuPage() {
     return buckets
   }, [filteredSections, columns])
 
-  const visibleItemCount = filteredSections.reduce((total, section) => total + section.items.length, 0)
+  const allSearchItems = useMemo(() => {
+    if (!query?.trim()) return []
+    return initialSections.flatMap((section) =>
+      section.items
+        .filter((item) => {
+          const matchQuery = isItemMatch(item, section.title, query)
+          const matchVibe = matchesVibe(item, section, activeVibeFilter)
+          return matchQuery && matchVibe
+        })
+        .map((item) => ({
+          ...item,
+          sectionTitle: section.title,
+          sectionImage: section.image,
+        })),
+    )
+  }, [query, activeVibeFilter])
+
+  const searchCategories = useMemo(() => {
+    if (!query?.trim()) return []
+    const catMap = new Map()
+    allSearchItems.forEach((item) => {
+      catMap.set(item.sectionTitle, (catMap.get(item.sectionTitle) || 0) + 1)
+    })
+    return Array.from(catMap.entries()).map(([title, count]) => ({ title, count }))
+  }, [allSearchItems, query])
+
+  const searchItems = useMemo(() => {
+    if (activeCategory === 'All') return allSearchItems
+    return allSearchItems.filter((item) => item.sectionTitle === activeCategory)
+  }, [allSearchItems, activeCategory])
+
+  const visibleItemCount = query?.trim()
+    ? searchItems.length
+    : filteredSections.reduce((total, section) => total + section.items.length, 0)
   const totalMenuItemsCount = initialAllMenuItems.length
   const favoriteCount = favorites.filter((id) => initialAllMenuItems.some((item) => item.id === id)).length
 
@@ -364,8 +398,8 @@ export default function MenuPage() {
         })}
       </div>
 
-      {/* 3. Visual Category Photo Strip */}
-      {(!query || filteredSections.length > 0) && (
+      {/* 3. Visual Category Photo Strip (hidden when searching) */}
+      {!query && (
         <MenuImageStrip
           sections={initialSections}
           activeCategory={activeCategory}
@@ -373,124 +407,142 @@ export default function MenuPage() {
         />
       )}
 
-      {/* Sticky Sub-Header with Category ScrollSpy Navigation */}
-      <div
-        className={`sticky top-[52px] sm:top-[58px] z-30 transition-all duration-300 ${
-          showStickyBar
-            ? 'opacity-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 -translate-y-2 pointer-events-none'
-        } -mx-2.5 sm:-mx-6 lg:-mx-8 px-2.5 sm:px-6 lg:px-8 py-1.5 bg-[var(--bg)]/95 backdrop-blur-xl border-b border-[var(--line)] shadow-xs mb-2.5`}
-      >
-        <div className="mx-auto  flex items-center justify-between gap-2">
-          {/* Scrollable category pills */}
-          <div
-            ref={stickyScrollRef}
-            className="no-scrollbar flex items-center gap-1.5 overflow-x-auto py-0.5"
-          >
-            {initialSections.map((section) => {
-              const isCurrent = activeScrollSection === section.id
-              return (
+      {/* Sticky Sub-Header with Category ScrollSpy Navigation (hidden when searching) */}
+      {!query && (
+        <div
+          className={`sticky top-[52px] sm:top-[58px] z-30 transition-all duration-300 ${
+            showStickyBar
+              ? 'opacity-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 -translate-y-2 pointer-events-none'
+          } -mx-2.5 sm:-mx-6 lg:-mx-8 px-2.5 sm:px-6 lg:px-8 py-1.5 bg-[var(--bg)]/95 backdrop-blur-xl border-b border-[var(--line)] shadow-xs mb-2.5`}
+        >
+          <div className="mx-auto  flex items-center justify-between gap-2">
+            {/* Scrollable category pills */}
+            <div
+              ref={stickyScrollRef}
+              className="no-scrollbar flex items-center gap-1.5 overflow-x-auto py-0.5"
+            >
+              {initialSections.map((section) => {
+                const isCurrent = activeScrollSection === section.id
+                return (
+                  <button
+                    key={section.id}
+                    data-section-btn={section.id}
+                    type="button"
+                    onClick={() => handleScrollToSection(section.id)}
+                    className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold transition-all duration-200 cursor-pointer ${
+                      isCurrent
+                        ? 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] text-white shadow-xs'
+                        : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]/40'
+                    }`}
+                  >
+                    <span>{section.title}</span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Quick Category Drawer Button */}
+            <button
+              type="button"
+              onClick={() => setIsDrawerOpen(true)}
+              className="shrink-0 inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1 text-[11px] font-black text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
+              title="All Categories"
+            >
+              <FiGrid className="text-[var(--orange)] text-xs" />
+              <span className="hidden min-[480px]:inline">Categories</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Active Search Mode UI */}
+      {query ? (
+        <div className="space-y-3 pt-1">
+          {/* Search Header Banner */}
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--orange)]/30 bg-gradient-to-r from-[var(--orange)]/10 via-[var(--surface)] to-[var(--surface-strong)]/60 p-3 sm:p-3.5 shadow-xs">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="grid h-8 w-8 sm:h-9 sm:w-9 shrink-0 place-items-center rounded-xl bg-[var(--orange)] text-white shadow-xs">
+                <FiSearch className="text-sm sm:text-base" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs sm:text-sm font-extrabold text-[var(--text)]">
+                    Results for &ldquo;<span className="text-[var(--orange)] font-black">{query}</span>&rdquo;
+                  </span>
+                  <span className="rounded-full bg-[var(--orange)] px-2 py-0.2 text-[10px] font-black text-white shadow-2xs">
+                    {allSearchItems.length} {allSearchItems.length === 1 ? 'dish' : 'dishes'}
+                  </span>
+                </div>
+                <p className="text-[11px] font-medium text-[var(--muted)]">
+                  {searchCategories.length === 1
+                    ? `Found in ${searchCategories[0]?.title}`
+                    : `Found across ${searchCategories.length} categories`}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface)] px-3 py-1 text-xs font-bold text-[var(--text)] transition hover:border-[var(--orange)] hover:text-[var(--orange)] cursor-pointer active:scale-95 shadow-2xs shrink-0"
+            >
+              <FiX className="text-xs" />
+              <span>Clear Search</span>
+            </button>
+          </div>
+
+          {/* Quick Category Filter Pills within Search Results */}
+          {searchCategories.length > 1 && (
+            <div className="no-scrollbar flex items-center gap-1.5 overflow-x-auto py-0.5">
+              <button
+                type="button"
+                onClick={() => setActiveCategory('All')}
+                className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer ${
+                  activeCategory === 'All'
+                    ? 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] text-white shadow-xs'
+                    : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]/40'
+                }`}
+              >
+                All ({allSearchItems.length})
+              </button>
+              {searchCategories.map((cat) => (
                 <button
-                  key={section.id}
-                  data-section-btn={section.id}
+                  key={cat.title}
                   type="button"
-                  onClick={() => handleScrollToSection(section.id)}
-                  className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] sm:text-[11px] font-bold transition-all duration-200 cursor-pointer ${
-                    isCurrent
+                  onClick={() => setActiveCategory(activeCategory === cat.title ? 'All' : cat.title)}
+                  className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold transition-all cursor-pointer ${
+                    activeCategory === cat.title
                       ? 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] text-white shadow-xs'
                       : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]/40'
                   }`}
                 >
-                  <span>{section.title}</span>
+                  {cat.title} ({cat.count})
                 </button>
-              )
-            })}
-          </div>
-
-          {/* Quick Category Drawer Button */}
-          <button
-            type="button"
-            onClick={() => setIsDrawerOpen(true)}
-            className="shrink-0 inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1 text-[11px] font-black text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
-            title="All Categories"
-          >
-            <FiGrid className="text-[var(--orange)] text-xs" />
-            <span className="hidden min-[480px]:inline">Categories</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Active Filter Banner */}
-      {(query || activeCategory !== 'All' || activeVibeFilter !== 'all') && (
-        <div className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--orange)]/30 bg-[var(--orange)]/10 px-3 py-1.5 sm:mb-2.5 sm:px-3.5 sm:py-2 text-xs font-bold text-[var(--orange)]">
-          <div className="flex items-center gap-2">
-            {query ? (
-              <span>
-                Search: &ldquo;<span className="text-[var(--text)] font-extrabold">{query}</span>&rdquo;
-              </span>
-            ) : activeCategory !== 'All' ? (
-              <span>
-                Category: <span className="text-[var(--text)] font-extrabold">{activeCategory}</span>
-              </span>
-            ) : (
-              <span>
-                Filter: <span className="text-[var(--text)] font-extrabold">{VIBE_FILTERS.find((f) => f.id === activeVibeFilter)?.label}</span>
-              </span>
-            )}
-            <span className="rounded-full bg-[var(--orange)] px-2 py-0.2 text-[10px] text-white font-black">
-              {visibleItemCount} items
-            </span>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleResetFilters}
-            className="inline-flex items-center gap-1 rounded-full bg-[var(--surface)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--text)] border border-[var(--line)] transition hover:border-[var(--orange)] cursor-pointer"
-          >
-            <FiRotateCcw className="text-xs" />
-            <span>Reset</span>
-          </button>
-        </div>
-      )}
-
-      {/* Count & Favorites Bar */}
-      <div className="mb-2 flex items-center justify-between gap-3 text-[11px] font-semibold text-[var(--muted)] sm:mb-2.5 sm:text-xs">
-        <p>
-          Showing <span className="font-extrabold text-[var(--text)]">{visibleItemCount}</span> dishes
-        </p>
-        <p className="flex items-center gap-1.5">
-          <FiHeart className="text-[var(--orange)] fill-[var(--orange)] text-xs sm:text-sm" />
-          <span>{favoriteCount} saved</span>
-        </p>
-      </div>
-
-      {/* Sections Display */}
-      {loading ? (
-        <SkeletonLoader count={8} />
-      ) : (
-        <div ref={sectionsRef}>
-          {filteredSections.length === 1 ? (
-            <div className="max-w-2xl sm:max-w-3xl mx-auto">
-              <MenuSectionCard
-                key={`${filteredSections[0].id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
-                section={filteredSections[0]}
-                favorites={favorites}
-                onToggleFavorite={toggleFavorite}
-                onSelectItem={setSelectedItem}
-                query={query}
-              />
+              ))}
             </div>
-          ) : (
-            <div className="flex flex-col md:flex-row gap-2.5 sm:gap-3 md:gap-3.5 items-start">
-              {columnBuckets.map((bucket, colIdx) => (
-                <div
-                  key={colIdx}
-                  className="flex flex-1 flex-col gap-2.5 sm:gap-3 md:gap-3.5 min-w-0 w-full"
-                >
-                  {bucket.map((section) => (
-                    <MenuSectionCard
-                      key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
-                      section={section}
+          )}
+
+          {/* Search Results Dish Grid */}
+          {searchItems.length > 0 ? (
+            <div ref={sectionsRef}>
+              {searchItems.length === 1 ? (
+                <div className="max-w-xl mx-auto">
+                  <SearchDishCard
+                    key={`${searchItems[0].id}-${searchItems[0].sectionTitle}`}
+                    item={searchItems[0]}
+                    favorites={favorites}
+                    onToggleFavorite={toggleFavorite}
+                    onSelectItem={setSelectedItem}
+                    query={query}
+                  />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3 md:gap-3.5">
+                  {searchItems.map((item) => (
+                    <SearchDishCard
+                      key={`${item.id}-${item.sectionTitle}`}
+                      item={item}
                       favorites={favorites}
                       onToggleFavorite={toggleFavorite}
                       onSelectItem={setSelectedItem}
@@ -498,10 +550,93 @@ export default function MenuPage() {
                     />
                   ))}
                 </div>
-              ))}
+              )}
+            </div>
+          ) : null}
+        </div>
+      ) : (
+        /* Regular Menu Display */
+        <>
+          {/* Active Filter Banner */}
+          {(activeCategory !== 'All' || activeVibeFilter !== 'all') && (
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--orange)]/30 bg-[var(--orange)]/10 px-3 py-1.5 sm:mb-2.5 sm:px-3.5 sm:py-2 text-xs font-bold text-[var(--orange)]">
+              <div className="flex items-center gap-2">
+                {activeCategory !== 'All' ? (
+                  <span>
+                    Category: <span className="text-[var(--text)] font-extrabold">{activeCategory}</span>
+                  </span>
+                ) : (
+                  <span>
+                    Filter: <span className="text-[var(--text)] font-extrabold">{VIBE_FILTERS.find((f) => f.id === activeVibeFilter)?.label}</span>
+                  </span>
+                )}
+                <span className="rounded-full bg-[var(--orange)] px-2 py-0.2 text-[10px] text-white font-black">
+                  {visibleItemCount} items
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="inline-flex items-center gap-1 rounded-full bg-[var(--surface)] px-2.5 py-0.5 text-[11px] font-bold text-[var(--text)] border border-[var(--line)] transition hover:border-[var(--orange)] cursor-pointer"
+              >
+                <FiRotateCcw className="text-xs" />
+                <span>Reset</span>
+              </button>
             </div>
           )}
-        </div>
+
+          {/* Count & Favorites Bar */}
+          <div className="mb-2 flex items-center justify-between gap-3 text-[11px] font-semibold text-[var(--muted)] sm:mb-2.5 sm:text-xs">
+            <p>
+              Showing <span className="font-extrabold text-[var(--text)]">{visibleItemCount}</span> dishes
+            </p>
+            <p className="flex items-center gap-1.5">
+              <FiHeart className="text-[var(--orange)] fill-[var(--orange)] text-xs sm:text-sm" />
+              <span>{favoriteCount} saved</span>
+            </p>
+          </div>
+
+          {/* Sections Display */}
+          {loading ? (
+            <SkeletonLoader count={8} />
+          ) : (
+            <div ref={sectionsRef}>
+              {filteredSections.length === 1 ? (
+                <div className="max-w-2xl sm:max-w-3xl mx-auto">
+                  <MenuSectionCard
+                    key={`${filteredSections[0].id}-${activeCategory}-${activeVibeFilter}`}
+                    section={filteredSections[0]}
+                    favorites={favorites}
+                    onToggleFavorite={toggleFavorite}
+                    onSelectItem={setSelectedItem}
+                    query={query}
+                  />
+                </div>
+              ) : (
+                <div className="flex flex-col md:flex-row gap-2.5 sm:gap-3 md:gap-3.5 items-start">
+                  {columnBuckets.map((bucket, colIdx) => (
+                    <div
+                      key={colIdx}
+                      className="flex flex-1 flex-col gap-2.5 sm:gap-3 md:gap-3.5 min-w-0 w-full"
+                    >
+                      {bucket.map((section) => (
+                        <MenuSectionCard
+                          key={`${section.id}-${activeCategory}-${activeVibeFilter}`}
+                          section={section}
+                          favorites={favorites}
+                          onToggleFavorite={toggleFavorite}
+                          onSelectItem={setSelectedItem}
+                          query={query}
+                        />
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </>
       )}
 
       {/* Smart Zero Results State & Suggestions */}

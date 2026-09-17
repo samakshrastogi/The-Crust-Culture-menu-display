@@ -10,6 +10,7 @@ import ScrollProgress from './components/ScrollProgress'
 import { CartProvider } from './context/CartContext'
 import { useCart } from './hooks/useCart'
 import { useLocalStorage } from './hooks/useLocalStorage'
+import { useAutoUpdate } from './hooks/useAutoUpdate'
 import HomePage from './pages/HomePage'
 import MenuPage from './pages/MenuPage'
 import CartPage from './pages/CartPage'
@@ -86,6 +87,7 @@ function AppShell({ theme, onToggleTheme }) {
 }
 
 export default function App() {
+  useAutoUpdate()
   const [theme, setTheme] = useLocalStorage('crust-theme', 'light')
 
   useEffect(() => {
