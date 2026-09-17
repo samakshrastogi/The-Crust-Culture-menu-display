@@ -8,6 +8,7 @@ import {
   FiTrash2,
   FiPhone,
   FiCheckCircle,
+  FiShield,
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import FoodImage from '../components/FoodImage'
@@ -15,6 +16,7 @@ import VegIndicator from '../components/VegIndicator'
 import { useCart } from '../hooks/useCart'
 import { menuSections } from '../data/menuSections'
 import { CAFE_INFO } from '../data/cafeInfo'
+import { generateOrderSecurity } from '../utils/orderSecurity'
 
 const CAFE_PHONE = CAFE_INFO.phone.waNumber
 
@@ -51,12 +53,21 @@ export default function CartPage() {
   const generateWhatsAppMessage = () => {
     if (cart.length === 0) return ''
 
+    const security = generateOrderSecurity({
+      cart,
+      total: cartTotal,
+      customerName,
+      orderType,
+      cookingInstructions,
+    })
+
     const lines = [
-      `*NEW ORDER*`,
+      `🍕 *NEW ORDER - The Crust Culture*`,
+      `*Order ID:* ${security.orderId}`,
       ``,
       `*CUSTOMER DETAILS*`,
       `• *Name:* ${customerName.trim() || 'Guest'}`,
-      `• *Order:* ${orderType === 'dine-in' ? 'Dine-In' : 'Takeaway'}`,
+      `• *Order:* ${orderType === 'dine-in' ? '🍽️ Dine-In' : '🛍️ Takeaway'}`,
       ``,
       `*ITEMS ORDERED (${cartCount} ${cartCount === 1 ? 'item' : 'items'})*`,
       `----------------------------------`,
@@ -81,6 +92,12 @@ export default function CartPage() {
     }
 
     lines.push(``)
+    lines.push(`----------------------------------`)
+    lines.push(`🔒 *KITCHEN VERIFICATION CODE:* ${security.securityCode}`)
+    lines.push(``)
+    lines.push(`🧾 *VERIFIED KITCHEN TICKET:*`)
+    lines.push(`${security.receiptUrl}`)
+    lines.push(`_(Kitchen: tap link to view verified authentic bill & items)_`)
     lines.push(`----------------------------------`)
     lines.push(`_Sent via The Crust Culture Digital Menu_`)
 
@@ -381,6 +398,12 @@ export default function CartPage() {
                   </div>
                 </div>
               </button>
+
+              {/* Tamper-proof Security Note */}
+              <div className="flex items-center justify-center gap-1.5 pt-0.5 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                <FiShield className="text-xs shrink-0" />
+                <span>Tamper-proof verified kitchen ticket included</span>
+              </div>
 
               {/* Direct Phone Support */}
               <div className="flex items-center justify-center gap-1.5 pt-1 text-[11px] text-[var(--muted)]">
