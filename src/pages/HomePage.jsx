@@ -8,9 +8,11 @@ import {
   FiClock,
   FiHeart,
   FiMaximize2,
+  FiShield,
   FiSmartphone,
   FiZap,
 } from 'react-icons/fi'
+import { FaFire } from 'react-icons/fa6'
 import { revealHero, revealOnScroll } from '../animations/gsapAnimations'
 import FoodImage from '../components/FoodImage'
 import ImageLightbox from '../components/ImageLightbox'
@@ -571,7 +573,7 @@ export default function HomePage() {
           </div>
 
           {/* Right: Story Narrative + 4 Craft Pillars */}
-          <div className="md:col-span-7 lg:col-span-7 space-y-4">
+          <div className="md:col-span-7 lg:col-span-7 space-y-3.5 sm:space-y-4">
             <div className="space-y-2">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--gold)]">
                 Why Pizza Lovers Choose Us
@@ -580,18 +582,33 @@ export default function HomePage() {
                 Real dough, bubbling mozzarella & unforgettable crunch.
               </h2>
               <p className="text-xs sm:text-sm leading-relaxed text-[var(--muted)]">
-                We don’t cut corners. Every pizza starts with naturally fermented dough stretched by hand, layered with our rich spiced tomato sauce, and packed with 100% real mozzarella. Baked in our blazing stone oven until the crust is crispy and the cheese is golden and bubbly.
+                At The Crust Culture, pizza is our pure passion. Every single pizza begins with our signature slow-fermented sourdough, stretched by hand to order to create that coveted airy, blistered crust with an irresistible crunch in every single bite.
+              </p>
+              <p className="text-xs sm:text-sm leading-relaxed text-[var(--muted)]">
+                We smother our pies with house-simmered herb tomato sauce, 100% pure stretchy mozzarella, tender fresh malai paneer, and crisp garden veggies. Baked in our blazing stone oven at high heat, each pizza comes to your table piping hot, bubbling, and golden in just 15 minutes.
               </p>
             </div>
 
-            {/* Craft Pillars */}
+            {/* 4 Craft Pillars */}
             <div className="grid sm:grid-cols-2 gap-2.5 sm:gap-3 pt-1">
               {[
                 {
+                  icon: FaFire,
+                  title: 'Blazing Stone Oven',
+                  desc: 'Scorching stone-oven heat blisters the crust to golden perfection, locking in rich wood-fired aroma and crunch.',
+                  accent: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
+                },
+                {
                   icon: FiAward,
                   title: '100% Real Mozzarella & Paneer',
-                  desc: 'No artificial blends. Pure stretchy mozzarella, soft malai paneer, and fragrant Italian herbs.',
+                  desc: 'Zero synthetic cheese or processed oils. Only thick, stretchy mozzarella and fresh malai paneer that melts in your mouth.',
                   accent: 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20',
+                },
+                {
+                  icon: FiShield,
+                  title: 'Fresh Fermented Sourdough',
+                  desc: 'Naturally fermented dough prepared fresh every morning for light digestion and that signature crispy crust.',
+                  accent: 'text-orange-500 bg-orange-500/10 border-orange-500/20',
                 },
                 {
                   icon: FiSmartphone,
@@ -604,7 +621,7 @@ export default function HomePage() {
                 return (
                   <div
                     key={card.title}
-                    className="rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 transition-all duration-200 hover:border-[var(--gold)] hover:shadow-sm"
+                    className="rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3 sm:p-3.5 transition-all duration-200 hover:border-[var(--gold)] hover:shadow-sm"
                   >
                     <div
                       className={`flex h-8 w-8 items-center justify-center rounded-xl border ${card.accent}`}
@@ -620,6 +637,21 @@ export default function HomePage() {
                   </div>
                 )
               })}
+            </div>
+
+            {/* Cafe Assurance & Location Strip */}
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface-strong)]/60 px-3.5 py-2 text-xs">
+              <div className="flex items-center gap-2 text-[var(--text)] font-extrabold">
+                <span className="text-sm">📍</span>
+                <span>Palam Vihar Extension, Gurgaon</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-[11px] font-semibold text-[var(--muted)]">
+                <span className="text-emerald-600 dark:text-emerald-400 font-bold">100% Pure Veg</span>
+                <span>•</span>
+                <span>Stone-Oven Baked</span>
+                <span>•</span>
+                <span className="text-amber-600 dark:text-amber-400 font-bold">Open till 1:30 AM</span>
+              </div>
             </div>
           </div>
         </div>

@@ -284,7 +284,7 @@ export default function MenuPage() {
   }, [])
 
   return (
-    <div className="mx-auto  px-2.5 pb-20 pt-2 sm:px-6 sm:pb-24 sm:pt-3 lg:px-8">
+    <div className="mx-auto max-w-7xl px-2.5 pb-20 pt-2 sm:px-6 sm:pb-24 sm:pt-3 lg:px-8">
       {/* 1. Search and Status Row (Compact, Single Row on all screens) */}
       <div className="mb-2 flex items-center gap-2 sm:mb-2.5 sm:gap-3">
         <div className="min-w-0 flex-1">
@@ -426,7 +426,7 @@ export default function MenuPage() {
       ) : (
         <div ref={sectionsRef}>
           {filteredSections.length === 1 ? (
-            <div className="max-w-xl mx-auto">
+            <div className="max-w-2xl sm:max-w-3xl mx-auto">
               <MenuSectionCard
                 key={`${filteredSections[0].id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
                 section={filteredSections[0]}
@@ -437,16 +437,20 @@ export default function MenuPage() {
               />
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3 md:gap-3.5 items-start">
+            <div className="columns-1 md:columns-2 xl:columns-3 gap-2.5 sm:gap-3 md:gap-3.5 [column-fill:_balance]">
               {filteredSections.map((section) => (
-                <MenuSectionCard
+                <div
                   key={`${section.id}-${query ? 'search' : activeCategory}-${activeVibeFilter}`}
-                  section={section}
-                  favorites={favorites}
-                  onToggleFavorite={toggleFavorite}
-                  onSelectItem={setSelectedItem}
-                  query={query}
-                />
+                  className="break-inside-avoid mb-2.5 sm:mb-3 md:mb-3.5"
+                >
+                  <MenuSectionCard
+                    section={section}
+                    favorites={favorites}
+                    onToggleFavorite={toggleFavorite}
+                    onSelectItem={setSelectedItem}
+                    query={query}
+                  />
+                </div>
               ))}
             </div>
           )}
