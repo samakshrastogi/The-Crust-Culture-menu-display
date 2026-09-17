@@ -55,7 +55,7 @@ export default function Footer() {
               <li>
                 <Link to="/cart" className="inline-flex items-center gap-1 transition-colors hover:text-[var(--orange)]">
                   <FiShoppingBag className="text-xs text-[var(--orange)]" />
-                  <span>Order Tray / Cart</span>
+                  <span>Cart</span>
                 </Link>
               </li>
               <li>

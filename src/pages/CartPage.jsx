@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import {
   FiArrowRight,
   FiMinus,
@@ -23,13 +23,9 @@ function formatPrice(value) {
 
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, clearCart, cartCount, cartTotal, addToCart } = useCart()
-  const [searchParams] = useSearchParams()
 
-  const defaultTable = searchParams.get('table') || ''
-  const [orderType, setOrderType] = useState(defaultTable ? 'dine-in' : 'dine-in')
-  const [tableNumber, setTableNumber] = useState(defaultTable)
+  const [orderType, setOrderType] = useState('dine-in')
   const [customerName, setCustomerName] = useState('')
-  const [customerPhone, setCustomerPhone] = useState('')
   const [cookingInstructions, setCookingInstructions] = useState('')
 
   // Quick suggestions if tray is empty or for extra add-ons
@@ -68,16 +64,13 @@ export default function CartPage() {
     message += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`
 
     if (orderType === 'dine-in') {
-      message += `🍽️ *Order Type:* Dine-In${tableNumber ? ` (Table ${tableNumber})` : ''}\n`
+      message += `🍽️ *Order Type:* Dine-In\n`
     } else {
       message += `🥡 *Order Type:* Takeaway / Pickup\n`
     }
 
     if (customerName.trim()) {
       message += `👤 *Customer Name:* ${customerName.trim()}\n`
-    }
-    if (customerPhone.trim()) {
-      message += `📞 *Phone:* ${customerPhone.trim()}\n`
     }
     if (cookingInstructions.trim()) {
       message += `💬 *Cooking Notes:* ${cookingInstructions.trim()}\n`
@@ -108,7 +101,7 @@ export default function CartPage() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="font-display text-xl sm:text-2xl font-black tracking-tight text-[var(--text)]">
-                  My Order Tray
+                  My Cart
                 </h1>
                 <span className="rounded-full bg-[var(--orange)]/10 px-2.5 py-0.5 text-xs font-black text-[var(--orange)] border border-[var(--orange)]/20">
                   {cartCount} {cartCount === 1 ? 'item' : 'items'}
@@ -133,10 +126,10 @@ export default function CartPage() {
                 type="button"
                 onClick={clearCart}
                 className="touch-target inline-flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs font-bold text-red-600 dark:text-red-400 transition hover:bg-red-500/20 active:scale-95 cursor-pointer"
-                title="Clear all items in tray"
+                title="Clear all items in cart"
               >
                 <FiTrash2 className="text-xs" />
-                <span>Clear Tray</span>
+                <span>Clear Cart</span>
               </button>
             )}
           </div>
@@ -145,14 +138,14 @@ export default function CartPage() {
 
       {/* Cart Content */}
       {cart.length === 0 ? (
-        /* Empty Tray State */
+        /* Empty Cart State */
         <div className="space-y-6">
           <div className="rounded-3xl border border-dashed border-[var(--line)] bg-[var(--surface)]/50 p-8 text-center sm:p-12">
             <div className="mx-auto grid h-16 w-16 place-items-center rounded-3xl bg-[var(--surface-strong)] text-3xl shadow-inner mb-4">
               🍕
             </div>
             <h2 className="font-display text-xl sm:text-2xl font-extrabold text-[var(--text)]">
-              Your tray is hungry!
+              Your cart is hungry!
             </h2>
             <p className="mx-auto mt-2 max-w-md text-xs sm:text-sm text-[var(--muted)] leading-relaxed">
               Explore our wood-fired sourdough pizzas, hot stuffed garlic breads, and chilled cafe beverages.
@@ -340,51 +333,19 @@ export default function CartPage() {
                 ))}
               </div>
 
-              {/* Dynamic Inputs Based on Order Type */}
-              {orderType === 'dine-in' && (
-                <div className="space-y-1 pt-1">
-                  <label htmlFor="table-number" className="block text-[11px] font-bold text-[var(--muted)]">
-                    Table Number (Optional)
-                  </label>
-                  <input
-                    id="table-number"
-                    type="text"
-                    value={tableNumber}
-                    onChange={(e) => setTableNumber(e.target.value)}
-                    placeholder="e.g. Table 3 or Counter"
-                    className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] px-3 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition"
-                  />
-                </div>
-              )}
-
-              {/* Customer Name & Phone */}
-              <div className="grid grid-cols-2 gap-2 pt-0.5">
-                <div className="space-y-1">
-                  <label htmlFor="customer-name" className="block text-[11px] font-bold text-[var(--muted)]">
-                    Name (Optional)
-                  </label>
-                  <input
-                    id="customer-name"
-                    type="text"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    placeholder="e.g. Rahul"
-                    className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label htmlFor="customer-phone" className="block text-[11px] font-bold text-[var(--muted)]">
-                    Phone (Optional)
-                  </label>
-                  <input
-                    id="customer-phone"
-                    type="tel"
-                    value={customerPhone}
-                    onChange={(e) => setCustomerPhone(e.target.value)}
-                    placeholder="e.g. 9876543210"
-                    className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition"
-                  />
-                </div>
+              {/* Customer Name */}
+              <div className="space-y-1 pt-0.5">
+                <label htmlFor="customer-name" className="block text-[11px] font-bold text-[var(--muted)]">
+                  Name (Optional)
+                </label>
+                <input
+                  id="customer-name"
+                  type="text"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="e.g. Rahul"
+                  className="w-full rounded-xl border border-[var(--line)] bg-[var(--surface-strong)] px-3 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition"
+                />
               </div>
             </div>
 
