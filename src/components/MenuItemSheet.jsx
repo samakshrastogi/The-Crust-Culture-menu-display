@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { FiHeart, FiMaximize2, FiShoppingBag, FiX } from 'react-icons/fi'
+import { FiHeart, FiMaximize2, FiMinus, FiPlus, FiShoppingBag, FiX } from 'react-icons/fi'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
 import ImageLightbox from './ImageLightbox'
@@ -26,7 +26,7 @@ function getSizeSubLabel(label, isPizza) {
 export default function MenuItemSheet({ item, favorites, onClose, onToggleFavorite }) {
   const overlayRef = useRef(null)
   const sheetRef = useRef(null)
-  const { addToCart } = useCart()
+  const { cart, addToCart, updateQuantity } = useCart()
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [prevItemId, setPrevItemId] = useState(item?.id)
@@ -88,6 +88,9 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
   const showFlavorBadgeInBody = !showFlavorBadgeOnImage && Boolean(flavorBadge)
 
   const selectedPriceObj = item.prices?.[selectedSizeIndex] || item.prices?.[0]
+  const currentCartItemId = `${item.id}-${selectedPriceObj?.label || selectedSizeIndex || 'standard'}`
+  const currentCartItem = cart?.find((ci) => ci.cartItemId === currentCartItemId)
+  const currentQuantity = currentCartItem ? currentCartItem.quantity : 0
 
   const closeWithAnimation = () => {
     gsap.to(sheetRef.current, {
@@ -320,36 +323,77 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
             )
           )}
 
-          {/* Primary Action: Add to Cart */}
+          {/* Primary Action: Add to Cart / Quantity Controller */}
           <div data-sheet-item className="pt-0.5">
-            <button
-              type="button"
-              onClick={() => {
-                addToCart(item, selectedSizeIndex, 1)
-                setAddedFeedback(true)
-                setTimeout(() => setAddedFeedback(false), 2000)
-              }}
-              className={`touch-target group flex w-full items-center justify-between rounded-xl px-4 py-3 sm:py-3.5 text-white shadow-md transition-all duration-200 active:scale-98 cursor-pointer ${
-                addedFeedback
-                  ? 'bg-gradient-to-r from-emerald-600 to-teal-600 shadow-emerald-600/30'
-                  : 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] shadow-orange-500/25 hover:brightness-110'
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <FiShoppingBag className="text-sm sm:text-base" />
-                <span className="text-xs sm:text-sm font-black tracking-wide">
-                  {addedFeedback ? 'Added to Cart! 🛒' : 'Add to Cart'}
-                </span>
+            {currentQuantity > 0 ? (
+              <div className="flex w-full items-center justify-between rounded-xl bg-gradient-to-r from-[var(--orange)] to-[#ea580c] p-1.5 sm:p-2 text-white shadow-md shadow-orange-500/25 border border-white/20 transition-all duration-200">
+                {/* Decrement Button */}
+                <button
+                  type="button"
+                  onClick={() => updateQuantity(currentCartItemId, -1)}
+                  className="touch-target grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-lg bg-white/20 hover:bg-white/30 active:scale-90 text-white transition cursor-pointer"
+                  aria-label="Decrease quantity"
+                  title="Decrease quantity"
+                >
+                  <FiMinus className="text-base sm:text-lg stroke-[2.5]" />
+                </button>
+
+                {/* Current Quantity and Item Total Info */}
+                <div className="flex flex-col items-center justify-center px-2 select-none">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <span className="text-xs sm:text-sm font-black tracking-wide">
+                      {currentQuantity} in Cart
+                    </span>
+                    <span className="rounded-md bg-white/25 px-1.5 py-0.5 text-[10px] sm:text-xs font-black">
+                      ₹{(currentCartItem.price || selectedPriceObj?.value || 0) * currentQuantity}
+                    </span>
+                  </div>
+                  <span className="text-[9px] sm:text-[10px] font-bold text-white/80">
+                    {formatPrice(selectedPriceObj?.value || 0)} each
+                  </span>
+                </div>
+
+                {/* Increment Button */}
+                <button
+                  type="button"
+                  onClick={() => updateQuantity(currentCartItemId, 1)}
+                  className="touch-target grid h-10 w-10 sm:h-11 sm:w-11 place-items-center rounded-lg bg-white/20 hover:bg-white/30 active:scale-90 text-white transition cursor-pointer"
+                  aria-label="Increase quantity"
+                  title="Increase quantity"
+                >
+                  <FiPlus className="text-base sm:text-lg stroke-[2.5]" />
+                </button>
               </div>
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs sm:text-sm font-black">
-                  {formatPrice(selectedPriceObj?.value || 0)}
-                </span>
-                <span className="text-[10px] font-black bg-white/25 px-1.5 py-0.5 rounded">
-                  +
-                </span>
-              </div>
-            </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  addToCart(item, selectedSizeIndex, 1)
+                  setAddedFeedback(true)
+                  setTimeout(() => setAddedFeedback(false), 2000)
+                }}
+                className={`touch-target group flex w-full items-center justify-between rounded-xl px-4 py-3 sm:py-3.5 text-white shadow-md transition-all duration-200 active:scale-98 cursor-pointer ${
+                  addedFeedback
+                    ? 'bg-gradient-to-r from-emerald-600 to-teal-600 shadow-emerald-600/30'
+                    : 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] shadow-orange-500/25 hover:brightness-110'
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  <FiShoppingBag className="text-sm sm:text-base" />
+                  <span className="text-xs sm:text-sm font-black tracking-wide">
+                    {addedFeedback ? 'Added to Cart! 🛒' : 'Add to Cart'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-xs sm:text-sm font-black">
+                    {formatPrice(selectedPriceObj?.value || 0)}
+                  </span>
+                  <span className="text-[10px] font-black bg-white/25 px-1.5 py-0.5 rounded">
+                    +
+                  </span>
+                </div>
+              </button>
+            )}
           </div>
 
           {/* Cafe Quality Footer Accents - Compact Single Line */}
