@@ -190,7 +190,7 @@ export default function HomePage() {
             data-hero-copy
             className="mt-2 text-xs leading-relaxed text-[var(--muted)] sm:mt-3 sm:text-sm max-w-xl"
           >
-            Loaded with stretchy mozzarella, farm-fresh toppings, and bold herbs — baked piping hot in our stone oven in just 15 minutes.
+            Loaded with stretchy mozzarella, farm-fresh toppings, and bold herbs — baked piping hot in our stone oven, fresh to order.
           </p>
 
           {/* Hero Actions (Primary Menu CTA & Heritage Link) */}
@@ -215,7 +215,7 @@ export default function HomePage() {
           <div className="mt-4 flex flex-wrap items-center gap-3 sm:gap-5 border-t border-[var(--line)]/60 pt-3 text-xs font-semibold text-[var(--muted)]">
             <div className="flex items-center gap-1.5 text-[var(--text)]">
               <FiClock className="h-3.5 w-3.5 text-[var(--orange)]" />
-              <span className="font-bold">Baked Fresh in 15 Mins</span>
+              <span className="font-bold">Baked Fresh to Order</span>
             </div>
             <div className="flex items-center gap-1.5">
               <FiZap className="h-3.5 w-3.5 text-amber-500" />
@@ -545,7 +545,7 @@ export default function HomePage() {
                 At The Crust Culture, pizza is our pure passion. Every single pizza begins with our signature slow-fermented sourdough, stretched by hand to order to create that coveted airy, blistered crust with an irresistible crunch in every single bite.
               </p>
               <p className="text-xs sm:text-sm leading-relaxed text-[var(--muted)]">
-                We smother our pies with house-simmered herb tomato sauce, 100% pure stretchy mozzarella, tender fresh malai paneer, and crisp garden veggies. Baked in our blazing stone oven at high heat, each pizza comes to your table piping hot, bubbling, and golden in just 15 minutes.
+                We smother our pies with house-simmered herb tomato sauce, 100% pure stretchy mozzarella, tender fresh malai paneer, and crisp garden veggies. Baked in our blazing stone oven at high heat, each pizza comes to your table piping hot, bubbling, and golden fresh.
               </p>
             </div>
 
@@ -573,7 +573,7 @@ export default function HomePage() {
                 {
                   icon: FiSmartphone,
                   title: 'Quick Table Ordering',
-                  desc: 'Scan your table QR code, browse mouth-watering photos, customize toppings, and get it served in 15 mins!',
+                  desc: 'Scan your table QR code, browse mouth-watering photos, customize toppings, and get it served fresh to your table!',
                   accent: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
                 },
               ].map((card) => {

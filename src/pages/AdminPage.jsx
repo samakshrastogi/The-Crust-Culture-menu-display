@@ -325,8 +325,51 @@ export default function AdminPage() {
         </form>
       )}
 
-      {/* Modern Cafe Analytics Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
+      {/* Mobile Compact 4-Col Micro KPI Strip */}
+      <div className="grid grid-cols-4 gap-1 sm:hidden">
+        <button
+          type="button"
+          onClick={() => setTimeFilter('all')}
+          className={`rounded-xl border p-1.5 text-center shadow-2xs transition active:scale-95 cursor-pointer ${
+            timeFilter === 'all'
+              ? 'border-[var(--orange)] bg-orange-500/10'
+              : 'border-[var(--line)] bg-[var(--surface)]'
+          }`}
+        >
+          <div className="text-[8.5px] font-bold text-[var(--muted)]">Orders</div>
+          <div className="text-sm font-black text-[var(--text)]">{stats.totalOrders}</div>
+          <div className="text-[7.5px] text-[var(--muted)]">All Time</div>
+        </button>
+
+        <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/5 p-1.5 text-center shadow-2xs">
+          <div className="text-[8.5px] font-bold text-emerald-700 dark:text-emerald-400">Revenue</div>
+          <div className="text-sm font-black text-emerald-600 dark:text-emerald-400">₹{stats.totalRevenue}</div>
+          <div className="text-[7.5px] text-[var(--muted)] truncate">Avg ₹{stats.avgOrderValue}</div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setTimeFilter('today')}
+          className={`rounded-xl border p-1.5 text-center shadow-2xs transition active:scale-95 cursor-pointer ${
+            timeFilter === 'today'
+              ? 'border-blue-500 bg-blue-500/10'
+              : 'border-[var(--line)] bg-[var(--surface)]'
+          }`}
+        >
+          <div className="text-[8.5px] font-bold text-blue-700 dark:text-blue-400">Today</div>
+          <div className="text-sm font-black text-blue-600 dark:text-blue-400">{stats.todayOrders}</div>
+          <div className="text-[7.5px] text-[var(--muted)]">₹{stats.todayRevenue}</div>
+        </button>
+
+        <div className="rounded-xl border border-purple-500/25 bg-purple-500/5 p-1.5 text-center shadow-2xs">
+          <div className="text-[8.5px] font-bold text-purple-700 dark:text-purple-400">Customers</div>
+          <div className="text-sm font-black text-purple-600 dark:text-purple-400">{stats.uniqueCustomers}</div>
+          <div className="text-[7.5px] text-[var(--muted)] truncate">Unique</div>
+        </div>
+      </div>
+
+      {/* Desktop Cafe Analytics Stat Cards */}
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
         {/* Card 1: Total Orders */}
         <div
           role="button"
@@ -448,15 +491,16 @@ export default function AdminPage() {
       </div>
 
       {/* Compact Filters & Timeline Row */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--line)] pb-2">
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
-          <span className="flex items-center gap-1 text-[10px] font-bold text-[var(--muted)] mr-1 shrink-0">
-            <FiCalendar className="text-[10px] text-[var(--orange)]" />
-            <span>Timeline:</span>
+      <div className="flex items-center justify-between gap-1.5 overflow-x-auto no-scrollbar py-1 border-b border-[var(--line)]">
+        {/* Timeline Tabs */}
+        <div className="flex items-center gap-1 shrink-0">
+          <span className="flex items-center gap-0.5 text-[9.5px] font-bold text-[var(--muted)] mr-0.5 shrink-0">
+            <FiCalendar className="text-[9.5px] text-[var(--orange)]" />
+            <span className="hidden sm:inline">Timeline:</span>
           </span>
 
           {[
-            { id: 'all', label: 'All Time' },
+            { id: 'all', label: 'All' },
             { id: 'today', label: 'Today', count: stats.todayOrders },
             { id: 'week', label: 'Week', count: stats.weekOrders },
             { id: 'month', label: 'Month', count: stats.monthOrders },
@@ -466,16 +510,16 @@ export default function AdminPage() {
               key={tab.id}
               type="button"
               onClick={() => setTimeFilter(tab.id)}
-              className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10.5px] font-bold transition-all cursor-pointer ${
+              className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold transition-all cursor-pointer ${
                 timeFilter === tab.id
                   ? 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] text-white shadow-2xs'
-                  : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]/40'
+                  : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'
               }`}
             >
               <span>{tab.label}</span>
               {typeof tab.count === 'number' && tab.count > 0 && (
                 <span
-                  className={`rounded-full px-1 py-0.2 text-[8.5px] font-black ${
+                  className={`rounded-full px-1 py-0.1 text-[8px] font-black ${
                     timeFilter === tab.id ? 'bg-white/25 text-white' : 'bg-[var(--surface-strong)] text-[var(--text)]'
                   }`}
                 >
@@ -486,18 +530,20 @@ export default function AdminPage() {
           ))}
         </div>
 
+        <div className="h-3 w-[1px] bg-[var(--line)] shrink-0 hidden sm:block" />
+
         {/* Order Type Filter Pills with Live Counts */}
         <div className="flex items-center gap-1 rounded-xl bg-[var(--surface-strong)]/80 p-0.5 border border-[var(--line)] shrink-0">
           {[
-            { id: 'all', label: 'All Types', count: stats.totalOrders },
-            { id: 'dine-in', label: '🍽️ Dine-In', count: stats.dineInCount },
-            { id: 'takeaway', label: '🥡 Takeaway', count: stats.takeawayCount },
+            { id: 'all', label: 'All', count: stats.totalOrders },
+            { id: 'dine-in', label: '🍽️ Dine', count: stats.dineInCount },
+            { id: 'takeaway', label: '🥡 Take', count: stats.takeawayCount },
           ].map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => setFilterType(tab.id)}
-              className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[10.5px] font-bold transition-all cursor-pointer ${
+              className={`inline-flex items-center gap-1 rounded-lg px-2 py-0.5 text-[10px] font-bold transition-all cursor-pointer ${
                 filterType === tab.id
                   ? 'bg-[var(--surface)] border border-[var(--orange)] text-[var(--orange)] shadow-2xs'
                   : 'text-[var(--muted)] hover:text-[var(--text)]'
@@ -505,7 +551,7 @@ export default function AdminPage() {
             >
               <span>{tab.label}</span>
               <span
-                className={`rounded-full px-1.5 py-0.2 text-[9px] font-black ${
+                className={`rounded-full px-1 py-0.1 text-[8px] font-black ${
                   filterType === tab.id
                     ? 'bg-orange-500/15 text-[var(--orange)]'
                     : 'bg-stone-500/10 text-[var(--muted)]'
@@ -637,11 +683,139 @@ export default function AdminPage() {
                     return (
                       <div
                         key={order.id}
-                        className={`group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3 sm:p-3.5 shadow-2xs transition-all hover:border-[var(--orange)]/60 hover:shadow-sm border-l-4 ${
+                        className={`group relative overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:p-3.5 shadow-2xs transition-all hover:border-[var(--orange)]/60 hover:shadow-sm border-l-4 ${
                           order.orderType === 'dine-in' ? 'border-l-amber-500' : 'border-l-emerald-500'
                         }`}
                       >
-                        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-start">
+                        {/* Mobile Ultra-Compact Layout (< md) */}
+                        <div className="md:hidden space-y-1.5">
+                          {/* Row 1: ID, Type, Price, Copy, Ticket */}
+                          <div className="flex items-center justify-between gap-1 border-b border-[var(--line)]/50 pb-1.5">
+                            <div className="flex items-center gap-1">
+                              <span className="font-mono text-[11px] font-black text-[var(--orange)] bg-orange-500/10 px-1.5 py-0.2 rounded border border-orange-500/20">
+                                #{order.id}
+                              </span>
+                              <span
+                                className={`rounded-full px-1.5 py-0.2 text-[8.5px] font-bold border ${
+                                  order.orderType === 'dine-in'
+                                    ? 'bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/25'
+                                    : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25'
+                                }`}
+                              >
+                                {order.orderType === 'dine-in' ? '🍽️ Dine' : '🥡 Take'}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-sm font-black text-[var(--orange)]">
+                                ₹{order.total}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleCopyLink(order)}
+                                className="inline-flex items-center gap-0.5 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2 py-0.5 text-[9.5px] font-bold text-[var(--text)] hover:border-[var(--orange)] active:scale-95 cursor-pointer"
+                              >
+                                {copiedId === order.id ? (
+                                  <FiCheck className="text-emerald-500 text-[9px]" />
+                                ) : (
+                                  <FiCopy className="text-[9px]" />
+                                )}
+                                <span>{copiedId === order.id ? 'Copied' : 'Copy'}</span>
+                              </button>
+                              {order.receiptUrl && (
+                                <Link
+                                  to={
+                                    order.receiptUrl.includes('/order?v=')
+                                      ? `/order?v=${order.receiptUrl.split('?v=')[1]}`
+                                      : order.receiptUrl
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-0.5 rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-2 py-0.5 text-[9.5px] font-black text-white hover:brightness-110 active:scale-95"
+                                >
+                                  <span>Ticket</span>
+                                </Link>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Row 2: Customer Name, Phone & Quick Actions */}
+                          <div className="flex items-center justify-between gap-1 text-xs">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-extrabold text-[var(--text)] text-xs">
+                                {order.customerName || 'Guest'}
+                              </span>
+                              {cleanPhone && (
+                                <span className="text-[var(--muted)] text-[10.5px] font-medium">+91 {cleanPhone}</span>
+                              )}
+                            </div>
+
+                            {cleanPhone && (
+                              <div className="flex items-center gap-1 shrink-0">
+                                <a
+                                  href={`tel:+91${cleanPhone}`}
+                                  className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-0.2 text-[8.5px] font-bold text-emerald-700 dark:text-emerald-300"
+                                  title="Call Customer"
+                                >
+                                  <FiPhone className="text-[8px]" />
+                                  <span>Call</span>
+                                </a>
+                                <a
+                                  href={`https://wa.me/91${cleanPhone}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-0.2 text-[8.5px] font-bold text-emerald-700 dark:text-emerald-300"
+                                  title="Message on WhatsApp"
+                                >
+                                  <FaWhatsapp className="text-[8px]" />
+                                  <span>WhatsApp</span>
+                                </a>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Row 3: Items Pills */}
+                          {order.items && order.items.length > 0 && (
+                            <div className="flex flex-wrap gap-1 pt-0.5">
+                              {order.items.map((item, idx) => (
+                                <span
+                                  key={idx}
+                                  className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)] px-1.5 py-0.5 text-[9.5px] font-medium text-[var(--text)] border border-[var(--line)]"
+                                >
+                                  <span className="rounded bg-orange-500/15 px-1 py-0.1 text-[8.5px] font-black text-[var(--orange)]">
+                                    {item.quantity || 1}x
+                                  </span>
+                                  <span className="font-bold">{item.name}</span>
+                                  {item.size && (
+                                    <span className="text-[8px] text-[var(--muted)]">({item.size})</span>
+                                  )}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Row 4: Timestamp & Security Code & Note */}
+                          <div className="flex items-center justify-between text-[9px] text-[var(--muted)] pt-0.5">
+                            <span className="flex items-center gap-1">
+                              <FiClock className="text-[8.5px]" />
+                              {dateStr}
+                            </span>
+                            {order.securityCode && (
+                              <span className="font-mono text-[8.5px] text-emerald-600 dark:text-emerald-400 font-bold">
+                                {order.securityCode}
+                              </span>
+                            )}
+                          </div>
+
+                          {order.notes && (
+                            <div className="rounded bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 text-[9.5px] text-amber-800 dark:text-amber-300 italic">
+                              📝 &ldquo;{order.notes}&rdquo;
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Desktop 12-Col Layout (md & above) */}
+                        <div className="hidden md:grid md:grid-cols-12 gap-3 items-start">
                           {/* Column 1: Order & Diner Info */}
                           <div className="md:col-span-4 space-y-1.5 border-b md:border-b-0 md:border-r border-[var(--line)]/50 pb-2.5 md:pb-0 md:pr-3">
                             <div className="flex items-center gap-1.5 flex-wrap">

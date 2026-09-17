@@ -31,7 +31,7 @@ function AppShell({ theme, onToggleTheme }) {
   return (
     <div
       className={`min-h-svh bg-[var(--bg)] text-[var(--text)] ${
-        isReceiptPage ? 'pb-8' : 'pb-24 md:pb-0'
+        isReceiptPage || isAdminPage ? 'pb-8' : 'pb-24 md:pb-0'
       }`}
     >
       <ScrollProgress />
@@ -44,7 +44,7 @@ function AppShell({ theme, onToggleTheme }) {
       <BackToTop />
 
       {/* Bottom Navbar for Mobile Screen with Safe-Area Inset Support */}
-      {!isReceiptPage && (
+      {!isReceiptPage && !isAdminPage && (
         <nav
           aria-label="Mobile bottom navigation"
           className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--line)] bg-[var(--surface)]/95 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-xl md:hidden print:hidden"

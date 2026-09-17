@@ -845,7 +845,7 @@ export default function CartPage() {
               <span>•</span>
               <span>Stone Oven Baked</span>
               <span>•</span>
-              <span>Baked Fresh in 15m</span>
+              <span>Baked Fresh to Order</span>
             </div>
           </div>
         </div>
