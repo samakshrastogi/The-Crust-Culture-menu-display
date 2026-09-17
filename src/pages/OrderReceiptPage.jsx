@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import {
   FiCheckCircle,
@@ -12,6 +12,7 @@ import {
   FiFileText,
 } from 'react-icons/fi'
 import { verifyOrderToken } from '../utils/orderSecurity'
+import { saveOrderToHistory } from '../utils/orderHistory'
 
 export default function OrderReceiptPage() {
   const [searchParams] = useSearchParams()
@@ -22,6 +23,15 @@ export default function OrderReceiptPage() {
   }, [token])
 
   const { valid, order, error } = verificationResult
+
+  useEffect(() => {
+    if (valid && order) {
+      saveOrderToHistory({
+        ...order,
+        receiptUrl: window.location.href,
+      })
+    }
+  }, [valid, order])
 
   const formattedDate = order?.timestamp
     ? new Date(order.timestamp).toLocaleString('en-IN', {

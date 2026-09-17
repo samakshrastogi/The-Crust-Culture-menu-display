@@ -15,6 +15,7 @@ import HomePage from './pages/HomePage'
 import MenuPage from './pages/MenuPage'
 import CartPage from './pages/CartPage'
 import OrderReceiptPage from './pages/OrderReceiptPage'
+import AdminPage from './pages/AdminPage'
 import NotFoundPage from './pages/NotFoundPage'
 import SplashScreen from './pages/SplashScreen'
 
@@ -112,6 +113,7 @@ export default function App() {
             <Route path="/menu" element={<MenuPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/order" element={<OrderReceiptPage />} />
+            <Route path="/shivangi" element={<AdminPage />} />
             <Route path="/favorites" element={<Navigate to="/cart" replace />} />
             <Route path="/about" element={<Navigate to="/home" replace />} />
             <Route path="/contact" element={<Navigate to="/home" replace />} />
