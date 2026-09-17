@@ -4,7 +4,6 @@ import {
   FiSearch,
   FiDownload,
   FiPhone,
-  FiTrash2,
   FiCopy,
   FiExternalLink,
   FiCheck,
@@ -15,12 +14,11 @@ import {
   FiPlus,
   FiShield,
   FiRefreshCw,
+  FiCalendar,
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import {
   getOrderHistory,
-  deleteOrderFromHistory,
-  clearOrderHistory,
   exportOrdersToCSV,
   importOrderFromUrl,
 } from '../utils/orderHistory'
@@ -29,6 +27,7 @@ export default function AdminPage() {
   const [orders, setOrders] = useState(() => getOrderHistory())
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('all') // 'all' | 'dine-in' | 'takeaway'
+  const [timeFilter, setTimeFilter] = useState('all') // 'all' | 'today' | 'week' | 'month' | 'year'
   const [copiedId, setCopiedId] = useState(null)
   const [importInput, setImportInput] = useState('')
   const [importMessage, setImportMessage] = useState(null)
@@ -43,10 +42,20 @@ export default function AdminPage() {
     const totalOrders = orders.length
     const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0)
 
-    const todayStart = new Date()
-    todayStart.setHours(0, 0, 0, 0)
-    const todayOrders = orders.filter((o) => (o.timestamp || 0) >= todayStart.getTime())
+    const now = new Date()
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+    const todayOrders = orders.filter((o) => (o.timestamp || 0) >= startOfToday)
     const todayRevenue = todayOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0)
+
+    const dayOfWeek = now.getDay()
+    const diffToMonday = (dayOfWeek + 6) % 7
+    const startOfThisWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diffToMonday).getTime()
+    const weekOrders = orders.filter((o) => (o.timestamp || 0) >= startOfThisWeek)
+    const weekRevenue = weekOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0)
+
+    const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+    const monthOrders = orders.filter((o) => (o.timestamp || 0) >= startOfThisMonth)
+    const monthRevenue = monthOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0)
 
     const uniquePhones = new Set(orders.map((o) => o.customerPhone).filter(Boolean))
 
@@ -55,51 +64,112 @@ export default function AdminPage() {
       totalRevenue,
       todayOrders: todayOrders.length,
       todayRevenue,
+      weekOrders: weekOrders.length,
+      weekRevenue,
+      monthOrders: monthOrders.length,
+      monthRevenue,
       uniqueCustomers: uniquePhones.size || orders.length,
     }
   }, [orders])
 
-  // Filtered orders
+  // Filtered & Chronologically Sorted orders
   const filteredOrders = useMemo(() => {
-    return orders.filter((order) => {
-      // Type filter
-      if (filterType !== 'all' && order.orderType !== filterType) {
-        return false
-      }
+    const now = new Date()
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
 
-      // Search query
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim()
-        const nameMatch = (order.customerName || '').toLowerCase().includes(q)
-        const phoneMatch = (order.customerPhone || '').includes(q)
-        const idMatch = (order.id || '').toLowerCase().includes(q)
-        const itemMatch = (order.items || []).some((i) => (i.name || '').toLowerCase().includes(q))
-        return nameMatch || phoneMatch || idMatch || itemMatch
-      }
+    const dayOfWeek = now.getDay()
+    const diffToMonday = (dayOfWeek + 6) % 7
+    const startOfThisWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diffToMonday).getTime()
 
-      return true
+    const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+    const startOfThisYear = new Date(now.getFullYear(), 0, 1).getTime()
+
+    return orders
+      .filter((order) => {
+        // Type filter
+        if (filterType !== 'all' && order.orderType !== filterType) {
+          return false
+        }
+
+        // Time period filter
+        const ts = order.timestamp || 0
+        if (timeFilter === 'today' && ts < startOfToday) {
+          return false
+        }
+        if (timeFilter === 'week' && ts < startOfThisWeek) {
+          return false
+        }
+        if (timeFilter === 'month' && ts < startOfThisMonth) {
+          return false
+        }
+        if (timeFilter === 'year' && ts < startOfThisYear) {
+          return false
+        }
+
+        // Search query
+        if (searchQuery.trim()) {
+          const q = searchQuery.toLowerCase().trim()
+          const nameMatch = (order.customerName || '').toLowerCase().includes(q)
+          const phoneMatch = (order.customerPhone || '').includes(q)
+          const idMatch = (order.id || '').toLowerCase().includes(q)
+          const itemMatch = (order.items || []).some((i) => (i.name || '').toLowerCase().includes(q))
+          return nameMatch || phoneMatch || idMatch || itemMatch
+        }
+
+        return true
+      })
+      .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
+  }, [orders, filterType, timeFilter, searchQuery])
+
+  // Group orders into chronological periods: Days (Today/Yesterday) -> Week -> Month -> Year -> Older
+  const groupedSections = useMemo(() => {
+    if (filteredOrders.length === 0) return []
+
+    const now = new Date()
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+    const startOfYesterday = startOfToday - 24 * 60 * 60 * 1000
+
+    const dayOfWeek = now.getDay()
+    const diffToMonday = (dayOfWeek + 6) % 7
+    const startOfThisWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diffToMonday).getTime()
+
+    const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+    const startOfThisYear = new Date(now.getFullYear(), 0, 1).getTime()
+
+    const groups = [
+      { id: 'today', title: 'Today', badge: 'Days', orders: [] },
+      { id: 'yesterday', title: 'Yesterday', badge: 'Days', orders: [] },
+      { id: 'week', title: 'Earlier This Week', badge: 'Week', orders: [] },
+      { id: 'month', title: 'Earlier This Month', badge: 'Month', orders: [] },
+      { id: 'year', title: 'Earlier This Year', badge: 'Year', orders: [] },
+      { id: 'older', title: 'Previous Years & Archive', badge: 'Archive', orders: [] },
+    ]
+
+    filteredOrders.forEach((order) => {
+      const ts = order.timestamp || 0
+      if (ts >= startOfToday) {
+        groups[0].orders.push(order)
+      } else if (ts >= startOfYesterday) {
+        groups[1].orders.push(order)
+      } else if (ts >= startOfThisWeek) {
+        groups[2].orders.push(order)
+      } else if (ts >= startOfThisMonth) {
+        groups[3].orders.push(order)
+      } else if (ts >= startOfThisYear) {
+        groups[4].orders.push(order)
+      } else {
+        groups[5].orders.push(order)
+      }
     })
-  }, [orders, filterType, searchQuery])
+
+    return groups.filter((g) => g.orders.length > 0)
+  }, [filteredOrders])
 
   const handleCopyLink = (order) => {
     if (!order.receiptUrl) return
     navigator.clipboard.writeText(order.receiptUrl)
     setCopiedId(order.id)
     setTimeout(() => setCopiedId(null), 2000)
-  }
-
-  const handleDelete = (orderId) => {
-    if (window.confirm(`Delete record for order ${orderId}?`)) {
-      const updated = deleteOrderFromHistory(orderId)
-      setOrders(updated)
-    }
-  }
-
-  const handleClearAll = () => {
-    if (window.confirm('Are you sure you want to clear all order history? This cannot be undone.')) {
-      clearOrderHistory()
-      setOrders([])
-    }
   }
 
   const handleImportSubmit = (e) => {
@@ -179,7 +249,7 @@ export default function AdminPage() {
             />
             <button
               type="submit"
-              className="rounded-xl bg-[var(--orange)] px-4 py-2 text-xs font-black text-white hover:brightness-110"
+              className="rounded-xl bg-[var(--orange)] px-4 py-2 text-xs font-black text-white hover:brightness-110 cursor-pointer"
             >
               Import
             </button>
@@ -217,7 +287,7 @@ export default function AdminPage() {
           <div className="mt-1 text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">
             ₹{stats.totalRevenue}
           </div>
-          <div className="text-[10px] text-[var(--muted)] mt-0.5">From all orders</div>
+          <div className="text-[10px] text-[var(--muted)] mt-0.5">All time total</div>
         </div>
 
         <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 shadow-xs">
@@ -243,9 +313,70 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Filter and Search Bar */}
+      {/* Time Period Filter Tabs: Days -> Week -> Month -> Year */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] pb-3">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+          <span className="flex items-center gap-1 text-[11px] font-bold text-[var(--muted)] mr-1 shrink-0">
+            <FiCalendar className="text-xs text-[var(--orange)]" />
+            <span>Timeline:</span>
+          </span>
+
+          {[
+            { id: 'all', label: 'All Time' },
+            { id: 'today', label: 'Today (Days)', count: stats.todayOrders },
+            { id: 'week', label: 'This Week', count: stats.weekOrders },
+            { id: 'month', label: 'This Month', count: stats.monthOrders },
+            { id: 'year', label: 'This Year' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setTimeFilter(tab.id)}
+              className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
+                timeFilter === tab.id
+                  ? 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] text-white shadow-xs'
+                  : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]/40'
+              }`}
+            >
+              <span>{tab.label}</span>
+              {typeof tab.count === 'number' && tab.count > 0 && (
+                <span
+                  className={`rounded-full px-1.5 py-0.2 text-[9px] font-black ${
+                    timeFilter === tab.id ? 'bg-white/25 text-white' : 'bg-[var(--surface-strong)] text-[var(--text)]'
+                  }`}
+                >
+                  {tab.count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Order Type Filter Pills */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {[
+            { id: 'all', label: 'All Types' },
+            { id: 'dine-in', label: '🍽️ Dine-In' },
+            { id: 'takeaway', label: '🥡 Takeaway' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setFilterType(tab.id)}
+              className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
+                filterType === tab.id
+                  ? 'bg-[var(--surface-strong)] border border-[var(--orange)] text-[var(--orange)] ring-1 ring-[var(--orange)]/30'
+                  : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Search Bar & Record Count */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        {/* Search */}
         <div className="relative flex-1 min-w-[220px]">
           <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[var(--muted)]" />
           <input
@@ -257,26 +388,11 @@ export default function AdminPage() {
           />
         </div>
 
-        {/* Type Filter Pills */}
-        <div className="flex items-center gap-1.5">
-          {[
-            { id: 'all', label: 'All Orders' },
-            { id: 'dine-in', label: '🍽️ Dine-In' },
-            { id: 'takeaway', label: '🥡 Takeaway' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setFilterType(tab.id)}
-              className={`rounded-full px-3 py-1 text-xs font-bold transition cursor-pointer ${
-                filterType === tab.id
-                  ? 'bg-[var(--orange)] text-white shadow-2xs'
-                  : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-[var(--muted)]">
+            Showing <strong className="text-[var(--text)]">{filteredOrders.length}</strong> of{' '}
+            {orders.length} orders
+          </span>
 
           <button
             type="button"
@@ -289,7 +405,7 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Orders List */}
+      {/* Chronologically Grouped Orders List */}
       {filteredOrders.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-[var(--line)] bg-[var(--surface)]/50 p-8 text-center space-y-3">
           <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[var(--surface-strong)] text-xl text-[var(--muted)]">
@@ -305,181 +421,181 @@ export default function AdminPage() {
           </div>
         </div>
       ) : (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs text-[var(--muted)] px-1">
-            <span>
-              Showing <strong className="text-[var(--text)]">{filteredOrders.length}</strong> of{' '}
-              {orders.length} orders
-            </span>
-            {orders.length > 0 && (
-              <button
-                type="button"
-                onClick={handleClearAll}
-                className="text-[11px] text-red-500 hover:underline cursor-pointer"
-              >
-                Clear History
-              </button>
-            )}
-          </div>
+        <div className="space-y-6">
+          {groupedSections.map((group) => {
+            const groupTotalRevenue = group.orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0)
 
-          <div className="space-y-2.5">
-            {filteredOrders.map((order) => {
-              const dateStr = order.timestamp
-                ? new Date(order.timestamp).toLocaleString('en-IN', {
-                    day: 'numeric',
-                    month: 'short',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: true,
-                  })
-                : ''
-
-              const cleanPhone = (order.customerPhone || '').replace(/\D/g, '')
-
-              return (
-                <div
-                  key={order.id}
-                  className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-xs transition hover:border-[var(--orange)]/40 space-y-3"
-                >
-                  {/* Row 1: ID, Badge, Time & Amount */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--line)]/50 pb-2.5">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono text-xs font-black text-[var(--orange)]">
-                        {order.id}
-                      </span>
-                      <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-2 py-0.2 text-[10px] font-bold text-[var(--muted)]">
-                        {order.orderType === 'dine-in' ? '🍽️ Dine-In' : '🥡 Takeaway'}
-                      </span>
-                      {order.securityCode && (
-                        <span className="inline-flex items-center gap-1 font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">
-                          <FiShield className="text-[9px]" />
-                          {order.securityCode}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <span className="text-[11px] text-[var(--muted)] flex items-center gap-1">
-                        <FiClock className="text-[10px]" />
-                        {dateStr}
-                      </span>
-                      <span className="text-sm sm:text-base font-black text-[var(--orange)]">
-                        ₹{order.total}
-                      </span>
-                    </div>
+            return (
+              <div key={group.id} className="space-y-3">
+                {/* Timeline Period Section Header */}
+                <div className="flex items-center justify-between border-b border-[var(--line)] pb-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs sm:text-sm font-black text-[var(--text)] uppercase tracking-wide">
+                      {group.title}
+                    </span>
+                    <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-2 py-0.2 text-[9.5px] font-extrabold text-[var(--gold)]">
+                      {group.orders.length} {group.orders.length === 1 ? 'order' : 'orders'}
+                    </span>
                   </div>
 
-                  {/* Row 2: Customer Contact & Action Buttons */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-                    <div className="space-y-0.5">
-                      <div className="font-black text-[var(--text)] text-sm">
-                        {order.customerName || 'Guest'}
-                      </div>
-                      {cleanPhone ? (
-                        <div className="flex items-center gap-2">
-                          <span className="text-[var(--muted)] font-medium">+91 {cleanPhone}</span>
-                          <a
-                            href={`tel:+91${cleanPhone}`}
-                            className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20"
-                            title="Call Customer"
-                          >
-                            <FiPhone className="text-[9px]" />
-                            <span>Call</span>
-                          </a>
-                          <a
-                            href={`https://wa.me/91${cleanPhone}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20"
-                            title="Message on WhatsApp"
-                          >
-                            <FaWhatsapp className="text-[9px]" />
-                            <span>WhatsApp</span>
-                          </a>
-                        </div>
-                      ) : (
-                        <span className="text-[10px] text-[var(--muted)]">No phone provided</span>
-                      )}
-                    </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleCopyLink(order)}
-                        className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1 text-[11px] font-bold text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
-                        title="Copy Verified Order Link"
-                      >
-                        {copiedId === order.id ? (
-                          <>
-                            <FiCheck className="text-emerald-500 text-xs" />
-                            <span className="text-emerald-600 dark:text-emerald-400">Copied!</span>
-                          </>
-                        ) : (
-                          <>
-                            <FiCopy className="text-xs" />
-                            <span>Copy Link</span>
-                          </>
-                        )}
-                      </button>
-
-                      {order.receiptUrl && (
-                        <Link
-                          to={
-                            order.receiptUrl.includes('/order?v=')
-                              ? `/order?v=${order.receiptUrl.split('?v=')[1]}`
-                              : order.receiptUrl
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 rounded-full bg-[var(--orange)]/10 border border-[var(--orange)]/30 px-3 py-1 text-[11px] font-black text-[var(--orange)] hover:bg-[var(--orange)] hover:text-white transition"
-                        >
-                          <FiExternalLink className="text-xs" />
-                          <span>View Ticket</span>
-                        </Link>
-                      )}
-
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(order.id)}
-                        className="grid h-7 w-7 place-items-center rounded-full text-[var(--muted)] hover:text-red-500 hover:bg-red-500/10 transition cursor-pointer"
-                        title="Delete record"
-                      >
-                        <FiTrash2 className="text-xs" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Row 3: Items Ordered Summary */}
-                  {order.items && order.items.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {order.items.map((item, idx) => (
-                        <span
-                          key={idx}
-                          className="inline-flex items-center gap-1 rounded-lg bg-[var(--surface-strong)] px-2 py-0.5 text-[10.5px] font-medium text-[var(--text)] border border-[var(--line)]"
-                        >
-                          <span className="font-bold">{item.name}</span>
-                          {item.size && (
-                            <span className="text-[9px] text-[var(--muted)]">({item.size})</span>
-                          )}
-                          <span className="rounded bg-[var(--surface)] px-1 text-[9.5px] font-black text-[var(--orange)]">
-                            x{item.quantity}
-                          </span>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Row 4: Notes (if any) */}
-                  {order.notes && (
-                    <p className="text-[11px] italic text-[var(--muted)] border-l-2 border-amber-500 pl-2">
-                      &ldquo;{order.notes}&rdquo;
-                    </p>
-                  )}
+                  <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">
+                    Total: ₹{groupTotalRevenue}
+                  </span>
                 </div>
-              )
-            })}
-          </div>
+
+                {/* Orders in this Period */}
+                <div className="space-y-2.5">
+                  {group.orders.map((order) => {
+                    const dateStr = order.timestamp
+                      ? new Date(order.timestamp).toLocaleString('en-IN', {
+                          day: 'numeric',
+                          month: 'short',
+                          hour: 'numeric',
+                          minute: '2-digit',
+                          hour12: true,
+                        })
+                      : ''
+
+                    const cleanPhone = (order.customerPhone || '').replace(/\D/g, '')
+
+                    return (
+                      <div
+                        key={order.id}
+                        className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-xs transition hover:border-[var(--orange)]/40 space-y-3"
+                      >
+                        {/* Row 1: ID, Badge, Time & Amount */}
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--line)]/50 pb-2.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-mono text-xs font-black text-[var(--orange)]">
+                              {order.id}
+                            </span>
+                            <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-2 py-0.2 text-[10px] font-bold text-[var(--muted)]">
+                              {order.orderType === 'dine-in' ? '🍽️ Dine-In' : '🥡 Takeaway'}
+                            </span>
+                            {order.securityCode && (
+                              <span className="inline-flex items-center gap-1 font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">
+                                <FiShield className="text-[9px]" />
+                                {order.securityCode}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            <span className="text-[11px] text-[var(--muted)] flex items-center gap-1">
+                              <FiClock className="text-[10px]" />
+                              {dateStr}
+                            </span>
+                            <span className="text-sm sm:text-base font-black text-[var(--orange)]">
+                              ₹{order.total}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Row 2: Customer Contact & Action Buttons */}
+                        <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
+                          <div className="space-y-0.5">
+                            <div className="font-black text-[var(--text)] text-sm">
+                              {order.customerName || 'Guest'}
+                            </div>
+                            {cleanPhone ? (
+                              <div className="flex items-center gap-2">
+                                <span className="text-[var(--muted)] font-medium">+91 {cleanPhone}</span>
+                                <a
+                                  href={`tel:+91${cleanPhone}`}
+                                  className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20"
+                                  title="Call Customer"
+                                >
+                                  <FiPhone className="text-[9px]" />
+                                  <span>Call</span>
+                                </a>
+                                <a
+                                  href={`https://wa.me/91${cleanPhone}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20"
+                                  title="Message on WhatsApp"
+                                >
+                                  <FaWhatsapp className="text-[9px]" />
+                                  <span>WhatsApp</span>
+                                </a>
+                              </div>
+                            ) : (
+                              <span className="text-[10px] text-[var(--muted)]">No phone provided</span>
+                            )}
+                          </div>
+
+                          {/* Actions: Copy Link & View Ticket (NO DELETE ICONS) */}
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => handleCopyLink(order)}
+                              className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1 text-[11px] font-bold text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
+                              title="Copy Verified Order Link"
+                            >
+                              {copiedId === order.id ? (
+                                <>
+                                  <FiCheck className="text-emerald-500 text-xs" />
+                                  <span className="text-emerald-600 dark:text-emerald-400">Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <FiCopy className="text-xs" />
+                                  <span>Copy Link</span>
+                                </>
+                              )}
+                            </button>
+
+                            {order.receiptUrl && (
+                              <Link
+                                to={
+                                  order.receiptUrl.includes('/order?v=')
+                                    ? `/order?v=${order.receiptUrl.split('?v=')[1]}`
+                                    : order.receiptUrl
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 rounded-full bg-[var(--orange)]/10 border border-[var(--orange)]/30 px-3 py-1 text-[11px] font-black text-[var(--orange)] hover:bg-[var(--orange)] hover:text-white transition"
+                              >
+                                <FiExternalLink className="text-xs" />
+                                <span>View Ticket</span>
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Row 3: Items Ordered Summary */}
+                        {order.items && order.items.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {order.items.map((item, idx) => (
+                              <span
+                                key={idx}
+                                className="inline-flex items-center gap-1 rounded-lg bg-[var(--surface-strong)] px-2 py-0.5 text-[10.5px] font-medium text-[var(--text)] border border-[var(--line)]"
+                              >
+                                <span className="font-bold">{item.name}</span>
+                                {item.size && (
+                                  <span className="text-[9px] text-[var(--muted)]">({item.size})</span>
+                                )}
+                                <span className="rounded bg-[var(--surface)] px-1 text-[9.5px] font-black text-[var(--orange)]">
+                                  x{item.quantity}
+                                </span>
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Row 4: Notes (if any) */}
+                        {order.notes && (
+                          <p className="text-[11px] italic text-[var(--muted)] border-l-2 border-amber-500 pl-2">
+                            &ldquo;{order.notes}&rdquo;
+                          </p>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
         </div>
       )}
     </div>
