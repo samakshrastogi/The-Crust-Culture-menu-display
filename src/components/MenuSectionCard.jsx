@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, memo } from 'react'
 import { FiHeart, FiMinus, FiPlus } from 'react-icons/fi'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
@@ -54,7 +54,7 @@ function Highlight({ text, query }) {
   )
 }
 
-export default function MenuSectionCard({ section, favorites, onToggleFavorite, onSelectItem, query }) {
+function MenuSectionCard({ section, favorites, onToggleFavorite, onSelectItem, query }) {
   const sectionRef = useRef(null)
   const { cart, addToCart, updateQuantity } = useCart()
 
@@ -338,3 +338,5 @@ export default function MenuSectionCard({ section, favorites, onToggleFavorite, 
     </section>
   )
 }
+
+export default memo(MenuSectionCard)

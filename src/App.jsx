@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Outlet, Route, Routes, NavLink, useLocation } from 'react-router-dom'
 import { FiHome, FiMenu, FiShoppingBag } from 'react-icons/fi'
 import BackToTop from './components/BackToTop'
@@ -11,13 +11,22 @@ import { CartProvider } from './context/CartContext'
 import { useCart } from './hooks/useCart'
 import { useLocalStorage } from './hooks/useLocalStorage'
 import { useAutoUpdate } from './hooks/useAutoUpdate'
-import HomePage from './pages/HomePage'
-import MenuPage from './pages/MenuPage'
-import CartPage from './pages/CartPage'
-import OrderReceiptPage from './pages/OrderReceiptPage'
-import AdminPage from './pages/AdminPage'
-import NotFoundPage from './pages/NotFoundPage'
 import SplashScreen from './pages/SplashScreen'
+
+const HomePage = lazy(() => import('./pages/HomePage'))
+const MenuPage = lazy(() => import('./pages/MenuPage'))
+const CartPage = lazy(() => import('./pages/CartPage'))
+const OrderReceiptPage = lazy(() => import('./pages/OrderReceiptPage'))
+const AdminPage = lazy(() => import('./pages/AdminPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+
+function PageFallback() {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="h-7 w-7 animate-spin rounded-full border-2 border-[var(--orange)] border-t-transparent" />
+    </div>
+  )
+}
 
 function AppShell({ theme, onToggleTheme }) {
   const location = useLocation()
@@ -31,20 +40,22 @@ function AppShell({ theme, onToggleTheme }) {
   return (
     <div
       className={`min-h-svh bg-[var(--bg)] text-[var(--text)] ${
-        isReceiptPage || isAdminPage ? 'pb-8' : 'pb-24 md:pb-0'
+        isReceiptPage ? 'pb-8' : 'pb-24 md:pb-0'
       }`}
     >
       <ScrollProgress />
       <Navbar theme={theme} onToggleTheme={onToggleTheme} />
       <PageTransition>
-        <Outlet />
+        <Suspense fallback={<PageFallback />}>
+          <Outlet />
+        </Suspense>
       </PageTransition>
       {location.pathname === '/home' && <Footer />}
       {showFloatingButtons && <FloatingContactButton />}
       <BackToTop />
 
       {/* Bottom Navbar for Mobile Screen with Safe-Area Inset Support */}
-      {!isReceiptPage && !isAdminPage && (
+      {!isReceiptPage && (
         <nav
           aria-label="Mobile bottom navigation"
           className="fixed bottom-0 left-0 right-0 z-50 border-t border-[var(--line)] bg-[var(--surface)]/95 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-2xl backdrop-blur-xl md:hidden print:hidden"

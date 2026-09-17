@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { FiHeart, FiMinus, FiPlus } from 'react-icons/fi'
 import FoodImage from './FoodImage'
 import VegIndicator from './VegIndicator'
@@ -47,7 +48,7 @@ function Highlight({ text, query }) {
   )
 }
 
-export default function SearchDishCard({ item, favorites, onToggleFavorite, onSelectItem, query }) {
+function SearchDishCard({ item, favorites, onToggleFavorite, onSelectItem, query }) {
   const { cart, addToCart, updateQuantity } = useCart()
   const toppingsText = item.toppings ? item.toppings.replace(/^\((.*)\)$/, '$1') : null
   const flavorBadge = getFlavorBadge(item, item.sectionTitle)
@@ -243,3 +244,5 @@ export default function SearchDishCard({ item, favorites, onToggleFavorite, onSe
     </article>
   )
 }
+
+export default memo(SearchDishCard)

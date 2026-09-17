@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
+import { useEffect, useMemo, useRef, useState, useCallback, useDeferredValue } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
   FiArrowRight,
@@ -15,7 +15,6 @@ import MenuItemSheet from '../components/MenuItemSheet'
 import MenuSectionCard from '../components/MenuSectionCard'
 import SearchBar from '../components/SearchBar'
 import SearchDishCard from '../components/SearchDishCard'
-import SkeletonLoader from '../components/SkeletonLoader'
 import { menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 
@@ -120,9 +119,9 @@ export default function MenuPage() {
   )
   const [activeVibeFilter, setActiveVibeFilter] = useState('all')
   const [query, setQuery] = useState('')
+  const deferredQuery = useDeferredValue(query)
   const [selectedItem, setSelectedItem] = useState(null)
   const [favorites, setFavorites] = useLocalStorage('crust-favorites', [])
-  const [loading, setLoading] = useState(true)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [activeScrollSection, setActiveScrollSection] = useState(initialSections[0]?.id || '')
   const [showStickyBar, setShowStickyBar] = useState(false)
@@ -143,43 +142,15 @@ export default function MenuPage() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => setLoading(false), 300)
-    return () => window.clearTimeout(timer)
-  }, [])
 
-  // ScrollSpy & Sticky Sub-Header Controller
+  // Lightweight Sticky Sub-Header Controller (monitors scroll threshold)
   useEffect(() => {
     let ticking = false
 
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(() => {
-          const scrollY = window.scrollY
-          setShowStickyBar(scrollY > 160)
-
-          // Check if user is scrolled near bottom of page
-          const isAtBottom =
-            window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 60
-
-          if (isAtBottom && initialSections.length > 0) {
-            setActiveScrollSection(initialSections[initialSections.length - 1].id)
-            ticking = false
-            return
-          }
-
-          // Find section in view
-          const offset = window.innerWidth >= 640 ? 150 : 135
-          for (const section of initialSections) {
-            const el = document.getElementById(section.id)
-            if (el) {
-              const rect = el.getBoundingClientRect()
-              if (rect.top <= offset && rect.bottom > offset) {
-                setActiveScrollSection(section.id)
-                break
-              }
-            }
-          }
+          setShowStickyBar(window.scrollY > 160)
           ticking = false
         })
         ticking = true
@@ -188,6 +159,32 @@ export default function MenuPage() {
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Zero-Reflow Hardware Accelerated ScrollSpy via IntersectionObserver
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting)
+        if (visible.length > 0) {
+          visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+          setActiveScrollSection(visible[0].target.id)
+        }
+      },
+      {
+        rootMargin: '-120px 0px -55% 0px',
+        threshold: [0, 0.15],
+      },
+    )
+
+    initialSections.forEach((sec) => {
+      const el = document.getElementById(sec.id)
+      if (el) observer.observe(el)
+    })
+
+    return () => observer.disconnect()
   }, [])
 
   // Auto-center active category pill in sticky bar
@@ -206,7 +203,7 @@ export default function MenuPage() {
     }
   }, [activeScrollSection])
 
-  // Sections filtered by query, category, and vibe
+  // Sections filtered by deferred query, category, and vibe
   const filteredSections = useMemo(() => {
     return initialSections
       .map((section) => {
@@ -215,7 +212,7 @@ export default function MenuPage() {
         }
 
         const items = section.items.filter((item) => {
-          const matchQuery = isItemMatch(item, section.title, query)
+          const matchQuery = isItemMatch(item, section.title, deferredQuery)
           const matchVibe = matchesVibe(item, section, activeVibeFilter)
           return matchQuery && matchVibe
         })
@@ -223,7 +220,7 @@ export default function MenuPage() {
         return { ...section, items }
       })
       .filter((section) => section.items.length > 0)
-  }, [query, activeCategory, activeVibeFilter])
+  }, [deferredQuery, activeCategory, activeVibeFilter])
 
   // Distribute sections across columns balancing heights so all columns stay filled with zero dead whitespace
   const columnBuckets = useMemo(() => {
@@ -256,11 +253,11 @@ export default function MenuPage() {
   }, [filteredSections, columns])
 
   const allSearchItems = useMemo(() => {
-    if (!query?.trim()) return []
+    if (!deferredQuery?.trim()) return []
     return initialSections.flatMap((section) =>
       section.items
         .filter((item) => {
-          const matchQuery = isItemMatch(item, section.title, query)
+          const matchQuery = isItemMatch(item, section.title, deferredQuery)
           const matchVibe = matchesVibe(item, section, activeVibeFilter)
           return matchQuery && matchVibe
         })
@@ -270,30 +267,30 @@ export default function MenuPage() {
           sectionImage: section.image,
         })),
     )
-  }, [query, activeVibeFilter])
+  }, [deferredQuery, activeVibeFilter])
 
   const searchCategories = useMemo(() => {
-    if (!query?.trim()) return []
+    if (!deferredQuery?.trim()) return []
     const catMap = new Map()
     allSearchItems.forEach((item) => {
       catMap.set(item.sectionTitle, (catMap.get(item.sectionTitle) || 0) + 1)
     })
     return Array.from(catMap.entries()).map(([title, count]) => ({ title, count }))
-  }, [allSearchItems, query])
+  }, [allSearchItems, deferredQuery])
 
   const searchItems = useMemo(() => {
     if (activeCategory === 'All') return allSearchItems
     return allSearchItems.filter((item) => item.sectionTitle === activeCategory)
   }, [allSearchItems, activeCategory])
 
-  const visibleItemCount = query?.trim()
+  const visibleItemCount = deferredQuery?.trim()
     ? searchItems.length
     : filteredSections.reduce((total, section) => total + section.items.length, 0)
   const totalMenuItemsCount = initialAllMenuItems.length
   const favoriteCount = favorites.filter((id) => initialAllMenuItems.some((item) => item.id === id)).length
 
   useEffect(() => {
-    if (loading || !sectionsRef.current) {
+    if (!sectionsRef.current) {
       return undefined
     }
 
@@ -307,7 +304,7 @@ export default function MenuPage() {
     )
 
     return () => gsap.killTweensOf(cards)
-  }, [activeCategory, activeVibeFilter, query, loading])
+  }, [activeCategory, activeVibeFilter, deferredQuery])
 
   const toggleFavorite = useCallback((itemId, triggerElement) => {
     animateFavoritePop(triggerElement)
@@ -598,49 +595,45 @@ export default function MenuPage() {
           </div>
 
           {/* Sections Display */}
-          {loading ? (
-            <SkeletonLoader count={8} />
-          ) : (
-            <div ref={sectionsRef}>
-              {filteredSections.length === 1 ? (
-                <div className="max-w-2xl sm:max-w-3xl mx-auto">
-                  <MenuSectionCard
-                    key={`${filteredSections[0].id}-${activeCategory}-${activeVibeFilter}`}
-                    section={filteredSections[0]}
-                    favorites={favorites}
-                    onToggleFavorite={toggleFavorite}
-                    onSelectItem={setSelectedItem}
-                    query={query}
-                  />
-                </div>
-              ) : (
-                <div className="flex flex-col md:flex-row gap-2.5 sm:gap-3 md:gap-3.5 items-start">
-                  {columnBuckets.map((bucket, colIdx) => (
-                    <div
-                      key={colIdx}
-                      className="flex flex-1 flex-col gap-2.5 sm:gap-3 md:gap-3.5 min-w-0 w-full"
-                    >
-                      {bucket.map((section) => (
-                        <MenuSectionCard
-                          key={`${section.id}-${activeCategory}-${activeVibeFilter}`}
-                          section={section}
-                          favorites={favorites}
-                          onToggleFavorite={toggleFavorite}
-                          onSelectItem={setSelectedItem}
-                          query={query}
-                        />
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          <div ref={sectionsRef}>
+            {filteredSections.length === 1 ? (
+              <div className="max-w-2xl sm:max-w-3xl mx-auto">
+                <MenuSectionCard
+                  key={`${filteredSections[0].id}-${activeCategory}-${activeVibeFilter}`}
+                  section={filteredSections[0]}
+                  favorites={favorites}
+                  onToggleFavorite={toggleFavorite}
+                  onSelectItem={setSelectedItem}
+                  query={deferredQuery}
+                />
+              </div>
+            ) : (
+              <div className="flex flex-col md:flex-row gap-2.5 sm:gap-3 md:gap-3.5 items-start">
+                {columnBuckets.map((bucket, colIdx) => (
+                  <div
+                    key={colIdx}
+                    className="flex flex-1 flex-col gap-2.5 sm:gap-3 md:gap-3.5 min-w-0 w-full"
+                  >
+                    {bucket.map((section) => (
+                      <MenuSectionCard
+                        key={`${section.id}-${activeCategory}-${activeVibeFilter}`}
+                        section={section}
+                        favorites={favorites}
+                        onToggleFavorite={toggleFavorite}
+                        onSelectItem={setSelectedItem}
+                        query={deferredQuery}
+                      />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </>
       )}
 
       {/* Smart Zero Results State & Suggestions */}
-      {!loading && visibleItemCount === 0 && (
+      {visibleItemCount === 0 && (
         <div className="rounded-3xl border border-[var(--line)] bg-[var(--surface)] p-6 text-center sm:p-10 shadow-xs space-y-4">
           <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[var(--orange)]/10 text-xl text-[var(--orange)]">
             <FiSearch />
