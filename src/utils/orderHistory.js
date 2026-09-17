@@ -6,6 +6,11 @@ import { verifyOrderToken } from './orderSecurity'
 
 const STORAGE_KEY = 'crust-admin-orders-v1'
 
+/**
+ * Google Apps Script Webhook URL for Google Sheets cloud synchronization.
+ * The Apps Script backend code with multi-sheet support (All Records, Today, This Week, This Month, This Year)
+ * is located at: google-sheets-script/Code.gs
+ */
 export const GOOGLE_SHEETS_WEBHOOK_URL =
   'https://script.google.com/macros/s/AKfycbwHIoW4z_YMZuRTDU1UAs9hpTwd1Ez9LbpyzRHRWWgEbPMVhLY3XAP-nULQ1raoMAvuZg/exec'
 
