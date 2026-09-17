@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FiSearch,
@@ -21,10 +21,13 @@ import {
   getOrderHistory,
   exportOrdersToCSV,
   importOrderFromUrl,
+  syncOrdersWithCloud,
 } from '../utils/orderHistory'
 
 export default function AdminPage() {
   const [orders, setOrders] = useState(() => getOrderHistory())
+  const [isSyncing, setIsSyncing] = useState(true)
+  const [lastSynced, setLastSynced] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('all') // 'all' | 'dine-in' | 'takeaway'
   const [timeFilter, setTimeFilter] = useState('all') // 'all' | 'today' | 'week' | 'month' | 'year'
@@ -33,8 +36,38 @@ export default function AdminPage() {
   const [importMessage, setImportMessage] = useState(null)
   const [showImportBox, setShowImportBox] = useState(false)
 
-  const reloadOrders = () => {
-    setOrders(getOrderHistory())
+  // Cloud sync on initial page load
+  useEffect(() => {
+    let mounted = true
+    syncOrdersWithCloud()
+      .then((synced) => {
+        if (mounted) {
+          setOrders(synced)
+          setLastSynced(new Date())
+        }
+      })
+      .catch((err) => {
+        console.warn('Initial cloud sync error:', err)
+      })
+      .finally(() => {
+        if (mounted) setIsSyncing(false)
+      })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  const reloadOrders = async () => {
+    setIsSyncing(true)
+    try {
+      const synced = await syncOrdersWithCloud()
+      setOrders(synced)
+      setLastSynced(new Date())
+    } catch {
+      setOrders(getOrderHistory())
+    } finally {
+      setIsSyncing(false)
+    }
   }
 
   // Metrics
@@ -190,12 +223,27 @@ export default function AdminPage() {
       {/* Top Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 shadow-sm">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <h1 className="font-display text-lg sm:text-xl font-black text-[var(--text)]">
               Customer Directory & Order Records
             </h1>
             <span className="rounded-full bg-emerald-600/15 border border-emerald-500/30 px-2 py-0.2 text-[9px] font-black text-emerald-700 dark:text-emerald-300">
               Admin Portal
+            </span>
+            <span
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9.5px] font-bold border transition-colors ${
+                isSyncing
+                  ? 'bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400'
+                  : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+              }`}
+              title={lastSynced ? `Last synced: ${lastSynced.toLocaleTimeString()}` : 'Cloud sync'}
+            >
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${
+                  isSyncing ? 'bg-blue-500 animate-ping' : 'bg-emerald-500'
+                }`}
+              />
+              <span>{isSyncing ? 'Syncing...' : 'Google Sheets Synced'}</span>
             </span>
           </div>
           <p className="text-xs text-[var(--muted)] mt-0.5">
@@ -276,7 +324,7 @@ export default function AdminPage() {
           <div className="mt-1 text-xl sm:text-2xl font-black text-[var(--text)]">
             {stats.totalOrders}
           </div>
-          <div className="text-[10px] text-[var(--muted)] mt-0.5">Recorded on this device</div>
+          <div className="text-[10px] text-[var(--muted)] mt-0.5">Synced via Google Sheets</div>
         </div>
 
         <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 shadow-xs">
@@ -397,10 +445,11 @@ export default function AdminPage() {
           <button
             type="button"
             onClick={reloadOrders}
-            className="grid h-8 w-8 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] transition cursor-pointer"
-            title="Refresh order records"
+            disabled={isSyncing}
+            className="grid h-8 w-8 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] transition cursor-pointer disabled:opacity-50"
+            title="Sync with Google Sheets & refresh records"
           >
-            <FiRefreshCw className="text-xs" />
+            <FiRefreshCw className={`text-xs ${isSyncing ? 'animate-spin text-[var(--orange)]' : ''}`} />
           </button>
         </div>
       </div>

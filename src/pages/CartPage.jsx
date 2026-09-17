@@ -47,8 +47,10 @@ export default function CartPage() {
       'Cheesy Corn Paneer',
       'Paneer Tikka Stuffed',
       'Cold Coffee with Ice Cream',
+      'Peri Peri Fries',
+      'Garlic Bread Stuffed',
     ]
-    return allMenuItems.filter((i) => targetNames.includes(i.name)).slice(0, 4)
+    return allMenuItems.filter((i) => targetNames.includes(i.name)).slice(0, 6)
   }, [])
 
   // Check meal combo components in the active cart
@@ -86,6 +88,9 @@ export default function CartPage() {
       { name: 'Veg Parcel', pairingBadge: 'Pocket Friendly' },
       { name: 'Paneer Tikka Stuffed', pairingBadge: 'Chef Signature' },
       { name: 'Indi Tandoori Parcel', pairingBadge: 'Desi Spice' },
+      { name: 'Garlic Bread', pairingBadge: 'Fresh Sourdough' },
+      { name: 'Aloo Tikki Burger', pairingBadge: 'Crispy Patty' },
+      { name: 'Veg Taco', pairingBadge: 'Mexican Crunch' },
     ]
     const drinkNames = [
       { name: 'Cold Coffee with Ice Cream', pairingBadge: 'Chilled Refresher' },
@@ -93,18 +98,29 @@ export default function CartPage() {
       { name: 'Cold Coffee', pairingBadge: 'Smooth Brew' },
       { name: 'Sweet Lassi', pairingBadge: 'Creamy Classic' },
       { name: 'Shikanji', pairingBadge: 'Desi Cooler' },
+      { name: 'Masala Chai', pairingBadge: 'Warm Desi Brew' },
+      { name: 'Hot Coffee', pairingBadge: 'Rich Roast' },
+      { name: 'Lemon Honey Tea', pairingBadge: 'Soothing Sip' },
     ]
     const friesNames = [
       { name: 'Peri Peri Fries', pairingBadge: 'Crispy & Spicy' },
       { name: 'Cheese Loaded Fries', pairingBadge: 'Melted Mozzarella' },
       { name: 'Veg Nuggets', pairingBadge: 'Crunchy Starter' },
       { name: 'Veg Fried Momos', pairingBadge: 'Crisp Street Bite' },
+      { name: 'Salted Fries', pairingBadge: 'Golden Classic' },
+      { name: 'Butter Masala Fries', pairingBadge: 'Rich Butter Spice' },
+      { name: 'Paneer Fried Momos', pairingBadge: 'Crispy Dumpling' },
+      { name: 'Chilli Potato', pairingBadge: 'Desi Wok Tossed' },
     ]
     const dipNames = [
       { name: 'Extra Dip', pairingBadge: 'Creamy Garlic Mayo' },
       { name: 'Cheese Burst', pairingBadge: 'Molten Cheese Center' },
+      { name: 'Cheese', pairingBadge: 'Extra Mozzarella' },
+      { name: 'Paneer', pairingBadge: 'Tikka Paneer' },
       { name: 'Oregano', pairingBadge: 'Herb Seasoning' },
       { name: 'Chilli Flakes', pairingBadge: 'Extra Spice Kick' },
+      { name: 'Ketchup', pairingBadge: 'Classic Sachet' },
+      { name: 'Veggies', pairingBadge: 'Fresh Garden Veg' },
     ]
 
     const mapToItems = (list) =>
@@ -123,23 +139,36 @@ export default function CartPage() {
     }
   }, [])
 
-  // Dynamic recommendation selection based on active tab and cart state
+  // Dynamic recommendation selection based on active tab and cart state (at least 6 items)
   const displayedRecommendations = useMemo(() => {
     if (cart.length === 0) return []
 
     const { sides, drinks, fries, dips } = recommendationPool
 
-    if (recCategory === 'sides') return sides.slice(0, 4)
-    if (recCategory === 'drinks') return drinks.slice(0, 4)
-    if (recCategory === 'fries') return fries.slice(0, 4)
-    if (recCategory === 'dips') return dips.slice(0, 4)
+    if (recCategory === 'sides') return sides.slice(0, 6)
+    if (recCategory === 'drinks') return drinks.slice(0, 6)
+    if (recCategory === 'fries') return fries.slice(0, 6)
+    if (recCategory === 'dips') return dips.slice(0, 6)
 
-    // 'all': Guarantee 1 Side, 1 Drink, 1 Fries, 1 Dip for maximum meal diversity
+    // 'all': Guarantee at least 6 diverse items representing sides, drinks, fries, and dips
     const picks = []
     if (sides[0]) picks.push(sides[0])
     if (drinks[0]) picks.push(drinks[0])
     if (fries[0]) picks.push(fries[0])
     if (dips[0]) picks.push(dips[0])
+    if (drinks[1]) picks.push(drinks[1])
+    if (fries[1]) picks.push(fries[1])
+
+    // Backfill from remaining items if any was missing to ensure at least 6
+    if (picks.length < 6) {
+      const allAvailable = [...sides, ...drinks, ...fries, ...dips]
+      for (const item of allAvailable) {
+        if (!picks.some((p) => p.name === item.name)) {
+          picks.push(item)
+        }
+        if (picks.length >= 6) break
+      }
+    }
 
     return picks
   }, [cart.length, recCategory, recommendationPool])

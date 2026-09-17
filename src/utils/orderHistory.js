@@ -6,6 +6,84 @@ import { verifyOrderToken } from './orderSecurity'
 
 const STORAGE_KEY = 'crust-admin-orders-v1'
 
+export const GOOGLE_SHEETS_WEBHOOK_URL =
+  'https://script.google.com/macros/s/AKfycbwHIoW4z_YMZuRTDU1UAs9hpTwd1Ez9LbpyzRHRWWgEbPMVhLY3XAP-nULQ1raoMAvuZg/exec'
+
+/**
+ * Send an order to the permanent Google Sheets cloud database (background fire-and-forget)
+ * @param {Object} record
+ */
+export async function sendOrderToCloud(record) {
+  if (typeof window === 'undefined' || !GOOGLE_SHEETS_WEBHOOK_URL || !record) return
+  try {
+    await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+      method: 'POST',
+      body: JSON.stringify(record),
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      redirect: 'follow',
+    })
+  } catch (err) {
+    console.warn('Background sync to Google Sheets failed:', err)
+  }
+}
+
+/**
+ * Fetch orders from Google Sheets cloud database and merge with local cache
+ * @returns {Promise<Array>}
+ */
+export async function syncOrdersWithCloud() {
+  if (typeof window === 'undefined') return getOrderHistory()
+  try {
+    const res = await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+      method: 'GET',
+      redirect: 'follow',
+    })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const data = await res.json()
+
+    if (data && data.success && Array.isArray(data.orders)) {
+      const local = getOrderHistory()
+      const mergedMap = new Map()
+
+      // 1. Put cloud orders in map first
+      data.orders.forEach((o) => {
+        if (o && o.id) {
+          mergedMap.set(o.id, {
+            ...o,
+            total: Number(o.total) || 0,
+            timestamp: Number(o.timestamp) || Date.now(),
+          })
+        }
+      })
+
+      // 2. Add local orders if any were placed offline or not yet in cloud
+      local.forEach((o) => {
+        if (o && o.id) {
+          if (!mergedMap.has(o.id)) {
+            mergedMap.set(o.id, o)
+            // Send missing order to cloud in background
+            sendOrderToCloud(o)
+          }
+        }
+      })
+
+      // 3. Sort chronologically (newest first)
+      const combined = Array.from(mergedMap.values()).sort(
+        (a, b) => (b.timestamp || 0) - (a.timestamp || 0)
+      )
+
+      // 4. Update local cache
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(combined.slice(0, 500)))
+      return combined
+    }
+
+    return getOrderHistory()
+  } catch (err) {
+    console.warn('Failed to sync orders with cloud:', err)
+    return getOrderHistory()
+  }
+}
+
 /**
  * Get all stored orders from storage, newest first
  * @returns {Array}
@@ -78,6 +156,10 @@ export function saveOrderToHistory(order) {
     }
 
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
+
+    // Background cloud sync to Google Sheets (fire and forget)
+    sendOrderToCloud(record)
+
     return updated
   } catch (err) {
     console.error('Failed to save order to history:', err)
