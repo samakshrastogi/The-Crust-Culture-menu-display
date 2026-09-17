@@ -10,7 +10,6 @@ import {
   FiShoppingBag,
   FiUsers,
   FiTrendingUp,
-  FiPlus,
   FiShield,
   FiRefreshCw,
   FiCalendar,
@@ -20,7 +19,6 @@ import {
 import { FaWhatsapp } from 'react-icons/fa6'
 import {
   exportOrdersToCSV,
-  importOrderFromUrl,
   syncOrdersWithCloud,
 } from '../utils/orderHistory'
 
@@ -32,9 +30,6 @@ export default function AdminPage() {
   const [filterType, setFilterType] = useState('all') // 'all' | 'dine-in' | 'takeaway'
   const [timeFilter, setTimeFilter] = useState('all') // 'all' | 'today' | 'week' | 'month' | 'year'
   const [copiedId, setCopiedId] = useState(null)
-  const [importInput, setImportInput] = useState('')
-  const [importMessage, setImportMessage] = useState(null)
-  const [showImportBox, setShowImportBox] = useState(false)
 
   // Cloud sync on initial page load (strictly shows only what exists in Excel/Google Sheets)
   useEffect(() => {
@@ -221,30 +216,14 @@ export default function AdminPage() {
     setTimeout(() => setCopiedId(null), 2000)
   }
 
-  const handleImportSubmit = (e) => {
-    e.preventDefault()
-    if (!importInput.trim()) return
-
-    const result = importOrderFromUrl(importInput)
-    setImportMessage(result)
-    if (result.success) {
-      setImportInput('')
-      reloadOrders()
-      setTimeout(() => setImportMessage(null), 4000)
-    }
-  }
-
   return (
     <div className="mx-auto  px-2.5 py-3 sm:px-4 sm:py-3.5 space-y-2.5">
       {/* Compact Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 sm:px-3.5 sm:py-2.5 shadow-2xs">
+      <div className="flex items-center justify-between gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 sm:px-3.5 sm:py-2.5 shadow-2xs">
         <div className="flex items-center gap-2 flex-wrap">
           <h1 className="font-display text-sm sm:text-base font-black text-[var(--text)]">
             Customer Directory
           </h1>
-          <span className="rounded-full bg-emerald-600/15 border border-emerald-500/30 px-1.5 py-0.2 text-[9px] font-black text-emerald-700 dark:text-emerald-300">
-            Admin
-          </span>
           <span
             className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold border transition-colors ${
               isSyncing
@@ -265,65 +244,17 @@ export default function AdminPage() {
         <div className="flex items-center gap-1.5">
           <button
             type="button"
-            onClick={() => setShowImportBox(!showImportBox)}
-            className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1 text-[11px] font-bold text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
-          >
-            <FiPlus className="text-[10px]" />
-            <span>Import Link</span>
-          </button>
-
-          <button
-            type="button"
             onClick={() => exportOrdersToCSV(filteredOrders)}
             disabled={orders.length === 0}
-            className="inline-flex items-center gap-1 rounded-full bg-[var(--orange)] px-3 py-1 text-[11px] font-black text-white hover:brightness-110 transition cursor-pointer disabled:opacity-50 shadow-2xs"
+            className="inline-flex items-center justify-center rounded-lg sm:rounded-full bg-[var(--orange)] h-7 w-7 sm:h-auto sm:w-auto sm:px-3 sm:py-1 text-white hover:brightness-110 transition cursor-pointer disabled:opacity-50 shadow-2xs"
+            title="Export CSV"
+            aria-label="Export CSV"
           >
-            <FiDownload className="text-[10px]" />
-            <span>Export CSV</span>
+            <FiDownload className="text-xs sm:text-[10px]" />
+            <span className="hidden sm:inline sm:text-[11px] sm:font-black sm:ml-1">Export CSV</span>
           </button>
         </div>
       </div>
-
-      {/* Manual Link Import Box (Collapsible) */}
-      {showImportBox && (
-        <form
-          onSubmit={handleImportSubmit}
-          className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-2.5 space-y-1.5 transition-all"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-amber-700 dark:text-amber-400">
-              Paste & Import Order Link
-            </span>
-            <span className="text-[9px] text-[var(--muted)]">
-              Paste any /order?v=... link
-            </span>
-          </div>
-          <div className="flex gap-1.5">
-            <input
-              type="text"
-              value={importInput}
-              onChange={(e) => setImportInput(e.target.value)}
-              placeholder="Paste order link or token here..."
-              className="flex-1 rounded-lg border border-[var(--line)] bg-[var(--surface)] px-2.5 py-1.5 text-xs text-[var(--text)] outline-none focus:border-[var(--orange)]"
-            />
-            <button
-              type="submit"
-              className="rounded-lg bg-[var(--orange)] px-3 py-1.5 text-xs font-black text-white hover:brightness-110 cursor-pointer"
-            >
-              Import
-            </button>
-          </div>
-          {importMessage && (
-            <p
-              className={`text-[11px] font-bold ${
-                importMessage.success ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600'
-              }`}
-            >
-              {importMessage.message}
-            </p>
-          )}
-        </form>
-      )}
 
       {/* Mobile Compact 4-Col Micro KPI Strip */}
       <div className="grid grid-cols-4 gap-1 sm:hidden">
