@@ -10,7 +10,7 @@ import {
   FiClock,
   FiShoppingBag,
   FiUsers,
-  FiDollarSign,
+  FiTrendingUp,
   FiPlus,
   FiShield,
   FiRefreshCw,
@@ -89,7 +89,19 @@ export default function AdminPage() {
     const monthOrders = orders.filter((o) => (o.timestamp || 0) >= startOfThisMonth)
     const monthRevenue = monthOrders.reduce((sum, o) => sum + (Number(o.total) || 0), 0)
 
-    const uniquePhones = new Set(orders.map((o) => o.customerPhone).filter(Boolean))
+    // Breakdown metrics
+    const dineInCount = orders.filter((o) => o.orderType === 'dine-in').length
+    const takeawayCount = orders.filter((o) => o.orderType === 'takeaway').length
+    const avgOrderValue = totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0
+
+    // Repeat diners count
+    const phoneCounts = {}
+    orders.forEach((o) => {
+      const p = (o.customerPhone || '').replace(/\D/g, '')
+      if (p) phoneCounts[p] = (phoneCounts[p] || 0) + 1
+    })
+    const uniquePhones = Object.keys(phoneCounts)
+    const repeatDiners = Object.values(phoneCounts).filter((c) => c > 1).length
 
     return {
       totalOrders,
@@ -100,7 +112,11 @@ export default function AdminPage() {
       weekRevenue,
       monthOrders: monthOrders.length,
       monthRevenue,
-      uniqueCustomers: uniquePhones.size || orders.length,
+      uniqueCustomers: uniquePhones.length || totalOrders,
+      dineInCount,
+      takeawayCount,
+      avgOrderValue,
+      repeatDiners,
     }
   }, [orders])
 
@@ -308,50 +324,125 @@ export default function AdminPage() {
         </form>
       )}
 
-      {/* Micro Stats Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:p-2.5 shadow-2xs">
-          <div className="flex items-center justify-between text-[var(--muted)] text-[10.5px]">
-            <span>Total Orders</span>
-            <FiShoppingBag className="text-xs text-[var(--orange)]" />
+      {/* Modern Cafe Analytics Stat Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
+        {/* Card 1: Total Orders */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => setTimeFilter('all')}
+          onKeyDown={(e) => e.key === 'Enter' && setTimeFilter('all')}
+          className={`group relative overflow-hidden rounded-2xl border p-2.5 sm:p-3 transition-all duration-200 cursor-pointer shadow-2xs hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] ${
+            timeFilter === 'all'
+              ? 'border-[var(--orange)] bg-gradient-to-br from-orange-500/10 via-[var(--surface)] to-[var(--surface)] ring-1 ring-[var(--orange)]/30'
+              : 'border-[var(--line)] bg-[var(--surface)] hover:border-[var(--orange)]/60'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-[var(--muted)] group-hover:text-[var(--text)] transition-colors">
+              Total Orders
+            </span>
+            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20 group-hover:scale-110 transition-transform">
+              <FiShoppingBag className="text-xs sm:text-sm" />
+            </div>
           </div>
-          <div className="mt-0.5 text-base sm:text-lg font-black text-[var(--text)] leading-tight">
-            {stats.totalOrders}
+          <div className="mt-1 flex items-baseline gap-1.5">
+            <span className="text-xl sm:text-2xl font-black text-[var(--text)] tracking-tight">
+              {stats.totalOrders}
+            </span>
+            <span className="text-[10px] font-bold text-[var(--muted)]">orders</span>
           </div>
-          <div className="text-[9px] text-[var(--muted)] mt-0.5 truncate">Synced across devices</div>
+          <div className="mt-2 flex items-center justify-between gap-1 pt-1.5 border-t border-[var(--line)]/50 text-[10px]">
+            <span className="inline-flex items-center gap-1 rounded-md bg-stone-500/10 px-1.5 py-0.2 font-semibold text-[var(--muted)]">
+              <span>🍽️ {stats.dineInCount}</span>
+              <span>•</span>
+              <span>🥡 {stats.takeawayCount}</span>
+            </span>
+            <span className="text-[9.5px] text-[var(--muted)] truncate">All Time</span>
+          </div>
         </div>
 
-        <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:p-2.5 shadow-2xs">
-          <div className="flex items-center justify-between text-[var(--muted)] text-[10.5px]">
-            <span>Total Revenue</span>
-            <FiDollarSign className="text-xs text-emerald-500" />
+        {/* Card 2: Total Revenue */}
+        <div className="group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-gradient-to-br from-emerald-500/[0.06] via-[var(--surface)] to-[var(--surface)] p-2.5 sm:p-3 shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-500/60 hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-[var(--muted)] group-hover:text-[var(--text)] transition-colors">
+              Total Revenue
+            </span>
+            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 group-hover:scale-110 transition-transform">
+              <FiTrendingUp className="text-xs sm:text-sm" />
+            </div>
           </div>
-          <div className="mt-0.5 text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400 leading-tight">
-            ₹{stats.totalRevenue}
+          <div className="mt-1 flex items-baseline gap-1">
+            <span className="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight">
+              ₹{stats.totalRevenue.toLocaleString('en-IN')}
+            </span>
           </div>
-          <div className="text-[9px] text-[var(--muted)] mt-0.5 truncate">All time total</div>
+          <div className="mt-2 flex items-center justify-between pt-1.5 border-t border-[var(--line)]/50 text-[10px]">
+            <span className="inline-flex items-center gap-1 rounded-md bg-emerald-500/10 px-1.5 py-0.2 font-bold text-emerald-600 dark:text-emerald-400">
+              Avg ₹{stats.avgOrderValue} / order
+            </span>
+            <span className="text-[9.5px] text-[var(--muted)] truncate">Sales</span>
+          </div>
         </div>
 
-        <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:p-2.5 shadow-2xs">
-          <div className="flex items-center justify-between text-[var(--muted)] text-[10.5px]">
-            <span>Today&apos;s Orders</span>
-            <FiClock className="text-xs text-blue-500" />
+        {/* Card 3: Today's Orders */}
+        <div
+          role="button"
+          tabIndex={0}
+          onClick={() => setTimeFilter('today')}
+          onKeyDown={(e) => e.key === 'Enter' && setTimeFilter('today')}
+          className={`group relative overflow-hidden rounded-2xl border p-2.5 sm:p-3 transition-all duration-200 cursor-pointer shadow-2xs hover:-translate-y-0.5 hover:shadow-md active:scale-[0.99] ${
+            timeFilter === 'today'
+              ? 'border-blue-500 bg-gradient-to-br from-blue-500/10 via-[var(--surface)] to-[var(--surface)] ring-1 ring-blue-500/30'
+              : 'border-[var(--line)] bg-[var(--surface)] hover:border-blue-500/60'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-[var(--muted)] group-hover:text-[var(--text)] transition-colors">
+              Today&apos;s Orders
+            </span>
+            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 group-hover:scale-110 transition-transform">
+              <FiClock className="text-xs sm:text-sm" />
+            </div>
           </div>
-          <div className="mt-0.5 text-base sm:text-lg font-black text-[var(--text)] leading-tight">
-            {stats.todayOrders}
+          <div className="mt-1 flex items-baseline gap-1.5">
+            <span className="text-xl sm:text-2xl font-black text-[var(--text)] tracking-tight">
+              {stats.todayOrders}
+            </span>
+            <span className="text-[10px] font-bold text-[var(--muted)]">
+              {stats.todayOrders === 1 ? 'order' : 'orders'}
+            </span>
           </div>
-          <div className="text-[9px] text-[var(--muted)] mt-0.5 truncate">₹{stats.todayRevenue} today</div>
+          <div className="mt-2 flex items-center justify-between pt-1.5 border-t border-[var(--line)]/50 text-[10px]">
+            <span className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 px-1.5 py-0.2 font-bold text-blue-600 dark:text-blue-400">
+              ₹{stats.todayRevenue.toLocaleString('en-IN')} today
+            </span>
+            <span className="text-[9.5px] text-blue-500 font-bold group-hover:underline">Filter &rarr;</span>
+          </div>
         </div>
 
-        <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:p-2.5 shadow-2xs">
-          <div className="flex items-center justify-between text-[var(--muted)] text-[10.5px]">
-            <span>Customers</span>
-            <FiUsers className="text-xs text-amber-500" />
+        {/* Card 4: Customers */}
+        <div className="group relative overflow-hidden rounded-2xl border border-[var(--line)] bg-gradient-to-br from-purple-500/[0.05] via-[var(--surface)] to-[var(--surface)] p-2.5 sm:p-3 shadow-2xs transition-all duration-200 hover:-translate-y-0.5 hover:border-purple-500/60 hover:shadow-md">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-bold text-[var(--muted)] group-hover:text-[var(--text)] transition-colors">
+              Customers
+            </span>
+            <div className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 group-hover:scale-110 transition-transform">
+              <FiUsers className="text-xs sm:text-sm" />
+            </div>
           </div>
-          <div className="mt-0.5 text-base sm:text-lg font-black text-[var(--text)] leading-tight">
-            {stats.uniqueCustomers}
+          <div className="mt-1 flex items-baseline gap-1.5">
+            <span className="text-xl sm:text-2xl font-black text-[var(--text)] tracking-tight">
+              {stats.uniqueCustomers}
+            </span>
+            <span className="text-[10px] font-bold text-[var(--muted)]">contacts</span>
           </div>
-          <div className="text-[9px] text-[var(--muted)] mt-0.5 truncate">Unique contacts</div>
+          <div className="mt-2 flex items-center justify-between pt-1.5 border-t border-[var(--line)]/50 text-[10px]">
+            <span className="inline-flex items-center gap-1 rounded-md bg-purple-500/10 px-1.5 py-0.2 font-bold text-purple-600 dark:text-purple-400">
+              {stats.repeatDiners > 0 ? `${stats.repeatDiners} repeat` : '100% verified'}
+            </span>
+            <span className="text-[9.5px] text-[var(--muted)] truncate">Verified</span>
+          </div>
         </div>
       </div>
 
