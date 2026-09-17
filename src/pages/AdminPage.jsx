@@ -219,45 +219,40 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-3 py-6 sm:px-6 sm:py-8 space-y-6">
-      {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-4 shadow-sm">
-        <div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="font-display text-lg sm:text-xl font-black text-[var(--text)]">
-              Customer Directory & Order Records
-            </h1>
-            <span className="rounded-full bg-emerald-600/15 border border-emerald-500/30 px-2 py-0.2 text-[9px] font-black text-emerald-700 dark:text-emerald-300">
-              Admin Portal
-            </span>
+    <div className="mx-auto max-w-4xl px-2.5 py-3 sm:px-4 sm:py-3.5 space-y-2.5">
+      {/* Compact Top Header */}
+      <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 sm:px-3.5 sm:py-2.5 shadow-2xs">
+        <div className="flex items-center gap-2 flex-wrap">
+          <h1 className="font-display text-sm sm:text-base font-black text-[var(--text)]">
+            Customer Directory
+          </h1>
+          <span className="rounded-full bg-emerald-600/15 border border-emerald-500/30 px-1.5 py-0.2 text-[9px] font-black text-emerald-700 dark:text-emerald-300">
+            Admin
+          </span>
+          <span
+            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold border transition-colors ${
+              isSyncing
+                ? 'bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400'
+                : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+            }`}
+            title={lastSynced ? `Last synced: ${lastSynced.toLocaleTimeString()}` : 'Cloud sync'}
+          >
             <span
-              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9.5px] font-bold border transition-colors ${
-                isSyncing
-                  ? 'bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400'
-                  : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+              className={`h-1.5 w-1.5 rounded-full ${
+                isSyncing ? 'bg-blue-500 animate-ping' : 'bg-emerald-500'
               }`}
-              title={lastSynced ? `Last synced: ${lastSynced.toLocaleTimeString()}` : 'Cloud sync'}
-            >
-              <span
-                className={`h-1.5 w-1.5 rounded-full ${
-                  isSyncing ? 'bg-blue-500 animate-ping' : 'bg-emerald-500'
-                }`}
-              />
-              <span>{isSyncing ? 'Syncing...' : 'Google Sheets Synced'}</span>
-            </span>
-          </div>
-          <p className="text-xs text-[var(--muted)] mt-0.5">
-            Auto-recorded order tickets, customer contacts, and verified receipt links.
-          </p>
+            />
+            <span>{isSyncing ? 'Syncing...' : 'Google Sheets Synced'}</span>
+          </span>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
             onClick={() => setShowImportBox(!showImportBox)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-3 py-1.5 text-xs font-bold text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
+            className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1 text-[11px] font-bold text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
           >
-            <FiPlus className="text-xs" />
+            <FiPlus className="text-[10px]" />
             <span>Import Link</span>
           </button>
 
@@ -265,9 +260,9 @@ export default function AdminPage() {
             type="button"
             onClick={exportOrdersToCSV}
             disabled={orders.length === 0}
-            className="inline-flex items-center gap-1.5 rounded-full bg-[var(--orange)] px-3.5 py-1.5 text-xs font-black text-white hover:brightness-110 transition cursor-pointer disabled:opacity-50 shadow-xs"
+            className="inline-flex items-center gap-1 rounded-full bg-[var(--orange)] px-3 py-1 text-[11px] font-black text-white hover:brightness-110 transition cursor-pointer disabled:opacity-50 shadow-2xs"
           >
-            <FiDownload className="text-xs" />
+            <FiDownload className="text-[10px]" />
             <span>Export CSV</span>
           </button>
         </div>
@@ -277,34 +272,34 @@ export default function AdminPage() {
       {showImportBox && (
         <form
           onSubmit={handleImportSubmit}
-          className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 space-y-2 transition-all"
+          className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-2.5 space-y-1.5 transition-all"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-amber-700 dark:text-amber-400">
+            <span className="text-[11px] font-black text-amber-700 dark:text-amber-400">
               Paste & Import Order Link
             </span>
-            <span className="text-[10px] text-[var(--muted)]">
-              Paste any /order?v=... link to record it into this directory
+            <span className="text-[9px] text-[var(--muted)]">
+              Paste any /order?v=... link
             </span>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-1.5">
             <input
               type="text"
               value={importInput}
               onChange={(e) => setImportInput(e.target.value)}
               placeholder="Paste order link or token here..."
-              className="flex-1 rounded-xl border border-[var(--line)] bg-[var(--surface)] px-3 py-2 text-xs text-[var(--text)] outline-none focus:border-[var(--orange)]"
+              className="flex-1 rounded-lg border border-[var(--line)] bg-[var(--surface)] px-2.5 py-1.5 text-xs text-[var(--text)] outline-none focus:border-[var(--orange)]"
             />
             <button
               type="submit"
-              className="rounded-xl bg-[var(--orange)] px-4 py-2 text-xs font-black text-white hover:brightness-110 cursor-pointer"
+              className="rounded-lg bg-[var(--orange)] px-3 py-1.5 text-xs font-black text-white hover:brightness-110 cursor-pointer"
             >
               Import
             </button>
           </div>
           {importMessage && (
             <p
-              className={`text-xs font-bold ${
+              className={`text-[11px] font-bold ${
                 importMessage.success ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600'
               }`}
             >
@@ -314,82 +309,82 @@ export default function AdminPage() {
         </form>
       )}
 
-      {/* Stats Summary Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 shadow-xs">
-          <div className="flex items-center justify-between text-[var(--muted)] text-xs">
+      {/* Micro Stats Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:p-2.5 shadow-2xs">
+          <div className="flex items-center justify-between text-[var(--muted)] text-[10.5px]">
             <span>Total Orders</span>
-            <FiShoppingBag className="text-sm text-[var(--orange)]" />
+            <FiShoppingBag className="text-xs text-[var(--orange)]" />
           </div>
-          <div className="mt-1 text-xl sm:text-2xl font-black text-[var(--text)]">
+          <div className="mt-0.5 text-base sm:text-lg font-black text-[var(--text)] leading-tight">
             {stats.totalOrders}
           </div>
-          <div className="text-[10px] text-[var(--muted)] mt-0.5">Synced via Google Sheets</div>
+          <div className="text-[9px] text-[var(--muted)] mt-0.5 truncate">Synced across devices</div>
         </div>
 
-        <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 shadow-xs">
-          <div className="flex items-center justify-between text-[var(--muted)] text-xs">
+        <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:p-2.5 shadow-2xs">
+          <div className="flex items-center justify-between text-[var(--muted)] text-[10.5px]">
             <span>Total Revenue</span>
-            <FiDollarSign className="text-sm text-emerald-500" />
+            <FiDollarSign className="text-xs text-emerald-500" />
           </div>
-          <div className="mt-1 text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400">
+          <div className="mt-0.5 text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400 leading-tight">
             ₹{stats.totalRevenue}
           </div>
-          <div className="text-[10px] text-[var(--muted)] mt-0.5">All time total</div>
+          <div className="text-[9px] text-[var(--muted)] mt-0.5 truncate">All time total</div>
         </div>
 
-        <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 shadow-xs">
-          <div className="flex items-center justify-between text-[var(--muted)] text-xs">
+        <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:p-2.5 shadow-2xs">
+          <div className="flex items-center justify-between text-[var(--muted)] text-[10.5px]">
             <span>Today&apos;s Orders</span>
-            <FiClock className="text-sm text-blue-500" />
+            <FiClock className="text-xs text-blue-500" />
           </div>
-          <div className="mt-1 text-xl sm:text-2xl font-black text-[var(--text)]">
+          <div className="mt-0.5 text-base sm:text-lg font-black text-[var(--text)] leading-tight">
             {stats.todayOrders}
           </div>
-          <div className="text-[10px] text-[var(--muted)] mt-0.5">₹{stats.todayRevenue} today</div>
+          <div className="text-[9px] text-[var(--muted)] mt-0.5 truncate">₹{stats.todayRevenue} today</div>
         </div>
 
-        <div className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 shadow-xs">
-          <div className="flex items-center justify-between text-[var(--muted)] text-xs">
+        <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2 sm:p-2.5 shadow-2xs">
+          <div className="flex items-center justify-between text-[var(--muted)] text-[10.5px]">
             <span>Customers</span>
-            <FiUsers className="text-sm text-amber-500" />
+            <FiUsers className="text-xs text-amber-500" />
           </div>
-          <div className="mt-1 text-xl sm:text-2xl font-black text-[var(--text)]">
+          <div className="mt-0.5 text-base sm:text-lg font-black text-[var(--text)] leading-tight">
             {stats.uniqueCustomers}
           </div>
-          <div className="text-[10px] text-[var(--muted)] mt-0.5">Unique mobile contacts</div>
+          <div className="text-[9px] text-[var(--muted)] mt-0.5 truncate">Unique contacts</div>
         </div>
       </div>
 
-      {/* Time Period Filter Tabs: Days -> Week -> Month -> Year */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--line)] pb-3">
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          <span className="flex items-center gap-1 text-[11px] font-bold text-[var(--muted)] mr-1 shrink-0">
-            <FiCalendar className="text-xs text-[var(--orange)]" />
+      {/* Compact Filters & Timeline Row */}
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--line)] pb-2">
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-0.5">
+          <span className="flex items-center gap-1 text-[10px] font-bold text-[var(--muted)] mr-1 shrink-0">
+            <FiCalendar className="text-[10px] text-[var(--orange)]" />
             <span>Timeline:</span>
           </span>
 
           {[
             { id: 'all', label: 'All Time' },
-            { id: 'today', label: 'Today (Days)', count: stats.todayOrders },
-            { id: 'week', label: 'This Week', count: stats.weekOrders },
-            { id: 'month', label: 'This Month', count: stats.monthOrders },
-            { id: 'year', label: 'This Year' },
+            { id: 'today', label: 'Today', count: stats.todayOrders },
+            { id: 'week', label: 'Week', count: stats.weekOrders },
+            { id: 'month', label: 'Month', count: stats.monthOrders },
+            { id: 'year', label: 'Year' },
           ].map((tab) => (
             <button
               key={tab.id}
               type="button"
               onClick={() => setTimeFilter(tab.id)}
-              className={`shrink-0 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
+              className={`shrink-0 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10.5px] font-bold transition-all cursor-pointer ${
                 timeFilter === tab.id
-                  ? 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] text-white shadow-xs'
+                  ? 'bg-gradient-to-r from-[var(--orange)] to-[#ea580c] text-white shadow-2xs'
                   : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] hover:border-[var(--gold)]/40'
               }`}
             >
               <span>{tab.label}</span>
               {typeof tab.count === 'number' && tab.count > 0 && (
                 <span
-                  className={`rounded-full px-1.5 py-0.2 text-[9px] font-black ${
+                  className={`rounded-full px-1 py-0.2 text-[8.5px] font-black ${
                     timeFilter === tab.id ? 'bg-white/25 text-white' : 'bg-[var(--surface-strong)] text-[var(--text)]'
                   }`}
                 >
@@ -401,7 +396,7 @@ export default function AdminPage() {
         </div>
 
         {/* Order Type Filter Pills */}
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
           {[
             { id: 'all', label: 'All Types' },
             { id: 'dine-in', label: '🍽️ Dine-In' },
@@ -411,7 +406,7 @@ export default function AdminPage() {
               key={tab.id}
               type="button"
               onClick={() => setFilterType(tab.id)}
-              className={`rounded-full px-2.5 py-1 text-xs font-bold transition cursor-pointer ${
+              className={`rounded-full px-2 py-0.5 text-[10.5px] font-bold transition cursor-pointer ${
                 filterType === tab.id
                   ? 'bg-[var(--surface-strong)] border border-[var(--orange)] text-[var(--orange)] ring-1 ring-[var(--orange)]/30'
                   : 'border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)]'
@@ -423,46 +418,46 @@ export default function AdminPage() {
         </div>
       </div>
 
-      {/* Search Bar & Record Count */}
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="relative flex-1 min-w-[220px]">
-          <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-[var(--muted)]" />
+      {/* Compact Search & Action Bar */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="relative flex-1 min-w-[200px]">
+          <FiSearch className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-[var(--muted)]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by customer name, phone, or order ID..."
-            className="w-full rounded-full border border-[var(--line)] bg-[var(--surface)] pl-9 pr-3 py-2 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)]"
+            className="w-full rounded-full border border-[var(--line)] bg-[var(--surface)] pl-8 pr-3 py-1.5 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)]"
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-[var(--muted)]">
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className="text-[11px] text-[var(--muted)] hidden sm:inline">
             Showing <strong className="text-[var(--text)]">{filteredOrders.length}</strong> of{' '}
-            {orders.length} orders
+            {orders.length}
           </span>
 
           <button
             type="button"
             onClick={reloadOrders}
             disabled={isSyncing}
-            className="grid h-8 w-8 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] transition cursor-pointer disabled:opacity-50"
+            className="grid h-7 w-7 place-items-center rounded-full border border-[var(--line)] bg-[var(--surface)] text-[var(--muted)] hover:text-[var(--text)] transition cursor-pointer disabled:opacity-50"
             title="Sync with Google Sheets & refresh records"
           >
-            <FiRefreshCw className={`text-xs ${isSyncing ? 'animate-spin text-[var(--orange)]' : ''}`} />
+            <FiRefreshCw className={`text-[11px] ${isSyncing ? 'animate-spin text-[var(--orange)]' : ''}`} />
           </button>
         </div>
       </div>
 
       {/* Chronologically Grouped Orders List */}
       {filteredOrders.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-[var(--line)] bg-[var(--surface)]/50 p-8 text-center space-y-3">
-          <div className="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[var(--surface-strong)] text-xl text-[var(--muted)]">
+        <div className="rounded-2xl border border-dashed border-[var(--line)] bg-[var(--surface)]/50 p-6 text-center space-y-2">
+          <div className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-[var(--surface-strong)] text-lg text-[var(--muted)]">
             <FiShoppingBag />
           </div>
-          <div className="space-y-1">
-            <h3 className="text-sm font-black text-[var(--text)]">No order records found</h3>
-            <p className="text-xs text-[var(--muted)] max-w-sm mx-auto">
+          <div className="space-y-0.5">
+            <h3 className="text-xs font-black text-[var(--text)]">No order records found</h3>
+            <p className="text-[11px] text-[var(--muted)] max-w-sm mx-auto">
               {searchQuery
                 ? 'No orders match your search query.'
                 : 'Orders sent to WhatsApp or opened from ticket links will automatically appear here.'}
@@ -470,30 +465,30 @@ export default function AdminPage() {
           </div>
         </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-3.5">
           {groupedSections.map((group) => {
             const groupTotalRevenue = group.orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0)
 
             return (
-              <div key={group.id} className="space-y-3">
-                {/* Timeline Period Section Header */}
-                <div className="flex items-center justify-between border-b border-[var(--line)] pb-1.5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs sm:text-sm font-black text-[var(--text)] uppercase tracking-wide">
+              <div key={group.id} className="space-y-1.5">
+                {/* Slim Timeline Period Header */}
+                <div className="flex items-center justify-between border-b border-[var(--line)]/70 pb-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[11px] font-black text-[var(--text)] uppercase tracking-wider">
                       {group.title}
                     </span>
-                    <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-2 py-0.2 text-[9.5px] font-extrabold text-[var(--gold)]">
-                      {group.orders.length} {group.orders.length === 1 ? 'order' : 'orders'}
+                    <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-1.5 py-0.1 text-[9px] font-black text-[var(--gold)]">
+                      {group.orders.length}
                     </span>
                   </div>
 
-                  <span className="text-xs font-black text-emerald-600 dark:text-emerald-400">
+                  <span className="text-[11px] font-black text-emerald-600 dark:text-emerald-400">
                     Total: ₹{groupTotalRevenue}
                   </span>
                 </div>
 
                 {/* Orders in this Period */}
-                <div className="space-y-2.5">
+                <div className="space-y-1.5">
                   {group.orders.map((order) => {
                     const dateStr = order.timestamp
                       ? new Date(order.timestamp).toLocaleString('en-IN', {
@@ -510,86 +505,50 @@ export default function AdminPage() {
                     return (
                       <div
                         key={order.id}
-                        className="rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-3.5 sm:p-4 shadow-xs transition hover:border-[var(--orange)]/40 space-y-3"
+                        className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-2.5 sm:p-3 shadow-2xs transition hover:border-[var(--orange)]/40 space-y-2"
                       >
-                        {/* Row 1: ID, Badge, Time & Amount */}
-                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--line)]/50 pb-2.5">
-                          <div className="flex items-center gap-2 flex-wrap">
+                        {/* Row 1: ID, Badges, Time, Price & Top Actions */}
+                        <div className="flex flex-wrap items-center justify-between gap-1.5 border-b border-[var(--line)]/40 pb-1.5">
+                          <div className="flex items-center gap-1.5 flex-wrap">
                             <span className="font-mono text-xs font-black text-[var(--orange)]">
                               {order.id}
                             </span>
-                            <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-2 py-0.2 text-[10px] font-bold text-[var(--muted)]">
+                            <span className="rounded-full bg-[var(--surface-strong)] border border-[var(--line)] px-1.5 py-0.2 text-[9.5px] font-bold text-[var(--muted)]">
                               {order.orderType === 'dine-in' ? '🍽️ Dine-In' : '🥡 Takeaway'}
                             </span>
                             {order.securityCode && (
-                              <span className="inline-flex items-center gap-1 font-mono text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">
-                                <FiShield className="text-[9px]" />
+                              <span className="inline-flex items-center gap-0.5 font-mono text-[9.5px] text-emerald-600 dark:text-emerald-400 font-bold">
+                                <FiShield className="text-[8.5px]" />
                                 {order.securityCode}
                               </span>
                             )}
-                          </div>
-
-                          <div className="flex items-center gap-3">
-                            <span className="text-[11px] text-[var(--muted)] flex items-center gap-1">
-                              <FiClock className="text-[10px]" />
+                            <span className="text-[10px] text-[var(--muted)] flex items-center gap-1 ml-1">
+                              <FiClock className="text-[9px]" />
                               {dateStr}
                             </span>
-                            <span className="text-sm sm:text-base font-black text-[var(--orange)]">
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-black text-[var(--orange)]">
                               ₹{order.total}
                             </span>
-                          </div>
-                        </div>
 
-                        {/* Row 2: Customer Contact & Action Buttons */}
-                        <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-                          <div className="space-y-0.5">
-                            <div className="font-black text-[var(--text)] text-sm">
-                              {order.customerName || 'Guest'}
-                            </div>
-                            {cleanPhone ? (
-                              <div className="flex items-center gap-2">
-                                <span className="text-[var(--muted)] font-medium">+91 {cleanPhone}</span>
-                                <a
-                                  href={`tel:+91${cleanPhone}`}
-                                  className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20"
-                                  title="Call Customer"
-                                >
-                                  <FiPhone className="text-[9px]" />
-                                  <span>Call</span>
-                                </a>
-                                <a
-                                  href={`https://wa.me/91${cleanPhone}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20"
-                                  title="Message on WhatsApp"
-                                >
-                                  <FaWhatsapp className="text-[9px]" />
-                                  <span>WhatsApp</span>
-                                </a>
-                              </div>
-                            ) : (
-                              <span className="text-[10px] text-[var(--muted)]">No phone provided</span>
-                            )}
-                          </div>
-
-                          {/* Actions: Copy Link & View Ticket (NO DELETE ICONS) */}
-                          <div className="flex items-center gap-2">
+                            {/* Compact Action Buttons */}
                             <button
                               type="button"
                               onClick={() => handleCopyLink(order)}
-                              className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1 text-[11px] font-bold text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
+                              className="inline-flex items-center gap-1 rounded-full border border-[var(--line)] bg-[var(--surface-strong)] px-2 py-0.5 text-[10px] font-bold text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer"
                               title="Copy Verified Order Link"
                             >
                               {copiedId === order.id ? (
                                 <>
-                                  <FiCheck className="text-emerald-500 text-xs" />
-                                  <span className="text-emerald-600 dark:text-emerald-400">Copied!</span>
+                                  <FiCheck className="text-emerald-500 text-[10px]" />
+                                  <span className="text-emerald-600 dark:text-emerald-400">Copied</span>
                                 </>
                               ) : (
                                 <>
-                                  <FiCopy className="text-xs" />
-                                  <span>Copy Link</span>
+                                  <FiCopy className="text-[10px]" />
+                                  <span>Copy</span>
                                 </>
                               )}
                             </button>
@@ -603,28 +562,62 @@ export default function AdminPage() {
                                 }
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 rounded-full bg-[var(--orange)]/10 border border-[var(--orange)]/30 px-3 py-1 text-[11px] font-black text-[var(--orange)] hover:bg-[var(--orange)] hover:text-white transition"
+                                className="inline-flex items-center gap-1 rounded-full bg-[var(--orange)]/10 border border-[var(--orange)]/30 px-2 py-0.5 text-[10px] font-black text-[var(--orange)] hover:bg-[var(--orange)] hover:text-white transition"
                               >
-                                <FiExternalLink className="text-xs" />
-                                <span>View Ticket</span>
+                                <FiExternalLink className="text-[10px]" />
+                                <span>Ticket</span>
                               </Link>
                             )}
                           </div>
                         </div>
 
-                        {/* Row 3: Items Ordered Summary */}
+                        {/* Row 2: Customer Name, Phone & Quick Contact */}
+                        <div className="flex flex-wrap items-center justify-between gap-1.5 text-xs">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-bold text-[var(--text)] text-xs">
+                              {order.customerName || 'Guest'}
+                            </span>
+                            {cleanPhone ? (
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[var(--muted)] text-[11px]">+91 {cleanPhone}</span>
+                                <a
+                                  href={`tel:+91${cleanPhone}`}
+                                  className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-0.2 text-[9px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20"
+                                  title="Call Customer"
+                                >
+                                  <FiPhone className="text-[8.5px]" />
+                                  <span>Call</span>
+                                </a>
+                                <a
+                                  href={`https://wa.me/91${cleanPhone}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-1.5 py-0.2 text-[9px] font-bold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/20"
+                                  title="Message on WhatsApp"
+                                >
+                                  <FaWhatsapp className="text-[8.5px]" />
+                                  <span>WhatsApp</span>
+                                </a>
+                              </div>
+                            ) : (
+                              <span className="text-[9.5px] text-[var(--muted)]">No phone provided</span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Row 3: Items Ordered (Compact Pills) */}
                         {order.items && order.items.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 pt-1">
+                          <div className="flex flex-wrap gap-1">
                             {order.items.map((item, idx) => (
                               <span
                                 key={idx}
-                                className="inline-flex items-center gap-1 rounded-lg bg-[var(--surface-strong)] px-2 py-0.5 text-[10.5px] font-medium text-[var(--text)] border border-[var(--line)]"
+                                className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--text)] border border-[var(--line)]"
                               >
-                                <span className="font-bold">{item.name}</span>
+                                <span className="font-semibold">{item.name}</span>
                                 {item.size && (
-                                  <span className="text-[9px] text-[var(--muted)]">({item.size})</span>
+                                  <span className="text-[8.5px] text-[var(--muted)]">({item.size})</span>
                                 )}
-                                <span className="rounded bg-[var(--surface)] px-1 text-[9.5px] font-black text-[var(--orange)]">
+                                <span className="rounded bg-[var(--surface)] px-1 text-[9px] font-black text-[var(--orange)]">
                                   x{item.quantity}
                                 </span>
                               </span>
@@ -634,7 +627,7 @@ export default function AdminPage() {
 
                         {/* Row 4: Notes (if any) */}
                         {order.notes && (
-                          <p className="text-[11px] italic text-[var(--muted)] border-l-2 border-amber-500 pl-2">
+                          <p className="text-[10.5px] italic text-[var(--muted)] border-l-2 border-amber-500 pl-1.5 py-0.2">
                             &ldquo;{order.notes}&rdquo;
                           </p>
                         )}
