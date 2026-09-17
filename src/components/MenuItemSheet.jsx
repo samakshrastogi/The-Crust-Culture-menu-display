@@ -325,7 +325,6 @@ export default function MenuItemSheet({ item, favorites, onClose, onToggleFavori
                   <span className="text-lg sm:text-xl font-black tracking-tight text-[#ea580c]">
                     {formatPrice(item.prices[0].value)}
                   </span>
-                  <span className="block text-[8px] font-medium text-[var(--muted)]">Taxes Included</span>
                 </div>
               </div>
             )

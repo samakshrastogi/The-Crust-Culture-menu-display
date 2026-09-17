@@ -354,10 +354,6 @@ export default function CartPage() {
                   <span className="font-bold text-[var(--text)]">{formatPrice(cartTotal)}</span>
                 </div>
                 <div className="flex justify-between text-[var(--muted)]">
-                  <span>Taxes & Kitchen Service</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">Included</span>
-                </div>
-                <div className="flex justify-between text-[var(--muted)]">
                   <span>Packaging Charges</span>
                   <span className="font-bold text-emerald-600 dark:text-emerald-400">₹0 Free</span>
                 </div>
