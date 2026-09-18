@@ -3,57 +3,10 @@ import { FiHeart, FiMinus, FiPlus } from 'react-icons/fi'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
 import VegIndicator from './VegIndicator'
+import Highlight from './Highlight'
 import { useCart } from '../hooks/useCart'
 import { getFlavorBadge } from '../utils/flavorBadge'
-
-function parsePriceParts(value) {
-  if (!value) return { price: '', note: '' }
-  const str = String(value).trim()
-  const match = str.match(/^(\d+)\s*\((.*?)\)$/i)
-  if (match) {
-    return { price: `₹${match[1]}`, note: match[2] }
-  }
-  if (/rs/i.test(str)) {
-    return { price: str, note: '' }
-  }
-
-  return { price: `₹${str}`, note: '' }
-}
-
-function formatPrice(value) {
-  const { price, note } = parsePriceParts(value)
-  return note ? `${price} (${note})` : price
-}
-
-function Highlight({ text, query }) {
-  if (!query?.trim()) {
-    return text
-  }
-
-  const terms = query
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-
-  if (terms.length === 0) {
-    return text
-  }
-
-  const regex = new RegExp(`(${terms.join('|')})`, 'gi')
-  const testRegex = new RegExp(`^(${terms.join('|')})$`, 'i')
-  const parts = String(text).split(regex)
-
-  return parts.map((part, index) =>
-    testRegex.test(part) ? (
-      <mark key={`${part}-${index}`} className="rounded bg-[var(--gold)]/35 px-0.5 text-inherit">
-        {part}
-      </mark>
-    ) : (
-      part
-    ),
-  )
-}
+import { formatPrice, parsePriceParts } from '../utils/priceUtils'
 
 const DishActionButton = memo(function DishActionButton({
   item,

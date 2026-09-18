@@ -5,22 +5,7 @@ import FoodImage from './FoodImage'
 import { useCart } from '../hooks/useCart'
 import { getFlavorBadge } from '../utils/flavorBadge'
 import VegIndicator from './VegIndicator'
-
-function formatPrice(value) {
-  if (/rs/i.test(value)) {
-    return value
-  }
-
-  return `₹${value}`
-}
-
-function getSizeSubLabel(label, isPizza) {
-  const clean = String(label).toUpperCase().trim()
-  if (clean === 'S') return isPizza ? '7" Regular' : 'Small'
-  if (clean === 'M') return isPizza ? '10" Medium' : 'Medium'
-  if (clean === 'L') return isPizza ? '12" Large' : 'Large'
-  return clean || null
-}
+import { formatPrice, getSizeSubLabel } from '../utils/priceUtils'
 
 export default function MenuItemSheet({ item, favorites, onClose, onToggleFavorite }) {
   const overlayRef = useRef(null)

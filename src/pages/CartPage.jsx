@@ -17,16 +17,15 @@ import VegIndicator from '../components/VegIndicator'
 import { useCart } from '../hooks/useCart'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { allMenuItems } from '../data/menuSections'
+import { recommendationCatalog } from '../data/recommendations'
 import { CAFE_INFO } from '../data/cafeInfo'
 import { generateOrderSecurity } from '../utils/orderSecurity'
 import { saveOrderToHistory } from '../utils/orderHistory'
+import { formatPrice, cleanPhone } from '../utils/priceUtils'
+import { generateWhatsAppMessage } from '../utils/whatsappMessage'
 import { useSeoMeta } from '../hooks/useSeoMeta'
 
 const CAFE_PHONE = CAFE_INFO.phone.waNumber
-
-function formatPrice(value) {
-  return `₹${value}`
-}
 
 export default function CartPage() {
   useSeoMeta({
@@ -87,70 +86,11 @@ export default function CartPage() {
     return { hasPizza, hasSide, hasDrink, hasDip }
   }, [cart])
 
-  // Catalog of categorized recommendation candidates with pairing badges
-  const recommendationPool = useMemo(() => {
-    const sideNames = [
-      { name: 'Garlic Bread Stuffed', pairingBadge: 'Top Pizza Companion' },
-      { name: 'Veggie Garlic Bread', pairingBadge: 'Cheesy Garlic' },
-      { name: 'Veg Parcel', pairingBadge: 'Pocket Friendly' },
-      { name: 'Paneer Tikka Stuffed', pairingBadge: 'Chef Signature' },
-      { name: 'Indi Tandoori Parcel', pairingBadge: 'Desi Spice' },
-      { name: 'Garlic Bread', pairingBadge: 'Fresh Sourdough' },
-      { name: 'Aloo Tikki Burger', pairingBadge: 'Crispy Patty' },
-      { name: 'Veg Taco', pairingBadge: 'Mexican Crunch' },
-    ]
-    const drinkNames = [
-      { name: 'Cold Coffee with Ice Cream', pairingBadge: 'Chilled Refresher' },
-      { name: 'Lemon Soda', pairingBadge: 'Fizzy & Tangy' },
-      { name: 'Cold Coffee', pairingBadge: 'Smooth Brew' },
-      { name: 'Sweet Lassi', pairingBadge: 'Creamy Classic' },
-      { name: 'Shikanji', pairingBadge: 'Desi Cooler' },
-      { name: 'Masala Chai', pairingBadge: 'Warm Desi Brew' },
-      { name: 'Hot Coffee', pairingBadge: 'Rich Roast' },
-      { name: 'Lemon Honey Tea', pairingBadge: 'Soothing Sip' },
-    ]
-    const friesNames = [
-      { name: 'Peri Peri Fries', pairingBadge: 'Crispy & Spicy' },
-      { name: 'Cheese Loaded Fries', pairingBadge: 'Melted Mozzarella' },
-      { name: 'Veg Nuggets', pairingBadge: 'Crunchy Starter' },
-      { name: 'Veg Fried Momos', pairingBadge: 'Crisp Street Bite' },
-      { name: 'Salted Fries', pairingBadge: 'Golden Classic' },
-      { name: 'Butter Masala Fries', pairingBadge: 'Rich Butter Spice' },
-      { name: 'Paneer Fried Momos', pairingBadge: 'Crispy Dumpling' },
-      { name: 'Chilli Potato', pairingBadge: 'Desi Wok Tossed' },
-    ]
-    const dipNames = [
-      { name: 'Extra Dip', pairingBadge: 'Creamy Garlic Mayo' },
-      { name: 'Cheese Burst', pairingBadge: 'Molten Cheese Center' },
-      { name: 'Cheese', pairingBadge: 'Extra Mozzarella' },
-      { name: 'Paneer', pairingBadge: 'Tikka Paneer' },
-      { name: 'Oregano', pairingBadge: 'Herb Seasoning' },
-      { name: 'Chilli Flakes', pairingBadge: 'Extra Spice Kick' },
-      { name: 'Ketchup', pairingBadge: 'Classic Sachet' },
-      { name: 'Veggies', pairingBadge: 'Fresh Garden Veg' },
-    ]
-
-    const mapToItems = (list) =>
-      list
-        .map(({ name, pairingBadge }) => {
-          const item = allMenuItems.find((i) => i.name.toLowerCase() === name.toLowerCase())
-          return item ? { ...item, pairingBadge } : null
-        })
-        .filter(Boolean)
-
-    return {
-      sides: mapToItems(sideNames),
-      drinks: mapToItems(drinkNames),
-      fries: mapToItems(friesNames),
-      dips: mapToItems(dipNames),
-    }
-  }, [])
-
   // Dynamic recommendation selection based on active tab and cart state (at least 6 items)
   const displayedRecommendations = useMemo(() => {
     if (cart.length === 0) return []
 
-    const { sides, drinks, fries, dips } = recommendationPool
+    const { sides, drinks, fries, dips } = recommendationCatalog
 
     if (recCategory === 'sides') return sides.slice(0, 6)
     if (recCategory === 'drinks') return drinks.slice(0, 6)
@@ -178,59 +118,7 @@ export default function CartPage() {
     }
 
     return picks
-  }, [cart.length, recCategory, recommendationPool])
-
-  const generateWhatsAppMessage = (sec, cleanPhone) => {
-    if (cart.length === 0) return ''
-
-    const security =
-      sec ||
-      generateOrderSecurity({
-        cart,
-        total: cartTotal,
-        customerName,
-        customerPhone: cleanPhone,
-        orderType,
-        cookingInstructions,
-      })
-
-    const phoneStr = cleanPhone || customerPhone.replace(/\D/g, '')
-
-    const lines = [
-      `🍕 *NEW ORDER - The Crust Culture*`,
-      `*Order ID:* ${security.orderId}`,
-      ``,
-      `*CUSTOMER DETAILS*`,
-      `• *Name:* ${customerName.trim()}`,
-      `• *Phone:* +91 ${phoneStr}`,
-      `• *Order:* ${orderType === 'dine-in' ? '🍽️ Dine-In' : '🛍️ Takeaway'}`,
-      ``,
-      `*ITEMS ORDERED (${cartCount} ${cartCount === 1 ? 'item' : 'items'})*`,
-      `----------------------------------`,
-    ]
-
-    cart.forEach((item, index) => {
-      const sizeInfo = item.size ? ` (${item.size})` : ''
-      lines.push(`${index + 1}. *${item.name}*${sizeInfo}  x${item.quantity}`)
-    })
-
-    if (cookingInstructions.trim()) {
-      lines.push(`----------------------------------`)
-      lines.push(``)
-      lines.push(`*SPECIAL INSTRUCTIONS*`)
-      lines.push(`"${cookingInstructions.trim()}"`)
-    }
-
-    lines.push(``)
-    lines.push(`----------------------------------`)
-    lines.push(`🧾 *VIEW OFFICIAL BILL & TICKET:*`)
-    lines.push(`${security.receiptUrl}`)
-    lines.push(`_(Kitchen: tap link to view verified total bill, genuine rates & print KOT)_`)
-    lines.push(`----------------------------------`)
-    lines.push(`_Sent via The Crust Culture Digital Menu_`)
-
-    return lines.join('\n')
-  }
+  }, [cart.length, recCategory])
 
   const handleSendWhatsAppOrder = () => {
     let hasError = false
@@ -241,8 +129,8 @@ export default function CartPage() {
       setNameError('')
     }
 
-    const cleanPhone = customerPhone?.replace(/\D/g, '') || ''
-    if (cleanPhone.length !== 10) {
+    const validPhone = cleanPhone(customerPhone)
+    if (validPhone.length !== 10) {
       setPhoneError('Please enter a valid 10-digit mobile number')
       hasError = true
     } else {
@@ -262,7 +150,7 @@ export default function CartPage() {
       cart,
       total: cartTotal,
       customerName: safeCustomerName,
-      customerPhone: cleanPhone,
+      customerPhone: validPhone,
       orderType,
       cookingInstructions: safeCookingNotes,
     })
@@ -272,7 +160,7 @@ export default function CartPage() {
       id: security.orderId,
       timestamp: security.timestamp,
       customerName: safeCustomerName,
-      customerPhone: cleanPhone,
+      customerPhone: validPhone,
       orderType,
       items: cart,
       total: cartTotal,
@@ -281,7 +169,15 @@ export default function CartPage() {
       receiptUrl: security.receiptUrl,
     })
 
-    const text = generateWhatsAppMessage(security, cleanPhone)
+    const text = generateWhatsAppMessage({
+      cart,
+      cartCount,
+      customerName: safeCustomerName,
+      phoneStr: validPhone,
+      orderType,
+      cookingInstructions: safeCookingNotes,
+      security,
+    })
     if (!text) return
     const url = `https://api.whatsapp.com/send?phone=${CAFE_PHONE}&text=${encodeURIComponent(text)}`
     window.open(url, '_blank', 'noopener,noreferrer')

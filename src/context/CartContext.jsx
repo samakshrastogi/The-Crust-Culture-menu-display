@@ -1,22 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useMemo } from 'react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { parseNumericPrice, getSizeSubLabel } from '../utils/priceUtils'
 
 export const CartContext = createContext(null)
-
-function parseNumericPrice(value) {
-  if (typeof value === 'number') return value
-  const match = String(value || '').match(/(\d+)/)
-  return match ? parseInt(match[1], 10) : 0
-}
-
-function getSizeSubLabel(label, isPizza) {
-  const clean = String(label || '').toUpperCase().trim()
-  if (clean === 'S') return isPizza ? '7" Regular' : 'Small'
-  if (clean === 'M') return isPizza ? '10" Medium' : 'Medium'
-  if (clean === 'L') return isPizza ? '12" Large' : 'Large'
-  return clean || 'Standard'
-}
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useLocalStorage('crust-cart', [])

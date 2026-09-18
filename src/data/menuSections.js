@@ -858,3 +858,16 @@ export const allMenuItems = menuSections.flatMap((section) =>
     sectionImage: section.image,
   })),
 );
+
+export const isRestrictedTime = (date = new Date()) => {
+  const hours = date.getHours();
+  return hours >= 23 || hours < 6;
+};
+
+export const getActiveMenuSections = (date = new Date()) => {
+  return isRestrictedTime(date)
+    ? menuSections.filter(
+        (s) => s.title !== 'Everyday Classics' && s.title !== 'Classic Veg Combos',
+      )
+    : menuSections;
+};

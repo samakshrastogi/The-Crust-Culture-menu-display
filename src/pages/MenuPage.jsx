@@ -14,20 +14,14 @@ import MenuImageStrip from '../components/MenuImageStrip'
 import MenuSectionCard from '../components/MenuSectionCard'
 import SearchBar from '../components/SearchBar'
 import SearchDishCard from '../components/SearchDishCard'
-import { menuSections } from '../data/menuSections'
+import { getActiveMenuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useSeoMeta } from '../hooks/useSeoMeta'
+import { getItemMinPrice } from '../utils/priceUtils'
 
 const MenuItemSheet = lazy(() => import('../components/MenuItemSheet'))
 
-const isRestrictedTime = () => {
-  const hours = new Date().getHours()
-  return hours >= 23 || hours < 6
-}
-
-const initialSections = isRestrictedTime()
-  ? menuSections.filter((s) => s.title !== 'Everyday Classics' && s.title !== 'Classic Veg Combos')
-  : menuSections
+const initialSections = getActiveMenuSections()
 
 const initialCategories = initialSections.map((s) => s.title)
 
@@ -39,17 +33,6 @@ const initialAllMenuItems = initialSections.flatMap((section) =>
     sectionImage: section.image,
   })),
 )
-
-function getItemMinPrice(item) {
-  if (!item?.prices?.length) return 0
-  const numericPrices = item.prices
-    .map((p) => {
-      const match = String(p.value || '').match(/(\d+)/)
-      return match ? parseInt(match[1], 10) : 0
-    })
-    .filter((v) => v > 0)
-  return numericPrices.length ? Math.min(...numericPrices) : 0
-}
 
 function isItemMatch(item, sectionTitle, query) {
   const search = query.toLowerCase().trim()

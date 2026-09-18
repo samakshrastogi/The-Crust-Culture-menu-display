@@ -34,8 +34,7 @@ function toBase64Url(str) {
       binary += String.fromCharCode(bytes[i])
     }
     return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
-  } catch (err) {
-    console.error('Base64 encoding error', err)
+  } catch {
     return ''
   }
 }
@@ -53,8 +52,7 @@ function fromBase64Url(str) {
       bytes[i] = binary.charCodeAt(i)
     }
     return new TextDecoder().decode(bytes)
-  } catch (err) {
-    console.error('Base64 decoding error', err)
+  } catch {
     return null
   }
 }

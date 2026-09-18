@@ -17,21 +17,15 @@ import FoodImage from '../components/FoodImage'
 import VegIndicator from '../components/VegIndicator'
 
 const MenuItemSheet = lazy(() => import('../components/MenuItemSheet'))
-import { menuSections } from '../data/menuSections'
+import { getActiveMenuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { useSeoMeta } from '../hooks/useSeoMeta'
 import { getFlavorBadge } from '../utils/flavorBadge'
+import { getItemMinPrice } from '../utils/priceUtils'
 
 export const ZOMATO_URL = 'https://www.zomato.com'
 
-const isRestrictedTime = () => {
-  const hours = new Date().getHours()
-  return hours >= 23 || hours < 6
-}
-
-const initialSections = isRestrictedTime()
-  ? menuSections.filter((s) => s.title !== 'Everyday Classics' && s.title !== 'Classic Veg Combos')
-  : menuSections
+const initialSections = getActiveMenuSections()
 
 const initialAllMenuItems = initialSections.flatMap((section) =>
   section.items.map((item) => ({
@@ -43,17 +37,6 @@ const initialAllMenuItems = initialSections.flatMap((section) =>
 )
 
 const heroImage = '/images/pizza-veggie.jpg'
-
-const getMinPrice = (item) => {
-  if (!item || !item.prices || item.prices.length === 0) return 0
-  const parsedPrices = item.prices
-    .map((p) => {
-      const match = String(p.value || '').match(/(\d+)/)
-      return match ? parseInt(match[1], 10) : 0
-    })
-    .filter((v) => v > 0)
-  return parsedPrices.length ? Math.min(...parsedPrices) : 0
-}
 
 const getCategoryBadge = (sectionId) => {
   if (sectionId === 'veggie-cheese-loaded-pizzas') return '🔥 Bestseller'
@@ -69,18 +52,17 @@ export default function HomePage() {
     title: 'The Crust Culture | 100% Pure Veg Wood-Fired Pizza in Gurgaon',
     description:
       'Artisanal stone-oven sourdough pizzas, gourmet stuffed garlic breads, burgers, and chilled shakes in Noble Enclave, Gurgaon. 100% Pure Veg. Open till 1:30 AM.',
-    canonicalPath: '/home',
+    canonicalPath: '/',
     ogImage: '/images/pizza-veggie.jpg',
   })
 
-  const scopeRef = useRef(null)
-
-  const [selectedItem, setSelectedItem] = useState(null)
   const [favorites, setFavorites] = useLocalStorage('crust-favorites', [])
+  const [selectedItem, setSelectedItem] = useState(null)
+  const scopeRef = useRef(null)
 
   // Only items strictly priced > 149
   const premiumSpecialItems = useMemo(() => {
-    return initialAllMenuItems.filter((item) => getMinPrice(item) > 149)
+    return initialAllMenuItems.filter((item) => getItemMinPrice(item) > 149)
   }, [])
 
   // Curated 6 primary categories with cover photos (no duplication)

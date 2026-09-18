@@ -2,6 +2,7 @@ import { useEffect, lazy, Suspense } from 'react'
 import { BrowserRouter, Navigate, Outlet, Route, Routes, NavLink, useLocation } from 'react-router-dom'
 import { FiHome, FiMenu, FiShoppingBag } from 'react-icons/fi'
 import BackToTop from './components/BackToTop'
+import ErrorBoundary from './components/ErrorBoundary'
 import FloatingContactButton from './components/FloatingContactButton'
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
@@ -38,28 +39,6 @@ function AppShell({ theme, onToggleTheme }) {
     location.pathname.startsWith('/sam') || location.pathname.startsWith('/shivangi')
   const showFloatingButtons = !isReceiptPage && !isAdminPage
 
-  useEffect(() => {
-    const titles = {
-      '/home': 'The Crust Culture | 100% Pure Veg Wood-Fired Pizza in Gurgaon',
-      '/menu': 'Digital Menu & Prices | Sourdough Pizzas & Sides | The Crust Culture',
-      '/cart': 'Your Order Cart | The Crust Culture Gurgaon',
-      '/order': 'Order Confirmation & Receipt | The Crust Culture',
-      '/sam': 'Admin Dashboard | The Crust Culture',
-    }
-    const cleanPath = location.pathname.replace(/\/$/, '') || '/'
-    document.title = titles[cleanPath] || 'The Crust Culture | 100% Pure Veg Wood-Fired Pizzeria Gurgaon'
-
-    // Synchronize canonical link tag dynamically
-    let canonical = document.querySelector('link[rel="canonical"]')
-    if (!canonical) {
-      canonical = document.createElement('link')
-      canonical.rel = 'canonical'
-      document.head.appendChild(canonical)
-    }
-    const canonicalPath = cleanPath === '/' ? '' : cleanPath
-    canonical.href = `https://thecrustculture.com${canonicalPath}`
-  }, [location.pathname])
-
   return (
     <div
       className={`min-h-svh bg-[var(--bg)] text-[var(--text)] ${
@@ -77,7 +56,9 @@ function AppShell({ theme, onToggleTheme }) {
       <PageTransition>
         <Suspense fallback={<PageFallback />}>
           <main id="main-content" tabIndex={-1} className="outline-hidden">
-            <Outlet />
+            <ErrorBoundary>
+              <Outlet />
+            </ErrorBoundary>
           </main>
         </Suspense>
       </PageTransition>
