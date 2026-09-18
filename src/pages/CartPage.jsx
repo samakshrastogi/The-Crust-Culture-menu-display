@@ -255,26 +255,29 @@ export default function CartPage() {
       return
     }
 
+    const safeCustomerName = customerName.trim().slice(0, 60)
+    const safeCookingNotes = cookingInstructions.trim().slice(0, 250)
+
     const security = generateOrderSecurity({
       cart,
       total: cartTotal,
-      customerName,
+      customerName: safeCustomerName,
       customerPhone: cleanPhone,
       orderType,
-      cookingInstructions,
+      cookingInstructions: safeCookingNotes,
     })
 
     // Automatically record to admin order history
     saveOrderToHistory({
       id: security.orderId,
       timestamp: security.timestamp,
-      customerName: customerName.trim(),
+      customerName: safeCustomerName,
       customerPhone: cleanPhone,
       orderType,
       items: cart,
       total: cartTotal,
       securityCode: security.securityCode,
-      notes: cookingInstructions,
+      notes: safeCookingNotes,
       receiptUrl: security.receiptUrl,
     })
 
@@ -542,8 +545,9 @@ export default function CartPage() {
               <input
                 id="cooking-notes"
                 type="text"
+                maxLength={250}
                 value={cookingInstructions}
-                onChange={(e) => setCookingInstructions(e.target.value)}
+                onChange={(e) => setCookingInstructions(e.target.value.slice(0, 250))}
                 placeholder="e.g. Extra crisp crust, less spicy, send extra ketchup"
                 className="w-full rounded-lg border border-[var(--line)] bg-[var(--surface-strong)] px-2.5 py-1.5 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[var(--orange)] transition"
               />
@@ -780,14 +784,16 @@ export default function CartPage() {
                   <input
                     id="customer-name"
                     type="text"
+                    maxLength={60}
                     required
                     aria-required="true"
                     aria-invalid={Boolean(nameError)}
                     aria-describedby={nameError ? 'customer-name-error' : undefined}
                     value={customerName}
                     onChange={(e) => {
-                      setCustomerName(e.target.value)
-                      if (e.target.value.trim()) setNameError('')
+                      const val = e.target.value.slice(0, 60)
+                      setCustomerName(val)
+                      if (val.trim()) setNameError('')
                     }}
                     placeholder="Enter your name"
                     className={`w-full rounded-lg border bg-[var(--surface-strong)] pl-7 pr-2.5 py-1.5 text-xs text-[var(--text)] placeholder-[var(--muted)] outline-none transition ${

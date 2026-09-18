@@ -15,6 +15,8 @@ import {
   FiCalendar,
   FiX,
   FiFileText,
+  FiLock,
+  FiLogOut,
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import {
@@ -23,6 +25,9 @@ import {
 } from '../utils/orderHistory'
 import { useSeoMeta } from '../hooks/useSeoMeta'
 
+// SHA-256 hash of staff master passphrase ('crust2026')
+const ADMIN_HASH = 'cda3768bb69ae55562f75c033c33347083fa28278bcce172ce7e0104ede0775d'
+
 export default function AdminPage() {
   useSeoMeta({
     title: 'Admin Dashboard | The Crust Culture',
@@ -30,17 +35,35 @@ export default function AdminPage() {
     robots: 'noindex, nofollow, noarchive',
   })
 
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try {
+      const exp = sessionStorage.getItem('tcc_admin_expiry')
+      return Boolean(exp && Date.now() < Number(exp))
+    } catch {
+      return false
+    }
+  })
+  const [passphrase, setPassphrase] = useState('')
+  const [authError, setAuthError] = useState('')
+  const [isVerifying, setIsVerifying] = useState(false)
+
   const [orders, setOrders] = useState([])
-  const [isSyncing, setIsSyncing] = useState(true)
+  const [isSyncing, setIsSyncing] = useState(false)
   const [lastSynced, setLastSynced] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('all') // 'all' | 'dine-in' | 'takeaway'
   const [timeFilter, setTimeFilter] = useState('all') // 'all' | 'today' | 'week' | 'month' | 'year'
   const [copiedId, setCopiedId] = useState(null)
 
-  // Cloud sync on initial page load (strictly shows only what exists in Excel/Google Sheets)
+  // Cloud sync runs STRICTLY if and only if authenticated
   useEffect(() => {
+    if (!isAuthenticated) return
+
     let mounted = true
+    Promise.resolve().then(() => {
+      if (mounted) setIsSyncing(true)
+    })
+
     syncOrdersWithCloud()
       .then((synced) => {
         if (mounted) {
@@ -57,7 +80,79 @@ export default function AdminPage() {
     return () => {
       mounted = false
     }
-  }, [])
+  }, [isAuthenticated])
+
+  const handleAuthenticate = async (e) => {
+    e.preventDefault()
+    setAuthError('')
+
+    // Check brute-force lockout
+    try {
+      const lockout = sessionStorage.getItem('tcc_admin_lockout')
+      if (lockout && Date.now() < Number(lockout)) {
+        const remainingMin = Math.ceil((Number(lockout) - Date.now()) / 60000)
+        setAuthError(`Too many failed attempts. Locked out for ${remainingMin} more minute(s).`)
+        return
+      }
+    } catch {
+      /* ignore storage access error */
+    }
+
+    if (!passphrase.trim()) {
+      setAuthError('Please enter the staff passphrase.')
+      return
+    }
+
+    setIsVerifying(true)
+    try {
+      const msgBuffer = new TextEncoder().encode(passphrase.trim())
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
+      const hashHex = Array.from(new Uint8Array(hashBuffer))
+        .map((b) => b.toString(16).padStart(2, '0'))
+        .join('')
+
+      if (hashHex === ADMIN_HASH) {
+        try {
+          sessionStorage.setItem('tcc_admin_expiry', String(Date.now() + 2 * 60 * 60 * 1000))
+          sessionStorage.removeItem('tcc_admin_attempts')
+          sessionStorage.removeItem('tcc_admin_lockout')
+        } catch {
+          /* ignore storage access error */
+        }
+        setIsAuthenticated(true)
+        setPassphrase('')
+      } else {
+        let attempts = 1
+        try {
+          attempts = Number(sessionStorage.getItem('tcc_admin_attempts') || '0') + 1
+          sessionStorage.setItem('tcc_admin_attempts', String(attempts))
+          if (attempts >= 5) {
+            sessionStorage.setItem('tcc_admin_lockout', String(Date.now() + 15 * 60 * 1000))
+            setAuthError('Too many failed attempts. Dashboard locked for 15 minutes.')
+            return
+          }
+        } catch {
+          /* ignore storage access error */
+        }
+        setAuthError(`Invalid passphrase. ${5 - attempts} attempt(s) remaining.`)
+      }
+    } catch {
+      setAuthError('Cryptographic verification failed.')
+    } finally {
+      setIsVerifying(false)
+    }
+  }
+
+  const handleLogout = () => {
+    try {
+      sessionStorage.removeItem('tcc_admin_expiry')
+      sessionStorage.removeItem('tcc_admin_attempts')
+    } catch {
+      /* ignore storage access error */
+    }
+    setOrders([])
+    setIsAuthenticated(false)
+  }
 
   const reloadOrders = async () => {
     setIsSyncing(true)
@@ -223,6 +318,66 @@ export default function AdminPage() {
     setTimeout(() => setCopiedId(null), 2000)
   }
 
+  if (!isAuthenticated) {
+    return (
+      <div className="flex min-h-[70vh] items-center justify-center px-4 py-8">
+        <div className="w-full max-w-sm rounded-2xl border border-[var(--line)] bg-[var(--surface)] p-5 sm:p-6 shadow-xl space-y-4 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--orange)]/10 text-[var(--orange)] border border-[var(--orange)]/20">
+            <FiLock className="text-xl" />
+          </div>
+          <div>
+            <h1 className="font-display text-lg font-black text-[var(--text)]">
+              Staff Authorization Required
+            </h1>
+            <p className="mt-1 text-xs text-[var(--muted)]">
+              This dashboard is restricted to authorized kitchen & cafe management.
+            </p>
+          </div>
+
+          <form onSubmit={handleAuthenticate} className="space-y-3 text-left">
+            <div>
+              <label
+                htmlFor="staff-passphrase"
+                className="block text-[11px] font-extrabold uppercase tracking-wider text-[var(--muted)] mb-1"
+              >
+                Enter Staff PIN / Passphrase
+              </label>
+              <input
+                id="staff-passphrase"
+                type="password"
+                value={passphrase}
+                onChange={(e) => setPassphrase(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                className="w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-3.5 py-2 text-sm text-[var(--text)] placeholder-[var(--muted)] focus:outline-hidden focus:border-[var(--orange)]"
+                autoFocus
+                disabled={isVerifying}
+              />
+            </div>
+
+            {authError && (
+              <p role="alert" className="text-xs font-bold text-red-600 dark:text-red-400 bg-red-500/10 rounded-lg p-2 border border-red-500/20">
+                {authError}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={isVerifying}
+              className="w-full rounded-xl bg-gradient-to-r from-[var(--orange)] to-[#ea580c] py-2.5 text-xs font-black text-white shadow-md transition hover:brightness-110 active:scale-98 cursor-pointer disabled:opacity-50"
+            >
+              {isVerifying ? 'Verifying Credentials...' : 'Access Dashboard'}
+            </button>
+          </form>
+
+          <p className="text-[10px] text-[var(--muted)]">
+            Protected by client-side SHA-256 cryptographic verification & rate-limiting.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="mx-auto  px-2.5 py-3 sm:px-4 sm:py-3.5 space-y-2.5">
       {/* Compact Top Header */}
@@ -259,6 +414,16 @@ export default function AdminPage() {
           >
             <FiDownload className="text-xs sm:text-[10px]" />
             <span className="hidden sm:inline sm:text-[11px] sm:font-black sm:ml-1">Export CSV</span>
+          </button>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="inline-flex items-center justify-center rounded-lg sm:rounded-full border border-red-500/30 bg-red-500/10 px-2.5 py-1 text-red-600 dark:text-red-400 hover:bg-red-500 hover:text-white transition cursor-pointer text-xs shadow-2xs"
+            title="Log Out of Dashboard"
+            aria-label="Log Out of Dashboard"
+          >
+            <FiLogOut className="text-xs" />
+            <span className="hidden sm:inline sm:text-[11px] sm:font-black sm:ml-1">Logout</span>
           </button>
         </div>
       </div>

@@ -29,6 +29,9 @@
 
 // Configuration
 const CONFIG = {
+  // Optional security token: Set a passphrase here (e.g. 'crust_secure_token_2026') to require ?token=... or { token: ... }
+  // If left empty (''), open access remains enabled for simple out-of-the-box setups.
+  API_TOKEN: '',
   TIMEZONE: 'Asia/Kolkata',
   BRAND_NAME: 'The Crust Culture',
   SHEETS: {
@@ -47,6 +50,28 @@ const CONFIG = {
     BORDER: '#e2e8f0'
   }
 };
+
+/**
+ * Neutralizes Sheets formula injection by escaping leading '=', '+', '-', '@', '\t', '\r'.
+ */
+function sanitizeCell(val) {
+  if (val === null || val === undefined) return '';
+  var str = String(val);
+  if (/^[=+\-@\t\r]/.test(str)) {
+    return "'" + str;
+  }
+  return str;
+}
+
+/**
+ * Validates request authorization token if CONFIG.API_TOKEN is configured.
+ */
+function isAuthorized(e, payload) {
+  if (!CONFIG.API_TOKEN) return true;
+  var paramToken = (e && e.parameter && e.parameter.token) ? e.parameter.token : null;
+  var bodyToken = (payload && payload.token) ? payload.token : null;
+  return paramToken === CONFIG.API_TOKEN || bodyToken === CONFIG.API_TOKEN;
+}
 
 /**
  * Triggered automatically when the spreadsheet is opened.
@@ -256,6 +281,13 @@ function doPost(e) {
     }
     
     const order = JSON.parse(contents);
+
+    // Verify token authorization if API_TOKEN is set
+    if (!isAuthorized(e, order)) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Unauthorized: Invalid token' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     
     // Ensure all sheets are prepared
@@ -275,23 +307,24 @@ function doPost(e) {
     
     // Format items list into a readable summary string
     const itemsSummary = (order.items || []).map(function(item) {
-      const sizeStr = item.size ? ' (' + item.size + ')' : '';
+      const sizeStr = item.size ? ' (' + sanitizeCell(item.size) + ')' : '';
       const qty = Number(item.quantity) || 1;
       const price = Number(item.price) || 0;
-      return (item.name || 'Item') + sizeStr + ' x' + qty + ' [₹' + (price * qty) + ']';
+      const itemName = sanitizeCell(item.name || 'Item');
+      return itemName + sizeStr + ' x' + qty + ' [₹' + (price * qty) + ']';
     }).join('; ');
     
     const rowData = [
       timestamp,
-      orderId,
-      order.customerName || 'Guest',
-      order.customerPhone ? "'" + order.customerPhone : '',
+      sanitizeCell(orderId),
+      sanitizeCell(order.customerName || 'Guest'),
+      order.customerPhone ? "'" + String(order.customerPhone).replace(/\D/g, '') : '',
       order.orderType === 'dine-in' ? '🍽️ Dine-In' : '🛍️ Takeaway',
-      itemsSummary,
+      sanitizeCell(itemsSummary),
       Number(order.total) || 0,
-      order.notes || order.cookingInstructions || '',
-      order.securityCode || '',
-      order.receiptUrl || '',
+      sanitizeCell(order.notes || order.cookingInstructions || ''),
+      sanitizeCell(order.securityCode || ''),
+      sanitizeCell(order.receiptUrl || ''),
       JSON.stringify(order)
     ];
     
@@ -332,6 +365,11 @@ function doPost(e) {
  */
 function doGet(e) {
   try {
+    // Verify token authorization if API_TOKEN is set
+    if (!isAuthorized(e)) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Unauthorized: Invalid token' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const allSheet = ss.getSheetByName(CONFIG.SHEETS.ALL);
     

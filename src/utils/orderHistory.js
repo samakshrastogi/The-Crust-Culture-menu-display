@@ -218,6 +218,20 @@ export function importOrderFromUrl(urlString) {
 }
 
 /**
+ * Neutralize CSV Formula Injection (CWE-1236)
+ * Prefixes any field starting with formula triggers (=, +, -, @, tab, CR)
+ * with a single quote to force spreadsheet programs to treat it strictly as text.
+ */
+function sanitizeForCSV(value) {
+  if (value === null || value === undefined) return ''
+  let str = String(value).trim()
+  if (/^[=+\-@\t\r]/.test(str)) {
+    str = "'" + str
+  }
+  return str.replace(/"/g, '""')
+}
+
+/**
  * Export orders to a formatted CSV spreadsheet for Excel / Sheets
  * @param {Array} [customOrders] optional specific list of orders to export
  */
@@ -245,16 +259,16 @@ export function exportOrdersToCSV(customOrders) {
       .join('; ')
 
     return [
-      `"${o.id || ''}"`,
-      `"${dateStr}"`,
-      `"${(o.customerName || '').replace(/"/g, '""')}"`,
-      `"${o.customerPhone || ''}"`,
-      `"${o.orderType || ''}"`,
-      `"${itemsSummary.replace(/"/g, '""')}"`,
-      `"${o.total || 0}"`,
-      `"${o.securityCode || ''}"`,
-      `"${(o.notes || '').replace(/"/g, '""')}"`,
-      `"${o.receiptUrl || ''}"`,
+      `"${sanitizeForCSV(o.id || '')}"`,
+      `"${sanitizeForCSV(dateStr)}"`,
+      `"${sanitizeForCSV(o.customerName || '')}"`,
+      `"${sanitizeForCSV(o.customerPhone || '')}"`,
+      `"${sanitizeForCSV(o.orderType || '')}"`,
+      `"${sanitizeForCSV(itemsSummary)}"`,
+      `"${Number(o.total) || 0}"`,
+      `"${sanitizeForCSV(o.securityCode || '')}"`,
+      `"${sanitizeForCSV(o.notes || '')}"`,
+      `"${sanitizeForCSV(o.receiptUrl || '')}"`,
     ]
   })
 

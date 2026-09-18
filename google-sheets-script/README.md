@@ -73,8 +73,29 @@ When configured, your Google Sheet will contain 5 dedicated tabs:
 
 ---
 
+## 🔒 Security Configuration
+
+### 1. API Token Authentication (Optional but Recommended)
+To prevent unauthorized access or fake order injections into your Google Sheet:
+1. In `Code.gs`, locate the `CONFIG` object near the top:
+   ```javascript
+   const CONFIG = {
+     API_TOKEN: 'your_chosen_secret_token_here',
+     ...
+   };
+   ```
+2. When set, both `doGet` and `doPost` will enforce that incoming requests provide `?token=your_chosen_secret_token_here` or `{ token: '...' }` in the JSON body.
+3. In `src/utils/orderHistory.js`, append your token to the webhook URL if configured: `GOOGLE_SHEETS_WEBHOOK_URL + '?token=your_token'`.
+4. If `API_TOKEN` is left empty `''` (the default), open access is retained for easy zero-config setups.
+
+### 2. Built-in Formula Injection Protection
+All customer inputs (Customer Name, Cooking Notes, Item Names, Security Codes) are automatically sanitized before being appended to the spreadsheet. Any values starting with `=, +, -, @, \t, \r` are escaped with a leading `'` prefix so they are safely rendered as literal text without triggering formula execution.
+
+---
+
 ## 🍕 Toolbar Menu Options
 
 Once installed, reload your Google Sheet. You will see a custom menu **`🍕 The Crust Culture`** with:
 - **`⚡ Setup & Format All Sheets`**: Automatically repairs or builds all 5 sheets.
 - **`🔄 Refresh All Dynamic Formulas & Metrics`**: Refreshes formulas and KPI calculation bars.
+

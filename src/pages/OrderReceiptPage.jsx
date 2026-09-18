@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
 import {
   FiCheckCircle,
@@ -12,8 +12,14 @@ import {
   FiFileText,
 } from 'react-icons/fi'
 import { verifyOrderToken } from '../utils/orderSecurity'
-import { saveOrderToHistory } from '../utils/orderHistory'
 import { useSeoMeta } from '../hooks/useSeoMeta'
+
+function maskPhoneNumber(phone) {
+  if (!phone || typeof phone !== 'string') return ''
+  const clean = phone.trim().replace(/\D/g, '')
+  if (clean.length < 6) return phone
+  return `${clean.slice(0, 2)}******${clean.slice(-2)}`
+}
 
 export default function OrderReceiptPage() {
   useSeoMeta({
@@ -30,15 +36,6 @@ export default function OrderReceiptPage() {
   }, [token])
 
   const { valid, order, error } = verificationResult
-
-  useEffect(() => {
-    if (valid && order) {
-      saveOrderToHistory({
-        ...order,
-        receiptUrl: window.location.href,
-      })
-    }
-  }, [valid, order])
 
   const formattedDate = order?.timestamp
     ? new Date(order.timestamp).toLocaleString('en-IN', {
@@ -131,7 +128,7 @@ export default function OrderReceiptPage() {
                     className="font-extrabold text-[var(--orange)] hover:underline flex items-center justify-end gap-1"
                   >
                     <FiPhone className="text-[9px] shrink-0" />
-                    <span>{order.customerPhone}</span>
+                    <span>{maskPhoneNumber(order.customerPhone)}</span>
                   </a>
                 </div>
               ) : (
