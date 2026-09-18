@@ -11,7 +11,7 @@ import {
   FiShield,
   FiFileText,
 } from 'react-icons/fi'
-import { verifyOrderToken } from '../utils/orderSecurity'
+import { verifyOrderToken, normalizeOrderItem } from '../utils/orderSecurity'
 import { useSeoMeta } from '../hooks/useSeoMeta'
 
 function maskPhoneNumber(phone) {
@@ -37,8 +37,13 @@ export default function OrderReceiptPage() {
 
   const { valid, order, error } = verificationResult
 
+  const normalizedItems = useMemo(() => {
+    return (order?.items || []).map(normalizeOrderItem)
+  }, [order?.items])
+
   const formattedDate = order?.timestamp
     ? new Date(order.timestamp).toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
         day: 'numeric',
         month: 'short',
         hour: 'numeric',
@@ -106,7 +111,11 @@ export default function OrderReceiptPage() {
               </p>
 
               <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[var(--orange)]/10 border border-[var(--orange)]/25 px-3 py-0.5 text-xs font-black text-[var(--orange)]">
-                <span>{order.orderType === 'dine-in' ? '🍽️ DINE-IN ORDER' : '🥡 TAKEAWAY ORDER'}</span>
+                <span>
+                  {order.orderType === 'dine-in'
+                    ? `🍽️ DINE-IN${order.tableNumber ? ` (TABLE ${order.tableNumber})` : ''}`
+                    : '🥡 TAKEAWAY ORDER'}
+                </span>
               </div>
             </div>
 
@@ -165,20 +174,22 @@ export default function OrderReceiptPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[var(--line)]/40">
-                  {order.items.map((item, index) => {
-                    const unitPrice = Number(item.p) || 0
-                    const qty = Number(item.q) || 1
+                  {normalizedItems.map((item, index) => {
+                    const unitPrice = Number(item.price ?? item.p) || 0
+                    const qty = Number(item.quantity ?? item.q) || 1
                     const rowTotal = unitPrice * qty
+                    const name = item.name || item.n || 'Menu Item'
+                    const size = item.size || item.s || ''
 
                     return (
-                      <tr key={`${item.n}-${index}`}>
+                      <tr key={`${name}-${index}`}>
                         <td className="py-1.5 min-w-0 pr-1 leading-snug">
                           <span className="font-extrabold text-[var(--text)]">
-                            {item.n}
+                            {name}
                           </span>
-                          {item.s && (
+                          {size && (
                             <span className="ml-1 text-[10px] text-[var(--muted)] font-medium">
-                              ({item.s})
+                              ({size})
                             </span>
                           )}
                         </td>
@@ -212,7 +223,7 @@ export default function OrderReceiptPage() {
             {/* Billing Summary */}
             <div className="rounded-xl border border-[var(--line)] bg-[var(--surface-strong)]/60 p-2.5 space-y-1.5 text-xs">
               <div className="flex justify-between text-[var(--muted)] text-[11px]">
-                <span>Items Subtotal ({order.items.reduce((sum, i) => sum + (Number(i.q) || 1), 0)} items)</span>
+                <span>Items Subtotal ({normalizedItems.reduce((sum, i) => sum + (Number(i.quantity ?? i.q) || 1), 0)} items)</span>
                 <span className="font-bold text-[var(--text)]">₹{order.total}</span>
               </div>
               <div className="flex justify-between text-[var(--muted)] text-[11px]">

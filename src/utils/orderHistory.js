@@ -2,53 +2,150 @@
  * Order History & Admin Recording Utility
  * Manages customer order records, links, and CSV export without a backend.
  */
-import { verifyOrderToken } from './orderSecurity'
+import { verifyOrderToken, normalizeOrderItem } from './orderSecurity'
 
 const STORAGE_KEY = 'crust-admin-orders-v1'
+const PENDING_ORDERS_KEY = 'crust-pending-cloud-orders-v1'
 
 /**
  * Google Apps Script Webhook URL for Google Sheets cloud synchronization.
- * The Apps Script backend code with multi-sheet support (All Records, Today, This Week, This Month, This Year)
- * is located at: google-sheets-script/Code.gs
+ * Can be overridden via VITE_GOOGLE_SHEETS_WEBHOOK_URL.
  */
 export const GOOGLE_SHEETS_WEBHOOK_URL =
+  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_SHEETS_WEBHOOK_URL) ||
   'https://script.google.com/macros/s/AKfycbwHIoW4z_YMZuRTDU1UAs9hpTwd1Ez9LbpyzRHRWWgEbPMVhLY3XAP-nULQ1raoMAvuZg/exec'
 
 /**
- * Send an order to the permanent Google Sheets cloud database (background fire-and-forget)
+ * Persists failed order syncs into an offline queue for automatic retry
  * @param {Object} record
  */
-export async function sendOrderToCloud(record) {
-  if (typeof window === 'undefined' || !GOOGLE_SHEETS_WEBHOOK_URL || !record) return
+function queueFailedOrder(record) {
+  if (typeof window === 'undefined' || !record) return
   try {
-    await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
-      method: 'POST',
-      body: JSON.stringify(record),
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      redirect: 'follow',
-    })
+    const raw = window.localStorage.getItem(PENDING_ORDERS_KEY)
+    const queue = raw ? JSON.parse(raw) : []
+    if (!queue.some((item) => item.id === record.id)) {
+      queue.push(record)
+      window.localStorage.setItem(PENDING_ORDERS_KEY, JSON.stringify(queue.slice(-50)))
+    }
   } catch (err) {
-    console.warn('Background sync to Google Sheets failed:', err)
+    console.warn('Failed to queue offline order:', err)
   }
 }
 
 /**
- * Fetch orders from Google Sheets cloud database (strictly reflects what exists in Excel/Sheets)
- * @returns {Promise<Array>}
+ * Flushes pending offline orders when network connection is restored
  */
-export async function syncOrdersWithCloud() {
-  if (typeof window === 'undefined') return []
+export async function flushPendingOrders() {
+  if (typeof window === 'undefined' || !GOOGLE_SHEETS_WEBHOOK_URL) return
+  try {
+    const raw = window.localStorage.getItem(PENDING_ORDERS_KEY)
+    if (!raw) return
+    const queue = JSON.parse(raw)
+    if (!Array.isArray(queue) || queue.length === 0) return
+
+    const remaining = []
+    for (const record of queue) {
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 12000)
+        const res = await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+          method: 'POST',
+          body: JSON.stringify(record),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          redirect: 'follow',
+          keepalive: true,
+          signal: controller.signal,
+        })
+        clearTimeout(timeoutId)
+        if (!res.ok) remaining.push(record)
+      } catch {
+        remaining.push(record)
+      }
+    }
+
+    if (remaining.length > 0) {
+      window.localStorage.setItem(PENDING_ORDERS_KEY, JSON.stringify(remaining))
+    } else {
+      window.localStorage.removeItem(PENDING_ORDERS_KEY)
+    }
+  } catch (err) {
+    console.warn('Failed to flush offline orders queue:', err)
+  }
+}
+
+// Auto-register network online listener to flush pending orders
+if (typeof window !== 'undefined') {
+  window.addEventListener('online', () => {
+    flushPendingOrders()
+  })
+}
+
+/**
+ * Send an order to the permanent Google Sheets cloud database
+ * Includes keepalive: true to prevent mobile browsers from canceling fetch when WhatsApp launches
+ * @param {Object} record
+ */
+export async function sendOrderToCloud(record) {
+  if (typeof window === 'undefined' || !GOOGLE_SHEETS_WEBHOOK_URL || !record) return
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 12000)
+
   try {
     const res = await fetch(GOOGLE_SHEETS_WEBHOOK_URL, {
+      method: 'POST',
+      body: JSON.stringify(record),
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      redirect: 'follow',
+      keepalive: true,
+      signal: controller.signal,
+    })
+
+    if (!res.ok) {
+      queueFailedOrder(record)
+    }
+  } catch (err) {
+    console.warn('Background sync to Google Sheets failed, queued for retry:', err)
+    queueFailedOrder(record)
+  } finally {
+    clearTimeout(timeoutId)
+  }
+}
+
+/**
+ * Fetch orders from Google Sheets cloud database
+ * @param {string} [token] optional authorization token for protected sheets
+ * @returns {Promise<Array>}
+ */
+export async function syncOrdersWithCloud(token = '') {
+  if (typeof window === 'undefined') return []
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 12000)
+
+  try {
+    let endpoint = GOOGLE_SHEETS_WEBHOOK_URL
+    if (token) {
+      const separator = endpoint.includes('?') ? '&' : '?'
+      endpoint = `${endpoint}${separator}token=${encodeURIComponent(token)}`
+    }
+
+    const res = await fetch(endpoint, {
       method: 'GET',
       redirect: 'follow',
       cache: 'no-store',
+      signal: controller.signal,
     })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+
+    if (!res.ok) throw new Error(`HTTP error ${res.status}`)
     const data = await res.json()
 
-    if (data && data.success && Array.isArray(data.orders)) {
-      // ONLY include orders that currently exist in Google Sheets / Excel
+    if (!data || !data.success) {
+      throw new Error(data?.error || 'Failed to fetch verified records from cloud database')
+    }
+
+    if (Array.isArray(data.orders)) {
       const excelOrders = data.orders
         .filter((o) => o && (o.id || o.orderId))
         .map((o) => ({
@@ -56,18 +153,20 @@ export async function syncOrdersWithCloud() {
           id: o.id || o.orderId,
           total: Number(o.total) || 0,
           timestamp: Number(o.timestamp) || Date.now(),
+          items: (o.items || []).map(normalizeOrderItem),
         }))
         .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
 
-      // Overwrite local cache so it strictly mirrors what exists in the sheet
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(excelOrders.slice(0, 500)))
       return excelOrders
     }
 
-    return []
+    throw new Error('Malformed orders payload received from server')
   } catch (err) {
     console.warn('Failed to sync orders with cloud:', err)
-    return getOrderHistory()
+    throw err
+  } finally {
+    clearTimeout(timeoutId)
   }
 }
 
@@ -253,8 +352,11 @@ export function exportOrdersToCSV(customOrders) {
   ]
 
   const rows = orders.map((o) => {
-    const dateStr = o.timestamp ? new Date(o.timestamp).toLocaleString('en-IN') : ''
-    const itemsSummary = (o.items || [])
+    const dateStr = o.timestamp
+      ? new Date(o.timestamp).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+      : ''
+    const normalizedItems = (o.items || []).map(normalizeOrderItem)
+    const itemsSummary = normalizedItems
       .map((i) => `${i.name}${i.size ? ` (${i.size})` : ''} x${i.quantity} [Rs.${i.price * i.quantity}]`)
       .join('; ')
 

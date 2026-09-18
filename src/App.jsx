@@ -124,7 +124,7 @@ function AppShell({ theme, onToggleTheme }) {
 }
 
 export default function App() {
-  useAutoUpdate()
+  const { updateAvailable, reloadApp } = useAutoUpdate()
   const [theme, setTheme] = useLocalStorage('crust-theme', 'light')
 
   useEffect(() => {
@@ -133,6 +133,22 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      {updateAvailable && (
+        <aside
+          role="status"
+          aria-live="polite"
+          className="fixed top-2 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2.5 rounded-full bg-[var(--surface-strong)]/95 border border-[var(--orange)]/60 px-3.5 py-1.5 text-xs font-bold text-[var(--text)] shadow-xl backdrop-blur-md"
+        >
+          <span>✨ Fresh menu update available</span>
+          <button
+            type="button"
+            onClick={reloadApp}
+            className="rounded-full bg-gradient-to-r from-[var(--orange)] to-[#ea580c] px-2.5 py-0.5 text-[11px] font-black text-white hover:brightness-110 active:scale-95 transition cursor-pointer shadow-xs"
+          >
+            Update
+          </button>
+        </aside>
+      )}
       <CartProvider>
         <Routes>
           <Route path="/" element={<SplashScreen />} />

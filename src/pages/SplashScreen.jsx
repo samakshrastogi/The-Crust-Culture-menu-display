@@ -18,6 +18,16 @@ export default function SplashScreen() {
   const tableNumber = searchParams.get('table')
   const [stageIndex, setStageIndex] = useState(0)
 
+  useEffect(() => {
+    if (tableNumber && typeof window !== 'undefined') {
+      try {
+        sessionStorage.setItem('tcc_table_number', tableNumber.trim())
+      } catch {
+        // Ignore storage access error
+      }
+    }
+  }, [tableNumber])
+
   const handleEnter = useCallback(() => {
     if (hasExitedRef.current) return
     hasExitedRef.current = true

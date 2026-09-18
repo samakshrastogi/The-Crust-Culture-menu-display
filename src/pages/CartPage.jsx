@@ -45,6 +45,16 @@ export default function CartPage() {
   const [phoneError, setPhoneError] = useState('')
   const [orderSent, setOrderSent] = useState(false)
   const [recCategory, setRecCategory] = useState('all')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const tableNumber = useMemo(() => {
+    if (typeof window === 'undefined') return null
+    try {
+      return sessionStorage.getItem('tcc_table_number') || null
+    } catch {
+      return null
+    }
+  }, [])
 
   // Quick suggestions if tray is empty or for extra add-ons
   const popularAddOns = useMemo(() => {
@@ -121,6 +131,8 @@ export default function CartPage() {
   }, [cart.length, recCategory])
 
   const handleSendWhatsAppOrder = () => {
+    if (isSubmitting || cart.length === 0) return
+
     let hasError = false
     if (!customerName?.trim()) {
       setNameError('Please enter your name')
@@ -143,46 +155,54 @@ export default function CartPage() {
       return
     }
 
-    const safeCustomerName = customerName.trim().slice(0, 60)
-    const safeCookingNotes = cookingInstructions.trim().slice(0, 250)
+    setIsSubmitting(true)
+    try {
+      const safeCustomerName = customerName.trim().slice(0, 60)
+      const safeCookingNotes = cookingInstructions.trim().slice(0, 250)
 
-    const security = generateOrderSecurity({
-      cart,
-      total: cartTotal,
-      customerName: safeCustomerName,
-      customerPhone: validPhone,
-      orderType,
-      cookingInstructions: safeCookingNotes,
-    })
+      const security = generateOrderSecurity({
+        cart,
+        total: cartTotal,
+        customerName: safeCustomerName,
+        customerPhone: validPhone,
+        orderType,
+        cookingInstructions: safeCookingNotes,
+        tableNumber,
+      })
 
-    // Automatically record to admin order history
-    saveOrderToHistory({
-      id: security.orderId,
-      timestamp: security.timestamp,
-      customerName: safeCustomerName,
-      customerPhone: validPhone,
-      orderType,
-      items: cart,
-      total: cartTotal,
-      securityCode: security.securityCode,
-      notes: safeCookingNotes,
-      receiptUrl: security.receiptUrl,
-    })
+      // Automatically record to admin order history
+      saveOrderToHistory({
+        id: security.orderId,
+        timestamp: security.timestamp,
+        customerName: safeCustomerName,
+        customerPhone: validPhone,
+        orderType,
+        tableNumber,
+        items: cart,
+        total: cartTotal,
+        securityCode: security.securityCode,
+        notes: safeCookingNotes,
+        receiptUrl: security.receiptUrl,
+      })
 
-    const text = generateWhatsAppMessage({
-      cart,
-      cartCount,
-      customerName: safeCustomerName,
-      phoneStr: validPhone,
-      orderType,
-      cookingInstructions: safeCookingNotes,
-      security,
-    })
-    if (!text) return
-    const url = `https://api.whatsapp.com/send?phone=${CAFE_PHONE}&text=${encodeURIComponent(text)}`
-    window.open(url, '_blank', 'noopener,noreferrer')
-    clearCart()
-    setOrderSent(true)
+      const text = generateWhatsAppMessage({
+        cart,
+        cartCount,
+        customerName: safeCustomerName,
+        phoneStr: validPhone,
+        orderType,
+        cookingInstructions: safeCookingNotes,
+        security,
+        tableNumber,
+      })
+      if (!text) return
+      const url = `https://api.whatsapp.com/send?phone=${CAFE_PHONE}&text=${encodeURIComponent(text)}`
+      window.open(url, '_blank', 'noopener,noreferrer')
+      clearCart()
+      setOrderSent(true)
+    } finally {
+      setTimeout(() => setIsSubmitting(false), 2000)
+    }
   }
 
   return (
@@ -766,12 +786,17 @@ export default function CartPage() {
               <button
                 type="button"
                 onClick={handleSendWhatsAppOrder}
-                className="touch-target group relative mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#075E54] via-[#128C7E] to-[#25D366] px-3.5 py-2.5 text-white shadow-md shadow-emerald-600/25 transition-all duration-200 hover:brightness-110 hover:scale-[1.005] active:scale-[0.99] border border-white/20 cursor-pointer"
+                disabled={isSubmitting || cart.length === 0}
+                className={`touch-target group relative mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#075E54] via-[#128C7E] to-[#25D366] px-3.5 py-2.5 text-white shadow-md shadow-emerald-600/25 transition-all duration-200 border border-white/20 ${
+                  isSubmitting || cart.length === 0
+                    ? 'opacity-60 cursor-not-allowed'
+                    : 'hover:brightness-110 hover:scale-[1.005] active:scale-[0.99] cursor-pointer'
+                }`}
               >
                 <FaWhatsapp className="text-lg shrink-0" />
                 <div className="text-left">
                   <div className="text-sm font-black tracking-wide leading-none">
-                    Send Order on WhatsApp
+                    {isSubmitting ? 'Preparing Order...' : 'Send Order on WhatsApp'}
                   </div>
                   <div className="text-[9.5px] text-emerald-100 font-medium mt-0.5">
                     Direct confirmation with kitchen • Zero commission

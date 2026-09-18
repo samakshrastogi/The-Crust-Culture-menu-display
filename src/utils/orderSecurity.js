@@ -3,7 +3,38 @@
  * Zero-backend, Zero-DB cryptographic verification for WhatsApp orders.
  */
 
-const SECRET_SALT = 'TCC_WOOD_FIRED_CAFE_KITCHEN_SALT_v1_2026'
+import { allMenuItems } from '../data/menuSections'
+import { cleanPhone, parseNumericPrice } from './priceUtils'
+
+const SECRET_SALT =
+  (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ORDER_SECRET_SALT) ||
+  'TCC_WOOD_FIRED_CAFE_KITCHEN_SALT_v1_2026'
+
+/**
+ * Normalizes any order item into a uniform schema with backward-compatible aliases
+ * @param {Object} item
+ * @returns {{ name: string, size: string, quantity: number, price: number, n: string, s: string, q: number, p: number }}
+ */
+export function normalizeOrderItem(item) {
+  if (!item) {
+    return { name: 'Item', size: '', quantity: 1, price: 0, n: 'Item', s: '', q: 1, p: 0 }
+  }
+  const name = String(item.name || item.n || 'Item').trim()
+  const size = String(item.size || item.s || '').trim()
+  const quantity = Math.max(1, Number(item.quantity ?? item.q) || 1)
+  const price = Math.max(0, Number(item.price ?? item.p) || 0)
+
+  return {
+    name,
+    size,
+    quantity,
+    price,
+    n: name,
+    s: size,
+    q: quantity,
+    p: price,
+  }
+}
 
 /**
  * 64-bit high-dispersion hash mixer
@@ -77,11 +108,19 @@ function computeSignature(orderId, total, items, timestamp) {
  * @param {string} params.customerName - customer name
  * @param {string} [params.customerPhone] - customer phone number
  * @param {string} params.orderType - 'dine-in' | 'takeaway'
- * @param {string} params.cookingInstructions - optional notes
- * @returns {{ orderId: string, securityCode: string, token: string, receiptUrl: string }}
+ * @param {string} [params.cookingInstructions] - optional notes
+ * @param {string|number} [params.tableNumber] - optional dining table number
+ * @returns {{ orderId: string, securityCode: string, token: string, receiptUrl: string, timestamp: number }}
  */
-export function generateOrderSecurity({ cart, total, customerName, customerPhone, orderType, cookingInstructions }) {
-  // Generate random 4-digit order suffix
+export function generateOrderSecurity({
+  cart,
+  total,
+  customerName,
+  customerPhone,
+  orderType,
+  cookingInstructions,
+  tableNumber,
+}) {
   const numSuffix = Math.floor(1000 + Math.random() * 9000)
   const orderId = `TCC-${numSuffix}`
   const timestamp = Math.floor(Date.now() / 1000)
@@ -95,23 +134,25 @@ export function generateOrderSecurity({ cart, total, customerName, customerPhone
 
   const signature = computeSignature(orderId, total, items, timestamp)
   const shortChecksum = signature.slice(0, 4).toUpperCase()
-
-  // Anti-tamper code e.g. #CC-398-8F2B
   const securityCode = `#CC-${total}-${shortChecksum}`
 
-  // Ultra-compact tuple encoding: [id, ts, name, phone, type, items, notes, total, sig]
-  // items: [ [name, size, qty, price], ... ]
+  // Mask phone number in public token to protect PII in URLs
+  const cleanP = cleanPhone(customerPhone)
+  const maskedPhone = cleanP.length >= 4 ? `${cleanP.slice(0, 2)}******${cleanP.slice(-2)}` : cleanP
+
+  // Ultra-compact tuple encoding: [id, ts, name, phone, type, items, notes, total, sig, table]
   const compactItems = items.map((i) => [i.n, i.s, i.q, i.p])
   const payload = [
     numSuffix,
     timestamp,
     customerName?.trim() || '',
-    customerPhone?.trim() || '',
+    maskedPhone,
     orderType === 'takeaway' ? 't' : 'd',
     compactItems,
     cookingInstructions?.trim() || '',
     total,
     signature,
+    tableNumber ? String(tableNumber).trim() : '',
   ]
 
   const token = toBase64Url(JSON.stringify(payload))
@@ -154,12 +195,13 @@ export function verifyOrderToken(token) {
     let notes = ''
     let total
     let sig
+    let table = ''
 
     if (Array.isArray(raw)) {
-      // Ultra-compact tuple format: [numSuffix, ts, name, phone, type, compactItems, notes, total, sig]
-      const [numSuffix, rawTs, rawName, rawPhone, rawType, rawItems, rawNotes, rawTotal, rawSig] = raw
+      // Compact tuple format: [numSuffix, ts, name, phone, type, compactItems, notes, total, sig, table]
+      const [numSuffix, rawTs, rawName, rawPhone, rawType, rawItems, rawNotes, rawTotal, rawSig, rawTable] = raw
       id = typeof numSuffix === 'number' || /^\d+$/.test(numSuffix) ? `TCC-${numSuffix}` : numSuffix
-      ts = rawTs > 1e11 ? rawTs : rawTs * 1000 // handle sec vs ms
+      ts = rawTs > 1e11 ? rawTs : rawTs * 1000
       name = rawName || 'Guest'
       phone = rawPhone || ''
       type = rawType === 't' ? 'takeaway' : 'dine-in'
@@ -172,6 +214,7 @@ export function verifyOrderToken(token) {
       notes = rawNotes || ''
       total = Number(rawTotal) || 0
       sig = rawSig
+      table = rawTable ? String(rawTable).trim() : ''
     } else {
       // Legacy object format
       id = raw.id
@@ -188,10 +231,22 @@ export function verifyOrderToken(token) {
       notes = raw.notes || ''
       total = Number(raw.total) || 0
       sig = raw.sig
+      table = raw.tableNumber || raw.table || ''
     }
 
     if (!id || !ts || !Array.isArray(items) || typeof total !== 'number' || !sig) {
       return { valid: false, order: null, error: 'Incomplete order payload structure.' }
+    }
+
+    // Verify item prices are valid positive numbers
+    for (const item of items) {
+      if ((Number(item.p) || 0) < 0 || (Number(item.q) || 0) <= 0) {
+        return {
+          valid: false,
+          order: null,
+          error: `Invalid item rate or quantity for "${item.n || 'item'}".`,
+        }
+      }
     }
 
     // Verify calculated items total equals stated total
@@ -201,6 +256,28 @@ export function verifyOrderToken(token) {
         valid: false,
         order: null,
         error: `Price discrepancy detected! Stated total is ₹${total} but itemized total is ₹${computedTotal}.`,
+      }
+    }
+
+    // Verify against official menu rates if item exists in canonical menu
+    if (Array.isArray(allMenuItems) && allMenuItems.length > 0) {
+      for (const item of items) {
+        const cleanName = String(item.n || '').toLowerCase().trim()
+        const canonical = allMenuItems.find((m) => {
+          const mName = m.name.toLowerCase().trim()
+          return mName === cleanName || `${mName} pizza` === cleanName || mName === `${cleanName} pizza`
+        })
+        if (canonical && Array.isArray(canonical.prices) && canonical.prices.length > 0) {
+          const validPriceValues = canonical.prices.map((p) => parseNumericPrice(p.value))
+          const unitP = Number(item.p) || 0
+          if (!validPriceValues.includes(unitP)) {
+            return {
+              valid: false,
+              order: null,
+              error: `Invalid dish rate! "${item.n}" official rates are ₹${validPriceValues.join('/₹')}, but ticket states ₹${unitP}.`,
+            }
+          }
+        }
       }
     }
 
@@ -227,7 +304,8 @@ export function verifyOrderToken(token) {
         customerName: name,
         customerPhone: phone,
         orderType: type,
-        items,
+        tableNumber: table,
+        items: items.map(normalizeOrderItem),
         notes,
         total,
         securityCode,

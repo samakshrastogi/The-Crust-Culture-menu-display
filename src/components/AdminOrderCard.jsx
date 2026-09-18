@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import {
   FiPhone,
@@ -10,10 +10,12 @@ import {
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa6'
 import { cleanPhone } from '../utils/priceUtils'
+import { normalizeOrderItem } from '../utils/orderSecurity'
 
 export default memo(function AdminOrderCard({ order, copiedId, onCopyLink }) {
   const dateStr = order.timestamp
     ? new Date(order.timestamp).toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
         day: 'numeric',
         month: 'short',
         hour: 'numeric',
@@ -25,6 +27,10 @@ export default memo(function AdminOrderCard({ order, copiedId, onCopyLink }) {
   const phoneDigits = cleanPhone(order.customerPhone)
   const isDineIn = order.orderType === 'dine-in'
   const isCopied = copiedId === order.id
+  const normalizedItems = useMemo(
+    () => (order.items || []).map(normalizeOrderItem),
+    [order.items]
+  )
 
   const ticketHref = order.receiptUrl
     ? order.receiptUrl.includes('/order?v=')
@@ -53,7 +59,7 @@ export default memo(function AdminOrderCard({ order, copiedId, onCopyLink }) {
                   : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25'
               }`}
             >
-              {isDineIn ? '🍽️ Dine' : '🥡 Take'}
+              {isDineIn ? (order.tableNumber ? `🍽️ T-${order.tableNumber}` : '🍽️ Dine') : '🥡 Take'}
             </span>
           </div>
 
@@ -112,9 +118,9 @@ export default memo(function AdminOrderCard({ order, copiedId, onCopyLink }) {
         </div>
 
         {/* Row 3: Items Pills */}
-        {order.items && order.items.length > 0 && (
+        {normalizedItems && normalizedItems.length > 0 && (
           <div className="flex flex-wrap gap-1 pt-0.5">
-            {order.items.map((item, idx) => (
+            {normalizedItems.map((item, idx) => (
               <span
                 key={idx}
                 className="inline-flex items-center gap-1 rounded-md bg-[var(--surface-strong)] px-1.5 py-0.5 text-[9.5px] font-medium text-[var(--text)] border border-[var(--line)]"
@@ -164,7 +170,7 @@ export default memo(function AdminOrderCard({ order, copiedId, onCopyLink }) {
                   : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/25'
               }`}
             >
-              {isDineIn ? '🍽️ Dine-In' : '🥡 Takeaway'}
+              {isDineIn ? (order.tableNumber ? `🍽️ Dine-In (Table ${order.tableNumber})` : '🍽️ Dine-In') : '🥡 Takeaway'}
             </span>
           </div>
 
@@ -217,13 +223,13 @@ export default memo(function AdminOrderCard({ order, copiedId, onCopyLink }) {
         <div className="md:col-span-5 space-y-2 border-b md:border-b-0 md:border-r border-[var(--line)]/50 pb-2.5 md:pb-0 md:pr-3">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-black uppercase tracking-wider text-[var(--muted)]">
-              Ordered Items ({order.items?.reduce((sum, i) => sum + (Number(i.quantity) || 1), 0) || 0})
+              Ordered Items ({normalizedItems?.reduce((sum, i) => sum + (Number(i.quantity) || 1), 0) || 0})
             </span>
           </div>
 
-          {order.items && order.items.length > 0 ? (
+          {normalizedItems && normalizedItems.length > 0 ? (
             <div className="flex flex-wrap gap-1.5">
-              {order.items.map((item, idx) => (
+              {normalizedItems.map((item, idx) => (
                 <span
                   key={idx}
                   className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--surface-strong)] px-2 py-1 text-[11px] font-medium text-[var(--text)] border border-[var(--line)] shadow-2xs"

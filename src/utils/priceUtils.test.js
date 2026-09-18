@@ -105,8 +105,8 @@ describe('priceUtils', () => {
   })
 
   describe('cleanPhone', () => {
-    it('strips non-digits from phone strings', () => {
-      expect(cleanPhone('+91 98765-43210')).toBe('919876543210')
+    it('strips non-digits and leading country code from phone strings', () => {
+      expect(cleanPhone('+91 98765-43210')).toBe('9876543210')
       expect(cleanPhone('98765 43210')).toBe('9876543210')
       expect(cleanPhone('')).toBe('')
       expect(cleanPhone(null)).toBe('')

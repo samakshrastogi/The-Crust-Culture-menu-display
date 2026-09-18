@@ -64,13 +64,26 @@ function sanitizeCell(val) {
 }
 
 /**
- * Validates request authorization token if CONFIG.API_TOKEN is configured.
+ * Retrieves configured admin API token from CONFIG or Script Properties
+ */
+function getApiToken() {
+  if (CONFIG.API_TOKEN) return CONFIG.API_TOKEN;
+  try {
+    var prop = PropertiesService.getScriptProperties().getProperty('ADMIN_API_KEY');
+    if (prop) return prop;
+  } catch (err) {}
+  return '';
+}
+
+/**
+ * Validates request authorization token if configured.
  */
 function isAuthorized(e, payload) {
-  if (!CONFIG.API_TOKEN) return true;
+  var token = getApiToken();
+  if (!token) return true;
   var paramToken = (e && e.parameter && e.parameter.token) ? e.parameter.token : null;
   var bodyToken = (payload && payload.token) ? payload.token : null;
-  return paramToken === CONFIG.API_TOKEN || bodyToken === CONFIG.API_TOKEN;
+  return paramToken === token || bodyToken === token;
 }
 
 /**
@@ -273,6 +286,14 @@ function refreshFormulas() {
  * Webhook POST handler: Called by the React application when an order is placed.
  */
 function doPost(e) {
+  const lock = LockService.getScriptLock();
+  const hasLock = lock.tryLock(30000);
+  if (!hasLock) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ success: false, error: 'Database busy. Could not acquire write lock.' })
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+
   try {
     const contents = e.postData ? e.postData.contents : null;
     if (!contents) {
@@ -282,7 +303,7 @@ function doPost(e) {
     
     const order = JSON.parse(contents);
 
-    // Verify token authorization if API_TOKEN is set
+    // Verify token authorization if configured
     if (!isAuthorized(e, order)) {
       return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Unauthorized: Invalid token' }))
         .setMimeType(ContentService.MimeType.JSON);
@@ -357,15 +378,17 @@ function doPost(e) {
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
       .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
   }
 }
 
 /**
- * Webhook GET handler: Returns all stored orders to the React Admin Dashboard.
+ * Webhook GET handler: Returns stored orders to the React Admin Dashboard.
  */
 function doGet(e) {
   try {
-    // Verify token authorization if API_TOKEN is set
+    // Verify token authorization if configured
     if (!isAuthorized(e)) {
       return ContentService.createTextOutput(JSON.stringify({ success: false, error: 'Unauthorized: Invalid token' }))
         .setMimeType(ContentService.MimeType.JSON);
@@ -383,6 +406,11 @@ function doGet(e) {
       return ContentService.createTextOutput(JSON.stringify({ success: true, orders: [] }))
         .setMimeType(ContentService.MimeType.JSON);
     }
+
+    // Bounded queries support
+    const maxLimit = 500;
+    const reqLimit = (e && e.parameter && e.parameter.limit) ? parseInt(e.parameter.limit, 10) : maxLimit;
+    const limit = Math.min(Math.max(1, isNaN(reqLimit) ? maxLimit : reqLimit), 1000);
     
     // Read data from row 2 downwards
     const dataRange = allSheet.getRange(2, 1, lastRow - 1, 11).getValues();
@@ -405,6 +433,17 @@ function doGet(e) {
       const dateVal = row[0];
       const ts = dateVal instanceof Date ? dateVal.getTime() : (Date.parse(dateVal) || baseOrder.timestamp || Date.now());
       const sheetTotal = Number(row[6]);
+
+      // Fallback items recovery from column 6 if rawJson is empty
+      let itemsList = baseOrder.items || [];
+      if (itemsList.length === 0 && row[5]) {
+        const summaryText = String(row[5]).trim();
+        if (summaryText) {
+          itemsList = summaryText.split(';').map(function(s) {
+            return { name: s.trim(), quantity: 1, price: 0 };
+          });
+        }
+      }
       
       orders.push({
         ...baseOrder,
@@ -417,7 +456,7 @@ function doGet(e) {
         notes: String(row[7] || baseOrder.notes || '').trim(),
         securityCode: String(row[8] || baseOrder.securityCode || '').trim(),
         receiptUrl: String(row[9] || baseOrder.receiptUrl || '').trim(),
-        items: baseOrder.items || []
+        items: itemsList
       });
     }
     
@@ -425,8 +464,10 @@ function doGet(e) {
     orders.sort(function(a, b) {
       return (b.timestamp || 0) - (a.timestamp || 0);
     });
+
+    const paginatedOrders = orders.slice(0, limit);
     
-    return ContentService.createTextOutput(JSON.stringify({ success: true, orders: orders }))
+    return ContentService.createTextOutput(JSON.stringify({ success: true, orders: paginatedOrders }))
       .setMimeType(ContentService.MimeType.JSON);
   } catch (err) {
     return ContentService.createTextOutput(JSON.stringify({ success: false, error: err.toString() }))

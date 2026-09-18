@@ -11,8 +11,16 @@ export function generateWhatsAppMessage({
   orderType,
   cookingInstructions,
   security,
+  tableNumber,
 }) {
   if (!cart || cart.length === 0) return ''
+
+  const orderLine =
+    orderType === 'dine-in'
+      ? tableNumber
+        ? `• *Order:* 🍽️ Dine-In (Table ${tableNumber})`
+        : `• *Order:* 🍽️ Dine-In`
+      : `• *Order:* 🛍️ Takeaway`
 
   const lines = [
     `🍕 *NEW ORDER - The Crust Culture*`,
@@ -21,7 +29,7 @@ export function generateWhatsAppMessage({
     `*CUSTOMER DETAILS*`,
     `• *Name:* ${customerName.trim()}`,
     `• *Phone:* +91 ${phoneStr}`,
-    `• *Order:* ${orderType === 'dine-in' ? '🍽️ Dine-In' : '🛍️ Takeaway'}`,
+    orderLine,
     ``,
     `*ITEMS ORDERED (${cartCount} ${cartCount === 1 ? 'item' : 'items'})*`,
     `----------------------------------`,

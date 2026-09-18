@@ -25,5 +25,23 @@ export function useLocalStorage(key, initialValue) {
     }
   }, [key, value])
 
+  // Synchronize state across multiple browser tabs
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const handleStorageChange = (e) => {
+      if (e.key === key && e.newValue !== null) {
+        try {
+          setValue(JSON.parse(e.newValue))
+        } catch {
+          setValue(e.newValue)
+        }
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [key])
+
   return [value, setValue]
 }

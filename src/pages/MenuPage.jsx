@@ -110,6 +110,17 @@ export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState(
     initialCategories.includes(requestedCategory) ? requestedCategory : 'All',
   )
+  const [prevRequestedCategory, setPrevRequestedCategory] = useState(requestedCategory)
+
+  if (requestedCategory !== prevRequestedCategory) {
+    setPrevRequestedCategory(requestedCategory)
+    setActiveCategory(
+      requestedCategory && initialCategories.includes(requestedCategory)
+        ? requestedCategory
+        : 'All',
+    )
+  }
+
   const [activeVibeFilter, setActiveVibeFilter] = useState('all')
   const [query, setQuery] = useState('')
   const deferredQuery = useDeferredValue(query)

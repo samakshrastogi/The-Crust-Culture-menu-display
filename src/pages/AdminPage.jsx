@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback, useDeferredValue } from 'react'
 import {
   FiSearch,
   FiDownload,
@@ -19,7 +19,7 @@ import {
 import { useSeoMeta } from '../hooks/useSeoMeta'
 import AdminOrderCard from '../components/AdminOrderCard'
 
-// SHA-256 hash of staff master passphrase ('crust2026')
+// SHA-256 hash of staff master passphrase
 const ADMIN_HASH = 'cda3768bb69ae55562f75c033c33347083fa28278bcce172ce7e0104ede0775d'
 
 export default function AdminPage() {
@@ -38,16 +38,41 @@ export default function AdminPage() {
     }
   })
   const [passphrase, setPassphrase] = useState('')
+  const [adminToken, setAdminToken] = useState(() => {
+    try {
+      return sessionStorage.getItem('tcc_admin_token') || ''
+    } catch {
+      return ''
+    }
+  })
   const [authError, setAuthError] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
 
   const [orders, setOrders] = useState([])
   const [isSyncing, setIsSyncing] = useState(false)
+  const [syncError, setSyncError] = useState('')
   const [lastSynced, setLastSynced] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const deferredSearch = useDeferredValue(searchQuery)
   const [filterType, setFilterType] = useState('all') // 'all' | 'dine-in' | 'takeaway'
   const [timeFilter, setTimeFilter] = useState('all') // 'all' | 'today' | 'week' | 'month' | 'year'
   const [copiedId, setCopiedId] = useState(null)
+
+  const reloadOrders = useCallback(async (tokenOverride) => {
+    const activeToken = tokenOverride !== undefined ? tokenOverride : adminToken
+    setIsSyncing(true)
+    try {
+      const synced = await syncOrdersWithCloud(activeToken)
+      setOrders(synced)
+      setLastSynced(new Date())
+      setSyncError('')
+    } catch (err) {
+      console.warn('Reload sync error:', err)
+      setSyncError('Cloud sync unreachable. Displaying cached orders.')
+    } finally {
+      setIsSyncing(false)
+    }
+  }, [adminToken])
 
   // Cloud sync runs STRICTLY if and only if authenticated
   useEffect(() => {
@@ -58,15 +83,19 @@ export default function AdminPage() {
       if (mounted) setIsSyncing(true)
     })
 
-    syncOrdersWithCloud()
+    syncOrdersWithCloud(adminToken)
       .then((synced) => {
         if (mounted) {
           setOrders(synced)
           setLastSynced(new Date())
+          setSyncError('')
         }
       })
       .catch((err) => {
         console.warn('Initial cloud sync error:', err)
+        if (mounted) {
+          setSyncError('Cloud sync unreachable. Displaying cached orders.')
+        }
       })
       .finally(() => {
         if (mounted) setIsSyncing(false)
@@ -74,7 +103,20 @@ export default function AdminPage() {
     return () => {
       mounted = false
     }
-  }, [isAuthenticated])
+  }, [isAuthenticated, adminToken])
+
+  // Periodic 60s background refresh when tab is active and visible
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    const intervalId = setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'visible' && !isSyncing) {
+        reloadOrders()
+      }
+    }, 60000)
+
+    return () => clearInterval(intervalId)
+  }, [isAuthenticated, isSyncing, reloadOrders])
 
   const handleAuthenticate = async (e) => {
     e.preventDefault()
@@ -92,14 +134,15 @@ export default function AdminPage() {
       /* ignore storage access error */
     }
 
-    if (!passphrase.trim()) {
+    const trimmed = passphrase.trim()
+    if (!trimmed) {
       setAuthError('Please enter the staff passphrase.')
       return
     }
 
     setIsVerifying(true)
     try {
-      const msgBuffer = new TextEncoder().encode(passphrase.trim())
+      const msgBuffer = new TextEncoder().encode(trimmed)
       const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
       const hashHex = Array.from(new Uint8Array(hashBuffer))
         .map((b) => b.toString(16).padStart(2, '0'))
@@ -108,13 +151,16 @@ export default function AdminPage() {
       if (hashHex === ADMIN_HASH) {
         try {
           sessionStorage.setItem('tcc_admin_expiry', String(Date.now() + 2 * 60 * 60 * 1000))
+          sessionStorage.setItem('tcc_admin_token', trimmed)
           sessionStorage.removeItem('tcc_admin_attempts')
           sessionStorage.removeItem('tcc_admin_lockout')
         } catch {
           /* ignore storage access error */
         }
+        setAdminToken(trimmed)
         setIsAuthenticated(true)
         setPassphrase('')
+        reloadOrders(trimmed)
       } else {
         let attempts = 1
         try {
@@ -140,25 +186,14 @@ export default function AdminPage() {
   const handleLogout = () => {
     try {
       sessionStorage.removeItem('tcc_admin_expiry')
+      sessionStorage.removeItem('tcc_admin_token')
       sessionStorage.removeItem('tcc_admin_attempts')
     } catch {
       /* ignore storage access error */
     }
+    setAdminToken('')
     setOrders([])
     setIsAuthenticated(false)
-  }
-
-  const reloadOrders = async () => {
-    setIsSyncing(true)
-    try {
-      const synced = await syncOrdersWithCloud()
-      setOrders(synced)
-      setLastSynced(new Date())
-    } catch (err) {
-      console.warn('Reload sync error:', err)
-    } finally {
-      setIsSyncing(false)
-    }
   }
 
   // Metrics
@@ -247,19 +282,22 @@ export default function AdminPage() {
         }
 
         // Search query
-        if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase().trim()
+        if (deferredSearch.trim()) {
+          const q = deferredSearch.toLowerCase().trim()
           const nameMatch = (order.customerName || '').toLowerCase().includes(q)
           const phoneMatch = (order.customerPhone || '').includes(q)
           const idMatch = (order.id || '').toLowerCase().includes(q)
-          const itemMatch = (order.items || []).some((i) => (i.name || '').toLowerCase().includes(q))
-          return nameMatch || phoneMatch || idMatch || itemMatch
+          const tableMatch = order.tableNumber ? String(order.tableNumber).toLowerCase().includes(q) : false
+          const itemMatch = (order.items || []).some((i) =>
+            (i.name || i.n || '').toLowerCase().includes(q)
+          )
+          return nameMatch || phoneMatch || idMatch || tableMatch || itemMatch
         }
 
         return true
       })
       .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0))
-  }, [orders, filterType, timeFilter, searchQuery])
+  }, [orders, filterType, timeFilter, deferredSearch])
 
   // Group orders into chronological periods: Days (Today/Yesterday) -> Week -> Month -> Year -> Older
   const groupedSections = useMemo(() => {
@@ -384,20 +422,33 @@ export default function AdminPage() {
             className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-bold border transition-colors ${
               isSyncing
                 ? 'bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400'
-                : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
+                : syncError
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-300'
+                  : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'
             }`}
-            title={lastSynced ? `Last synced: ${lastSynced.toLocaleTimeString()}` : 'Cloud sync'}
+            title={lastSynced ? `Last synced: ${lastSynced.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' })}` : 'Cloud sync'}
           >
             <span
               className={`h-1.5 w-1.5 rounded-full ${
-                isSyncing ? 'bg-blue-500 animate-ping' : 'bg-emerald-500'
+                isSyncing ? 'bg-blue-500 animate-ping' : syncError ? 'bg-amber-500' : 'bg-emerald-500'
               }`}
             />
-            <span>{isSyncing ? 'Syncing Excel...' : 'Excel / Sheets Synced'}</span>
+            <span>{isSyncing ? 'Syncing Excel...' : syncError ? 'Cloud Offline (Cached)' : 'Excel / Sheets Synced'}</span>
           </span>
         </div>
 
         <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => reloadOrders()}
+            disabled={isSyncing}
+            className="inline-flex items-center justify-center rounded-lg sm:rounded-full border border-[var(--line)] bg-[var(--surface-strong)] h-7 w-7 sm:h-auto sm:w-auto sm:px-2.5 sm:py-1 text-[var(--text)] hover:border-[var(--orange)] transition cursor-pointer disabled:opacity-50 shadow-2xs"
+            title="Refresh Orders"
+            aria-label="Refresh Orders"
+          >
+            <FiRefreshCw className={`text-xs ${isSyncing ? 'animate-spin text-[var(--orange)]' : ''}`} />
+            <span className="hidden sm:inline sm:text-[11px] sm:font-bold sm:ml-1">Refresh</span>
+          </button>
           <button
             type="button"
             onClick={() => exportOrdersToCSV(filteredOrders)}
@@ -421,6 +472,20 @@ export default function AdminPage() {
           </button>
         </div>
       </div>
+
+      {/* Sync Error Banner */}
+      {syncError && (
+        <div className="flex items-center justify-between rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-800 dark:text-amber-300">
+          <span className="font-medium">{syncError}</span>
+          <button
+            type="button"
+            onClick={() => reloadOrders()}
+            className="ml-2 font-bold underline hover:no-underline cursor-pointer shrink-0"
+          >
+            Retry Now
+          </button>
+        </div>
+      )}
 
       {/* Mobile Compact 4-Col Micro KPI Strip */}
       <div className="grid grid-cols-4 gap-1 sm:hidden">

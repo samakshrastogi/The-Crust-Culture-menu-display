@@ -860,9 +860,19 @@ export const allMenuItems = menuSections.flatMap((section) =>
 );
 
 export const isRestrictedTime = (date = new Date()) => {
-  const hours = date.getHours();
-  return hours >= 23 || hours < 6;
-};
+  try {
+    const istHourStr = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Kolkata',
+      hour: 'numeric',
+      hour12: false,
+    }).format(date)
+    const hours = parseInt(istHourStr, 10)
+    return hours >= 23 || hours < 6
+  } catch {
+    const hours = date.getHours()
+    return hours >= 23 || hours < 6
+  }
+}
 
 export const getActiveMenuSections = (date = new Date()) => {
   return isRestrictedTime(date)

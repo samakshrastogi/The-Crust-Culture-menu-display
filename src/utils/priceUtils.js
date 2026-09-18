@@ -66,14 +66,23 @@ export function getSizeSubLabel(label, isPizza = false) {
   if (clean === 'S') return isPizza ? '7" Regular' : 'Small'
   if (clean === 'M') return isPizza ? '10" Medium' : 'Medium'
   if (clean === 'L') return isPizza ? '12" Large' : 'Large'
+  if (clean === 'H') return 'Half'
+  if (clean === 'F') return 'Full'
   return clean || 'Standard'
 }
 
 /**
- * Strips all non-digit characters from a phone number string
+ * Strips non-digit characters and normalizes Indian mobile numbers (removing +91 or 0 prefixes)
  * @param {string} phone
- * @returns {string}
+ * @returns {string} 10-digit clean mobile number string
  */
 export function cleanPhone(phone) {
-  return String(phone || '').replace(/\D/g, '')
+  let digits = String(phone || '').replace(/\D/g, '')
+  if (digits.length === 12 && digits.startsWith('91')) {
+    digits = digits.slice(2)
+  }
+  if (digits.length === 11 && digits.startsWith('0')) {
+    digits = digits.slice(1)
+  }
+  return digits
 }

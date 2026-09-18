@@ -15,13 +15,18 @@ export function useAutoUpdate() {
       isChecking = true
 
       try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 8000)
+
         const response = await fetch(`/version.json?t=${Date.now()}`, {
           cache: 'no-store',
           headers: {
             'Cache-Control': 'no-cache',
             Pragma: 'no-cache',
           },
+          signal: controller.signal,
         })
+        clearTimeout(timeoutId)
 
         if (!response.ok) return
 
@@ -31,25 +36,11 @@ export function useAutoUpdate() {
         if (!currentVersion) {
           currentVersion = data.version
         } else if (data.version !== currentVersion) {
-          // New deployment detected
+          // New deployment detected: notify without interrupting user session
           setUpdateAvailable(true)
-
-          // If user is currently typing in an input, wait until blur or 8s timeout
-          const isTyping = ['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)
-          if (!isTyping) {
-            window.location.reload()
-          } else {
-            const onBlur = () => {
-              window.location.reload()
-            }
-            document.activeElement.addEventListener('blur', onBlur, { once: true })
-            setTimeout(() => {
-              window.location.reload()
-            }, 8000)
-          }
         }
       } catch {
-        // Network offline or failed request
+        // Network offline, aborted or failed request
       } finally {
         isChecking = false
       }
@@ -59,7 +50,7 @@ export function useAutoUpdate() {
 
     const startPolling = () => {
       if (!interval) {
-        interval = setInterval(checkVersion, 30 * 1000)
+        interval = setInterval(checkVersion, 60 * 1000)
       }
     }
 
@@ -93,5 +84,5 @@ export function useAutoUpdate() {
     }
   }, [])
 
-  return { updateAvailable }
+  return { updateAvailable, reloadApp: () => window.location.reload() }
 }
