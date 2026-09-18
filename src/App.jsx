@@ -34,6 +34,19 @@ function AppShell({ theme, onToggleTheme }) {
   const location = useLocation()
   const { cartCount } = useCart()
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    try {
+      const params = new URLSearchParams(location.search)
+      const table = params.get('table')
+      if (table && table.trim()) {
+        sessionStorage.setItem('tcc_table_number', table.trim())
+      }
+    } catch {
+      // Ignore storage access error
+    }
+  }, [location.search])
+
   const isReceiptPage = location.pathname.startsWith('/order')
   const isAdminPage =
     location.pathname.startsWith('/sam') || location.pathname.startsWith('/shivangi')

@@ -340,7 +340,7 @@ function doPost(e) {
       sanitizeCell(orderId),
       sanitizeCell(order.customerName || 'Guest'),
       order.customerPhone ? "'" + String(order.customerPhone).replace(/\D/g, '') : '',
-      order.orderType === 'dine-in' ? '🍽️ Dine-In' : '🛍️ Takeaway',
+      order.orderType === 'dine-in' ? (order.tableNumber ? '🍽️ Dine-In (Table ' + sanitizeCell(order.tableNumber) + ')' : '🍽️ Dine-In') : '🛍️ Takeaway',
       sanitizeCell(itemsSummary),
       Number(order.total) || 0,
       sanitizeCell(order.notes || order.cookingInstructions || ''),
@@ -452,6 +452,10 @@ function doGet(e) {
         customerName: String(row[2] || baseOrder.customerName || 'Guest').trim(),
         customerPhone: String(row[3] || baseOrder.customerPhone || '').replace(/^'/, '').trim(),
         orderType: String(row[4] || baseOrder.orderType || '').includes('Takeaway') ? 'takeaway' : 'dine-in',
+        tableNumber: baseOrder.tableNumber ? String(baseOrder.tableNumber).trim() : (function() {
+          var m = String(row[4] || '').match(/Table\s*(\w+)/i);
+          return m ? m[1] : '';
+        })(),
         total: !isNaN(sheetTotal) && sheetTotal > 0 ? sheetTotal : (Number(baseOrder.total) || 0),
         notes: String(row[7] || baseOrder.notes || '').trim(),
         securityCode: String(row[8] || baseOrder.securityCode || '').trim(),

@@ -50,6 +50,12 @@ export default function CartPage() {
   const tableNumber = useMemo(() => {
     if (typeof window === 'undefined') return null
     try {
+      const params = new URLSearchParams(window.location.search)
+      const urlTable = params.get('table')
+      if (urlTable && urlTable.trim()) {
+        sessionStorage.setItem('tcc_table_number', urlTable.trim())
+        return urlTable.trim()
+      }
       return sessionStorage.getItem('tcc_table_number') || null
     } catch {
       return null

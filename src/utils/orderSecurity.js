@@ -128,8 +128,8 @@ export function generateOrderSecurity({
   const items = cart.map((item) => ({
     n: item.name,
     s: item.size || '',
-    q: item.quantity,
-    p: item.price,
+    q: Math.max(1, Number(item.quantity) || 1),
+    p: Math.max(0, Number(item.price) || 0),
   }))
 
   const signature = computeSignature(orderId, total, items, timestamp)
@@ -268,7 +268,7 @@ export function verifyOrderToken(token) {
           return mName === cleanName || `${mName} pizza` === cleanName || mName === `${cleanName} pizza`
         })
         if (canonical && Array.isArray(canonical.prices) && canonical.prices.length > 0) {
-          const validPriceValues = canonical.prices.map((p) => parseNumericPrice(p.value))
+          const validPriceValues = canonical.prices.map((p) => parseNumericPrice(p?.value ?? p))
           const unitP = Number(item.p) || 0
           if (!validPriceValues.includes(unitP)) {
             return {

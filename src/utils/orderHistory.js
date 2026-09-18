@@ -208,6 +208,7 @@ export function saveOrderToHistory(order) {
       customerName: order.customerName || order.name || 'Guest',
       customerPhone: order.customerPhone || order.phone || '',
       orderType: order.orderType || order.type || 'dine-in',
+      tableNumber: order.tableNumber ? String(order.tableNumber).trim() : '',
       items: (order.items || []).map((i) => ({
         name: i.n || i.name,
         size: i.s || i.size || '',
@@ -365,7 +366,7 @@ export function exportOrdersToCSV(customOrders) {
       `"${sanitizeForCSV(dateStr)}"`,
       `"${sanitizeForCSV(o.customerName || '')}"`,
       `"${sanitizeForCSV(o.customerPhone || '')}"`,
-      `"${sanitizeForCSV(o.orderType || '')}"`,
+      `"${sanitizeForCSV(o.orderType === 'dine-in' ? (o.tableNumber ? `Dine-In (Table ${o.tableNumber})` : 'Dine-In') : 'Takeaway')}"`,
       `"${sanitizeForCSV(itemsSummary)}"`,
       `"${Number(o.total) || 0}"`,
       `"${sanitizeForCSV(o.securityCode || '')}"`,

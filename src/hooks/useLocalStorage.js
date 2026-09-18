@@ -11,6 +11,11 @@ export function useLocalStorage(key, initialValue) {
   })
 
   const isInitialMount = useRef(true)
+  const initialValueRef = useRef(initialValue)
+
+  useEffect(() => {
+    initialValueRef.current = initialValue
+  }, [initialValue])
 
   useEffect(() => {
     if (isInitialMount.current) {
@@ -30,11 +35,15 @@ export function useLocalStorage(key, initialValue) {
     if (typeof window === 'undefined') return
 
     const handleStorageChange = (e) => {
-      if (e.key === key && e.newValue !== null) {
-        try {
-          setValue(JSON.parse(e.newValue))
-        } catch {
-          setValue(e.newValue)
+      if (e.key === key) {
+        if (e.newValue === null) {
+          setValue(initialValueRef.current)
+        } else {
+          try {
+            setValue(JSON.parse(e.newValue))
+          } catch {
+            setValue(e.newValue)
+          }
         }
       }
     }
