@@ -67,14 +67,17 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
     >
       <div className="no-scrollbar relative flex gap-2 sm:gap-2.5 overflow-x-auto py-0.5 px-0.5">
         {/* 'All Dishes' Tile */}
-        <button
+        <a
           ref={(element) => {
             tileRefs.current['All'] = element
           }}
           data-menu-tile
-          type="button"
+          href="/menu"
           aria-pressed={activeCategory === 'All'}
-          onClick={() => onSelect('All')}
+          onClick={(e) => {
+            e.preventDefault()
+            onSelect('All')
+          }}
           className={`group flex flex-col shrink-0 w-25 sm:w-28 overflow-hidden rounded-xl border text-left transition-all duration-200 cursor-pointer ${
             activeCategory === 'All'
               ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/40 shadow-sm bg-gradient-to-b from-[var(--surface)] to-[var(--orange)]/10'
@@ -105,22 +108,25 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
               {totalItems} items
             </p>
           </div>
-        </button>
+        </a>
 
         {sections.map((section, index) => {
           const lowestPrice = lowestPrices[section.id]
           const isActive = activeCategory === section.title
 
           return (
-            <button
+            <a
               key={section.id}
               ref={(element) => {
                 tileRefs.current[section.title] = element
               }}
               data-menu-tile
-              type="button"
+              href={`/menu?category=${encodeURIComponent(section.title)}`}
               aria-pressed={isActive}
-              onClick={() => onSelect(section.title)}
+              onClick={(e) => {
+                e.preventDefault()
+                onSelect(section.title)
+              }}
               className={`group flex flex-col shrink-0 w-25 sm:w-28 overflow-hidden rounded-xl border text-left transition-all duration-200 cursor-pointer ${
                 isActive
                   ? 'border-[var(--orange)] ring-2 ring-[var(--orange)]/40 shadow-sm bg-gradient-to-b from-[var(--surface)] to-[var(--orange)]/10'
@@ -151,7 +157,7 @@ export default function MenuImageStrip({ sections, activeCategory, onSelect }) {
                   {lowestPrice ? `₹${lowestPrice}` : `${section.items.length} items`}
                 </p>
               </div>
-            </button>
+            </a>
           )
         })}
       </div>

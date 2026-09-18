@@ -1,0 +1,22 @@
+{
+  "name": "The Crust Culture",
+  "short_name": "Crust Culture",
+  "description": "100% Pure Vegetarian Wood-Fired Pizzeria & Cafe in Gurgaon",
+  "start_url": "/home",
+  "display": "standalone",
+  "background_color": "#120a06",
+  "theme_color": "#ea580c",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

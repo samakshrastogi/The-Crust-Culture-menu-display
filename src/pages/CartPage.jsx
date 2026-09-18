@@ -20,6 +20,7 @@ import { allMenuItems } from '../data/menuSections'
 import { CAFE_INFO } from '../data/cafeInfo'
 import { generateOrderSecurity } from '../utils/orderSecurity'
 import { saveOrderToHistory } from '../utils/orderHistory'
+import { useSeoMeta } from '../hooks/useSeoMeta'
 
 const CAFE_PHONE = CAFE_INFO.phone.waNumber
 
@@ -28,6 +29,13 @@ function formatPrice(value) {
 }
 
 export default function CartPage() {
+  useSeoMeta({
+    title: 'Your Order Cart | The Crust Culture Gurgaon',
+    description: 'Review your selected artisanal pizzas, sides, and beverages before placing your order.',
+    canonicalPath: '/cart',
+    robots: 'noindex, follow',
+  })
+
   const { cart, updateQuantity, removeFromCart, cartCount, cartTotal, addToCart, clearCart } = useCart()
 
   const [orderType, setOrderType] = useState('dine-in')

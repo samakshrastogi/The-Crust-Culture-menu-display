@@ -19,6 +19,7 @@ import VegIndicator from '../components/VegIndicator'
 const MenuItemSheet = lazy(() => import('../components/MenuItemSheet'))
 import { menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useSeoMeta } from '../hooks/useSeoMeta'
 import { getFlavorBadge } from '../utils/flavorBadge'
 
 export const ZOMATO_URL = 'https://www.zomato.com'
@@ -64,6 +65,14 @@ const getCategoryBadge = (sectionId) => {
 }
 
 export default function HomePage() {
+  useSeoMeta({
+    title: 'The Crust Culture | 100% Pure Veg Wood-Fired Pizza in Gurgaon',
+    description:
+      'Artisanal stone-oven sourdough pizzas, gourmet stuffed garlic breads, burgers, and chilled shakes in Noble Enclave, Gurgaon. 100% Pure Veg. Open till 1:30 AM.',
+    canonicalPath: '/home',
+    ogImage: '/images/pizza-veggie.jpg',
+  })
+
   const scopeRef = useRef(null)
 
   const [selectedItem, setSelectedItem] = useState(null)
@@ -314,9 +323,9 @@ export default function HomePage() {
                         {specialItem.sectionTitle || 'Chef Selection'}
                       </p>
                     </div>
-                    <h2 className="mt-0.5 truncate text-base font-black text-white sm:text-xl drop-shadow-sm">
+                    <p className="mt-0.5 truncate text-base font-black text-white sm:text-xl drop-shadow-sm">
                       {specialItem.name}
-                    </h2>
+                    </p>
                     {specialItem.toppings && (
                       <p className="mt-0.5 line-clamp-1 text-[11px] text-stone-300 font-medium sm:text-xs">
                         {specialItem.toppings}

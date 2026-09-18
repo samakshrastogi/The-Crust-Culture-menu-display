@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
-import { useNavigate, useLocation, useSearchParams } from 'react-router-dom'
+import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom'
 import { gsap } from '../animations/gsapAnimations'
 
 const LOADING_STAGES = [
@@ -235,12 +235,25 @@ export default function SplashScreen() {
         </div>
       </div>
 
+      {/* Search Crawler Discoverability Navigation (Screen-reader & Bot fallback) */}
+      <nav aria-label="Quick entrance" className="sr-only">
+        <Link to="/home">Explore The Crust Culture Home</Link>
+        <Link to="/menu">Browse Complete Digital Menu (16 Categories)</Link>
+      </nav>
+
       {/* Bottom Action: Minimalist Skip Indicator */}
       <footer data-skip-hint className="relative z-10 flex flex-col items-center">
-        <p className="inline-flex items-center gap-1 text-[11px] font-medium tracking-wide text-[var(--muted)] opacity-80 hover:opacity-100 transition-opacity">
+        <Link
+          to="/menu"
+          onClick={(e) => {
+            e.preventDefault()
+            handleEnter()
+          }}
+          className="inline-flex items-center gap-1 text-[11px] font-medium tracking-wide text-[var(--muted)] opacity-80 hover:opacity-100 transition-opacity"
+        >
           <span>Tap anywhere or press Enter to open menu</span>
           <span className="text-[10px] opacity-60" aria-hidden="true">→</span>
-        </p>
+        </Link>
       </footer>
     </main>
   )

@@ -40,13 +40,24 @@ function AppShell({ theme, onToggleTheme }) {
 
   useEffect(() => {
     const titles = {
-      '/home': 'Home | The Crust Culture',
-      '/menu': 'Menu | The Crust Culture',
-      '/cart': 'Cart & Checkout | The Crust Culture',
-      '/order': 'Order Receipt | The Crust Culture',
+      '/home': 'The Crust Culture | 100% Pure Veg Wood-Fired Pizza in Gurgaon',
+      '/menu': 'Digital Menu & Prices | Sourdough Pizzas & Sides | The Crust Culture',
+      '/cart': 'Your Order Cart | The Crust Culture Gurgaon',
+      '/order': 'Order Confirmation & Receipt | The Crust Culture',
       '/sam': 'Admin Dashboard | The Crust Culture',
     }
-    document.title = titles[location.pathname] || 'The Crust Culture - Wood-Fired Pizzeria'
+    const cleanPath = location.pathname.replace(/\/$/, '') || '/'
+    document.title = titles[cleanPath] || 'The Crust Culture | 100% Pure Veg Wood-Fired Pizzeria Gurgaon'
+
+    // Synchronize canonical link tag dynamically
+    let canonical = document.querySelector('link[rel="canonical"]')
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.rel = 'canonical'
+      document.head.appendChild(canonical)
+    }
+    const canonicalPath = cleanPath === '/' ? '' : cleanPath
+    canonical.href = `https://thecrustculture.com${canonicalPath}`
   }, [location.pathname])
 
   return (
@@ -70,7 +81,7 @@ function AppShell({ theme, onToggleTheme }) {
           </main>
         </Suspense>
       </PageTransition>
-      {location.pathname === '/home' && <Footer />}
+      {(location.pathname === '/home' || location.pathname === '/menu') && <Footer />}
       {showFloatingButtons && <FloatingContactButton />}
       <BackToTop />
 

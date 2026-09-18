@@ -1,0 +1,21 @@
+# https://thecrustculture.com/robots.txt
+User-agent: *
+Allow: /
+Allow: /home
+Allow: /menu
+Allow: /images/
+Allow: /assets/
+
+# Disallow private admin interfaces, transactional flows, and customer receipts
+Disallow: /sam
+Disallow: /shivangi
+Disallow: /order
+Disallow: /cart
+Disallow: /version.json
+
+# Disallow internal tracking/table query parameters from crawling
+Disallow: /*?*table=
+Disallow: /*?*v=
+
+# XML Sitemap
+Sitemap: https://thecrustculture.com/sitemap.xml

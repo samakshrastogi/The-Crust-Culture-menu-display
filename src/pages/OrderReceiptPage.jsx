@@ -13,8 +13,15 @@ import {
 } from 'react-icons/fi'
 import { verifyOrderToken } from '../utils/orderSecurity'
 import { saveOrderToHistory } from '../utils/orderHistory'
+import { useSeoMeta } from '../hooks/useSeoMeta'
 
 export default function OrderReceiptPage() {
+  useSeoMeta({
+    title: 'Order Confirmation & Receipt | The Crust Culture',
+    description: 'Order confirmation and receipt.',
+    robots: 'noindex, nofollow, noarchive',
+  })
+
   const [searchParams] = useSearchParams()
   const token = searchParams.get('v') || ''
 

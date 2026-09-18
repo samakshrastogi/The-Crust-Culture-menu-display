@@ -21,8 +21,15 @@ import {
   exportOrdersToCSV,
   syncOrdersWithCloud,
 } from '../utils/orderHistory'
+import { useSeoMeta } from '../hooks/useSeoMeta'
 
 export default function AdminPage() {
+  useSeoMeta({
+    title: 'Admin Dashboard | The Crust Culture',
+    description: 'Internal administration and order management.',
+    robots: 'noindex, nofollow, noarchive',
+  })
+
   const [orders, setOrders] = useState([])
   const [isSyncing, setIsSyncing] = useState(true)
   const [lastSynced, setLastSynced] = useState(null)

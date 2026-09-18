@@ -1,1 +1,6 @@
-/* /index.html 200
+/about       /home    301
+/contact     /home    301
+/qr          /menu    301
+/favorites   /cart    301
+/shivangi    /sam     301
+/*           /index.html 200

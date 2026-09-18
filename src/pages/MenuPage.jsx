@@ -16,6 +16,7 @@ import SearchBar from '../components/SearchBar'
 import SearchDishCard from '../components/SearchDishCard'
 import { menuSections } from '../data/menuSections'
 import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useSeoMeta } from '../hooks/useSeoMeta'
 
 const MenuItemSheet = lazy(() => import('../components/MenuItemSheet'))
 
@@ -113,6 +114,14 @@ const SEARCH_SUGGESTIONS = [
 ]
 
 export default function MenuPage() {
+  useSeoMeta({
+    title: 'Digital Menu & Prices | Sourdough Pizzas & Sides | The Crust Culture',
+    description:
+      'Explore the complete 16-category digital menu of The Crust Culture in Gurgaon. Artisanal stone-oven pizzas, stuffed garlic breads, burgers, fries, and shakes.',
+    canonicalPath: '/menu',
+    ogImage: '/images/pizza-veggie.jpg',
+  })
+
   const [searchParams] = useSearchParams()
   const requestedCategory = searchParams.get('category')
   const [activeCategory, setActiveCategory] = useState(
@@ -377,6 +386,23 @@ export default function MenuPage() {
 
   return (
     <div className="mx-auto  px-2.5 pb-20 pt-2 sm:px-6 sm:pb-24 sm:pt-3 lg:px-8">
+      {/* Primary Page Header & Title for Search Engine & Screen Reader Relevance */}
+      <header className="mb-2 sm:mb-2.5 flex items-center justify-between gap-2">
+        <div>
+          <h1 className="font-display text-sm sm:text-lg font-extrabold tracking-tight text-[var(--text)]">
+            Digital Menu{' '}
+            <span className="text-xs font-semibold text-[var(--muted)] hidden min-[480px]:inline">
+              • 100% Pure Veg Wood-Fired Pizzeria
+            </span>
+          </h1>
+        </div>
+        <div className="shrink-0 text-right">
+          <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[var(--gold)]">
+            {initialSections.length} Categories • {initialAllMenuItems.length} Items
+          </span>
+        </div>
+      </header>
+
       {/* 1. Search and Status Row (Compact, Single Row on all screens) */}
       <div className="mb-2 flex items-center gap-2 sm:mb-2.5 sm:gap-3">
         <div className="min-w-0 flex-1">
