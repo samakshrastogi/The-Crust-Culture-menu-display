@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { gsap } from '../animations/gsapAnimations'
 import FoodImage from './FoodImage'
+import { getItemMinPrice } from '../utils/priceUtils'
 
 function getLowestPrice(section) {
   const prices = section.items
-    .flatMap((item) => item.prices)
-    .map((price) => Number.parseInt(price.value, 10))
-    .filter((price) => Number.isFinite(price))
+    .map(getItemMinPrice)
+    .filter((price) => price > 0)
 
   return prices.length ? Math.min(...prices) : null
 }
